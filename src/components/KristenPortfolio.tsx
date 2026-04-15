@@ -41,7 +41,7 @@ const projectCards = [
     category: "Product + AI",
     summary:
       "AI-assisted prioritization product using the RICE framework, interactive scoring, and strategy guidance.",
-    href: "https://prioritize-app.vercel.app",
+    href: "https://prioritize.kristenmartino.ai",
     index: "01",
   },
   {
