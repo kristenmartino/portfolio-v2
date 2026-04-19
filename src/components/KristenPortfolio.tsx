@@ -436,10 +436,10 @@ export default function KristenPortfolio() {
             <div>
               <Label light>About</Label>
               <h2 className="mt-4 text-2xl md:text-3xl font-semibold tracking-tight leading-snug" style={{ color: c.pureWhite }}>
-                I'm most useful when the work is important, ambiguous, and not yet structured.
+                I'm most at home in ambiguity, in the space before the structure exists.
               </h2>
               <p className="mt-6 text-base leading-relaxed max-w-lg" style={{ color: c.gray40 }}>
-                I'll take the messy thing nobody wants to touch, break it apart, and make it movable.
+                I'll take the messy thing nobody wants to touch, break it apart, and make it work.
               </p>
               <div className="mt-8 flex flex-wrap gap-2">
                 {["Product strategy", "Business analysis", "Applied AI"].map((tag) => (
