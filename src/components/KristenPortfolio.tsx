@@ -481,10 +481,10 @@ export default function KristenPortfolio() {
             <div>
               <Label light>Contact</Label>
               <h2 className="mt-4 text-3xl md:text-4xl font-semibold tracking-tight" style={{ color: c.pureWhite }}>
-                Let's build something clear, useful, and built to last.
+                If something here resonated, I'd love to hear from you.
               </h2>
               <p className="mt-5 text-base leading-relaxed max-w-lg" style={{ color: c.gray40 }}>
-                Open to thoughtful roles, ambitious product work, consulting opportunities, and strong conversations.
+                Open to roles, consulting, and the occasional great conversation.
               </p>
             </div>
 
