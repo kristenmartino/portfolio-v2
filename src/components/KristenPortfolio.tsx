@@ -288,7 +288,7 @@ export default function KristenPortfolio() {
             <div>
               <Label>Selected Work</Label>
               <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight" style={{ color: c.black }}>
-                A sharper edit of the work.
+                A few things I've designed and built.
               </h2>
             </div>
           </div>
