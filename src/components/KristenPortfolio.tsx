@@ -184,7 +184,7 @@ function HeroSection() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <Label light>Product · Data · Applied AI</Label>
+          <Label light>Product · Data · Applied AI · Builder</Label>
         </motion.div>
 
         <motion.h1
@@ -194,9 +194,9 @@ function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
         >
-          I design clear,
+          I design and build
           <br />
-          usable systems.
+          clear, usable systems.
         </motion.h1>
 
         <motion.div
