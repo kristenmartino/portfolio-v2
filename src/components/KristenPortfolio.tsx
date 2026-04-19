@@ -398,9 +398,9 @@ export default function KristenPortfolio() {
             <div>
               <Label>Expertise</Label>
               <h2 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight" style={{ color: c.black }}>
-                Broad range.
+                Deep range.
                 <br />
-                Strong point of view.
+                Built from experience.
               </h2>
             </div>
 
