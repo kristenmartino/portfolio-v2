@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useState } from "react";
 import { Section } from "@/components/section/Section";
 import { Mono } from "@/components/typography/Mono";
@@ -8,7 +7,6 @@ import { FeaturedProject } from "./FeaturedProject";
 import { ProjectRow } from "./ProjectRow";
 import { ProjectPreview } from "./ProjectPreview";
 import { projects } from "@/content/work";
-import { EASE, DUR } from "@/lib/motion";
 import type { Project } from "@/lib/types";
 
 export function Work() {
@@ -37,15 +35,12 @@ export function Work() {
 
       <FeaturedProject />
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, amount: 0.1 }}
-        transition={{ duration: DUR.slow, ease: EASE.outExpo }}
-        className="mt-16 md:mt-24 grid lg:grid-cols-[1fr_minmax(280px,420px)] gap-12 lg:gap-16"
-      >
+      <div className="mt-16 md:mt-24 grid lg:grid-cols-[1fr_minmax(280px,420px)] gap-12 lg:gap-16">
         <div>
-          <div className="flex items-baseline justify-between border-b pb-3 mb-1" style={{ borderColor: "var(--color-graphite-20)" }}>
+          <div
+            className="flex items-baseline justify-between border-b pb-3 mb-1"
+            style={{ borderColor: "var(--color-graphite-20)" }}
+          >
             <Mono variant="caption" tone="graphite">
               All Work
             </Mono>
@@ -67,7 +62,7 @@ export function Work() {
           </div>
         </div>
         <ProjectPreview project={active} />
-      </motion.div>
+      </div>
     </Section>
   );
 }

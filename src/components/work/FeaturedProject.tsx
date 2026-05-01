@@ -7,7 +7,6 @@ import { useMousePosition } from "@/hooks/useMousePosition";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { Mono } from "@/components/typography/Mono";
 import { featuredProject } from "@/content/work";
-import { EASE, DUR } from "@/lib/motion";
 
 export function FeaturedProject() {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -31,12 +30,8 @@ export function FeaturedProject() {
   }, [mouse, reduced, xRaw, yRaw]);
 
   return (
-    <motion.article
+    <article
       ref={cardRef}
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: DUR.slow, ease: EASE.outExpo }}
       className="grid lg:grid-cols-2 gap-0 overflow-hidden bg-[var(--color-soot)]"
       style={{ viewTransitionName: "gridpulse-card" }}
     >
@@ -132,7 +127,7 @@ export function FeaturedProject() {
           </a>
         </div>
       </div>
-    </motion.article>
+    </article>
   );
 }
 

@@ -1,11 +1,7 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { Section } from "@/components/section/Section";
 import { Mono } from "@/components/typography/Mono";
 import { Divider } from "@/components/primitives/Divider";
 import { expertise } from "@/content/expertise";
-import { EASE, DUR } from "@/lib/motion";
 
 export function Expertise() {
   return (
@@ -30,13 +26,7 @@ export function Expertise() {
 
         <div>
           {expertise.map((item, i) => (
-            <motion.div
-              key={item.title}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: DUR.slow, delay: i * 0.08, ease: EASE.outExpo }}
-            >
+            <div key={item.title}>
               {i === 0 && <Divider />}
               <div className="grid md:grid-cols-[4rem_1fr] gap-4 py-8 md:py-10">
                 <Mono variant="index" tone="graphite">
@@ -55,7 +45,7 @@ export function Expertise() {
                 </div>
               </div>
               <Divider />
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

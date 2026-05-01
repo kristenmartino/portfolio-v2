@@ -1,9 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Mono } from "@/components/typography/Mono";
-import { EASE, DUR } from "@/lib/motion";
 import type { Project } from "@/lib/types";
+import { Mono } from "@/components/typography/Mono";
 
 type ProjectRowProps = {
   project: Project;
@@ -15,7 +13,6 @@ type ProjectRowProps = {
 
 export function ProjectRow({
   project,
-  i,
   active,
   onActivate,
   onDeactivate,
@@ -23,14 +20,10 @@ export function ProjectRow({
   const isExternal = project.href.startsWith("http");
 
   return (
-    <motion.a
+    <a
       href={project.href}
       target={isExternal ? "_blank" : undefined}
       rel={isExternal ? "noreferrer" : undefined}
-      initial={{ opacity: 0, y: 8 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.1 }}
-      transition={{ duration: DUR.base, delay: i * 0.04, ease: EASE.outExpo }}
       onMouseEnter={() => onActivate(project)}
       onMouseLeave={onDeactivate}
       onFocus={() => onActivate(project)}
@@ -50,9 +43,7 @@ export function ProjectRow({
         {project.index}
       </Mono>
       <span className="flex items-baseline gap-3 min-w-0">
-        <span
-          className="text-base md:text-xl font-medium tracking-[-0.01em] text-[var(--color-ink)] transition-transform duration-300 group-hover:translate-x-1 truncate"
-        >
+        <span className="text-base md:text-xl font-medium tracking-[-0.01em] text-[var(--color-ink)] transition-transform duration-300 group-hover:translate-x-1 truncate">
           {project.title}
         </span>
       </span>
@@ -70,6 +61,6 @@ export function ProjectRow({
           →
         </span>
       </span>
-    </motion.a>
+    </a>
   );
 }

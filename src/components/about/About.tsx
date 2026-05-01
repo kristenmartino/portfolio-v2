@@ -1,11 +1,7 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { Section } from "@/components/section/Section";
 import { Mono } from "@/components/typography/Mono";
 import { Tag } from "@/components/primitives/Tag";
 import { about, pillars } from "@/content/about";
-import { EASE, DUR } from "@/lib/motion";
 
 const pillarAccents = [
   "var(--color-signal-blue)",
@@ -58,12 +54,8 @@ export function About() {
 
         <div className="flex flex-col gap-px">
           {pillars.map((item, i) => (
-            <motion.div
+            <div
               key={item.title}
-              initial={{ opacity: 0, x: 16 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: DUR.slow, delay: i * 0.08, ease: EASE.outExpo }}
               className="p-6 md:p-8 border-l-2 bg-[var(--color-graphite-90)]"
               style={{ borderLeftColor: pillarAccents[i] }}
             >
@@ -76,7 +68,7 @@ export function About() {
               <p className="mt-2 text-sm md:text-base leading-relaxed text-[var(--color-graphite-40)]">
                 {item.text}
               </p>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

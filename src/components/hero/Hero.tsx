@@ -60,7 +60,7 @@ export function Hero() {
         </motion.div>
 
         <motion.h1
-          className="mt-6 font-semibold text-[var(--color-bone)]"
+          className="mt-6 font-semibold text-[var(--color-bone)] max-w-[18ch]"
           style={{
             fontSize: "var(--text-display)",
             lineHeight: "var(--leading-display)",
@@ -70,31 +70,28 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: DUR.slow, delay: 0.3, ease: EASE.outExpo }}
         >
-          Strategy, analytics,
-          <br />
-          and applied AI for
-          <br />
+          Strategy, analytics,{" "}
           <span className="text-[var(--color-signal-blue-soft)]">
-            complex enterprise environments.
+            and applied AI.
           </span>
         </motion.h1>
 
         <motion.div
-          className="mt-9 grid md:grid-cols-[1fr_auto] gap-8 md:gap-16 items-end"
+          className="mt-9 max-w-2xl"
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: DUR.slow, delay: 0.5, ease: EASE.outExpo }}
         >
           <p
-            className="text-base md:text-lg leading-relaxed max-w-xl"
+            className="text-base md:text-lg leading-relaxed"
             style={{ color: "var(--color-graphite-40)" }}
           >
-            Independent work at the intersection of strategy, analytics, and
-            applied AI — informed by six years inside enterprise systems where
-            billing, pricing, fare logic, and platform migrations had to keep
-            working under load.
+            Independent work for complex enterprise environments — informed
+            by six years inside enterprise systems where billing, pricing,
+            fare logic, and platform migrations had to keep working under
+            load.
           </p>
-          <div className="flex gap-3">
+          <div className="mt-7 flex flex-wrap gap-3">
             <a
               href="#work"
               className="px-5 md:px-6 py-3.5 text-sm font-medium bg-[var(--color-signal-blue)] text-[var(--color-bone)] hover:bg-[var(--color-signal-blue-deep)] transition-colors"
