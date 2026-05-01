@@ -1,0 +1,58 @@
+## Overview
+
+News aggregators optimize for volume — more sources, more headlines, more frequent updates. Sift takes the opposite position: that the bottleneck for most readers is not access to news but the inability to compare what different sources are saying about the same event. The interesting signal lives in the disagreement, not the feed.
+
+Sift was built as an independent exploration of how AI-assisted aggregation can surface that signal — at the product layer for end readers, and at the pipeline layer for the system underneath.
+
+<Specs>
+  <Spec label="Role" value="Strategy, design, and engineering (frontend + backend)" />
+  <Spec label="Year" value="2024" />
+  <Spec label="Domain" value="AI-assisted media" />
+  <Spec label="Stack" value="Next.js · FastAPI · LangGraph · Vector embeddings · 100+ RSS sources" />
+  <Spec label="Status" value="Shipped" />
+</Specs>
+
+## Problem framing
+
+Three observations shape the design:
+
+1. **Reading more sources is not the same as understanding more.** A reader who consults five outlets on the same story typically encounters minor variations — different headlines, slightly different framings — and rarely the substantive disagreement that would change their view.
+2. **Topic clustering is a tractable problem; cross-source comparison is harder.** Grouping articles about the same event is a well-understood retrieval problem. Surfacing *what each source emphasizes that the others omit* requires deliberate synthesis.
+3. **Editorial framing is not noise.** The signal a serious reader actually wants is "what is each source choosing to highlight, and what are they choosing not to mention." Most aggregators treat this as duplication and dedupe it away.
+
+## Solution
+
+The product is built in two layers — a reader-facing frontend and an ingestion pipeline that does the analytical work.
+
+### Frontend: comparative reading
+
+The reader-facing surface presents news as clusters. Each cluster is one underlying event with the contributing sources arranged side by side. A short AI-generated summary of each source's distinctive framing sits above the article links. Semantic search at the top lets the reader move from "what's happening now" to "what has been said about X over the past month."
+
+The deliberate design choice: the cluster is the unit, not the article. A reader cannot land on a single source's story without seeing what the other sources said about the same event.
+
+### Pipeline: ingestion, summarization, comparison
+
+The backend (Sift Intelligence Pipeline) is a FastAPI service running a LangGraph workflow:
+
+1. **Ingestion.** RSS feeds from 100+ sources are polled and normalized into a common article schema.
+2. **Embedding and clustering.** Each article is embedded; clusters are formed by semantic similarity within a rolling time window.
+3. **Per-source summarization.** Within each cluster, each source's article is summarized along the dimensions that matter for comparison — what facts are emphasized, what framing is chosen, what is omitted.
+4. **Cross-source synthesis.** A second pass produces the cluster-level comparative summary surfaced in the frontend.
+
+The pipeline is designed to be re-runnable: prompt and model changes can be applied to the historical archive without re-ingesting.
+
+## Implementation considerations
+
+**The hardest design problem was distinguishing "different framing" from "different story."** Two articles about the same event can use entirely different vocabularies (technical vs. political, U.S. vs. international). Two articles that look similar can be discussing different events that share entities. Embedding similarity alone produces both false merges and false splits. The pipeline pairs embedding distance with structured entity extraction to reduce both error modes.
+
+**The summarization layer is intentionally constrained.** The model is asked to produce comparison-relevant facts, not opinion. Editorial framing is *described*, not characterized as "biased" or "objective" — both because that judgment requires more context than the pipeline has, and because labeling is the failure mode that has degraded most existing news products.
+
+## Reflections
+
+- **The 100+ source corpus is broad, not deep.** Adding a smaller set of sources with much higher per-source frequency would likely improve cluster quality more than further breadth.
+- **The comparative summary could be parameterized.** A reader could plausibly want different comparison axes — fact emphasis, source stance, geographic origin — surfaced on demand. Currently the synthesis returns one fixed shape.
+- **No reader feedback loop.** A read-confirmed cluster could be promoted; a "this is two different stories" signal could split one. Neither exists.
+
+## Closing observation
+
+The principle that proved most useful: **the interesting signal lives in cross-source disagreement, not in the volume of any one source.** A news product that organizes around clusters rather than articles changes what readers do — they spend less time consuming and more time comparing, which is the activity that actually changes their view.

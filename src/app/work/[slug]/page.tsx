@@ -2,10 +2,19 @@ import { notFound } from "next/navigation";
 import { CaseStudyHeader } from "@/components/case-study/CaseStudyHeader";
 import { ReadingProgress } from "@/components/case-study/ReadingProgress";
 import { Footer } from "@/components/footer/Footer";
-import { featuredProject } from "@/content/work";
+import { featuredProject, projects } from "@/content/work";
 
-const studies = {
-  gridpulse: {
+type Study = {
+  eyebrow: string;
+  title: string;
+  summary: string;
+  metrics: string[];
+  liveHref?: string;
+  codeHref?: string;
+};
+
+const studies: Record<string, Study> = {
+  [featuredProject.slug]: {
     eyebrow: featuredProject.eyebrow,
     title: featuredProject.title,
     summary: featuredProject.summary,
@@ -13,7 +22,22 @@ const studies = {
     liveHref: featuredProject.liveHref,
     codeHref: featuredProject.codeHref,
   },
-} as const;
+  ...Object.fromEntries(
+    projects
+      .filter((p): p is typeof p & { slug: string } => Boolean(p.slug))
+      .map((p) => [
+        p.slug,
+        {
+          eyebrow: `Case Study / ${p.title}`,
+          title: p.title,
+          summary: p.summary,
+          metrics: [...(p.metrics ?? [])],
+          liveHref: p.liveHref,
+          codeHref: p.codeHref,
+        },
+      ]),
+  ),
+};
 
 export function generateStaticParams() {
   return Object.keys(studies).map((slug) => ({ slug }));
@@ -27,7 +51,7 @@ export default async function CaseStudyPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const study = studies[slug as keyof typeof studies];
+  const study = studies[slug];
   if (!study) notFound();
 
   const { default: Body } = await import(`@/content/work/${slug}.mdx`);

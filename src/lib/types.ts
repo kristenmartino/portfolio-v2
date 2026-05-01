@@ -6,6 +6,7 @@ export type Project = {
   title: string;
   category: string;
   summary: string;
+  description?: string;
   href: string;
   year?: string;
   status?: ProjectStatus;
@@ -13,6 +14,10 @@ export type Project = {
   shape?: "data-viz" | "pipeline" | "mobile" | "table" | "decision";
   image?: string;
   imageAlt?: string;
+  slug?: string;
+  liveHref?: string;
+  codeHref?: string;
+  metrics?: readonly string[];
 };
 
 export type FeaturedProject = {

@@ -1,0 +1,59 @@
+## Overview
+
+Most productivity applications externalize discipline. Lists, streaks, gamified habit chains, social accountability — the tools work by adding friction outside the user, expecting that friction to translate into focus. The empirical evidence for this approach is mixed: streak-based apps report high install counts and low long-term retention, and the "I broke my streak so I quit" failure mode is well-documented.
+
+FocusForge is a concept exploring the opposite design hypothesis: that focus tools work better when they internalize meaning. Rather than adding friction, the product translates focus sessions into character development inside an RPG-style progression system. The character grows as the user does the work. The user's relationship is with the character, not with a metric.
+
+<Specs>
+  <Spec label="Role" value="Strategy, design, concept development" />
+  <Spec label="Year" value="2024" />
+  <Spec label="Domain" value="Mobile productivity / behavioral design" />
+  <Spec label="Stack" value="Concept design — mobile-first, on-device AI" />
+  <Spec label="Status" value="Concept" />
+</Specs>
+
+## Problem framing
+
+Three observations underwrite the concept:
+
+1. **Streak-based gamification rewards consistency, not focus.** A user who completes a five-minute task to preserve a streak is being rewarded for the wrong behavior. The metric optimizes itself and decouples from the underlying goal.
+2. **External accountability erodes intrinsic motivation.** A growing literature in behavioral psychology — and the lived experience of anyone who has used a habit-tracking app — suggests that surfacing extrinsic rewards crowds out the intrinsic reward of doing the work itself.
+3. **AI coaching that uploads user data is increasingly unacceptable.** Productivity data — what you work on, when, for how long — is among the most sensitive behavioral data a user produces. Most AI productivity products handle this by sending the data to a server and analyzing it there. The privacy posture is incompatible with the user base most likely to benefit.
+
+## Concept
+
+The concept rests on three design choices:
+
+### Character progression as the meaning layer
+
+Each focus session is structured as an in-character action. The user's character — chosen from archetypes during onboarding, customizable over time — grows specific traits based on the type of work performed. Deep, uninterrupted sessions develop different traits than shorter administrative blocks. The progression is not abstract points; it is narrative, with the character's capabilities and visible appearance changing as work accumulates.
+
+The deliberate move: the user is not tracking minutes. The user is making a character. Minutes are the input; the character is the output. The relationship is reframed.
+
+### On-device AI coaching
+
+A small on-device model provides between-session reflections — short, character-voiced observations about the session that just ended, calibration questions for the next one, and gentle structural suggestions when patterns emerge. No data leaves the device.
+
+The privacy commitment is structural, not policy-based. The model runs locally; the data never traverses the network. This constrains model capability, but the constraint is the design — productivity data should not be a network artifact.
+
+### Progression that resists farming
+
+The system explicitly does not reward duration over depth. Focus quality (estimated from interruptions, not promised) gates progression more than total minutes. Five minutes of deep work advances the character more than thirty minutes of shallow work. This eliminates the streak-preservation behavior that degrades existing tools.
+
+## Implementation considerations
+
+**The concept lives or dies on the on-device model's capability.** The reflective coaching layer must be substantively useful with a model small enough to run locally on commodity hardware. As of design, this is a real constraint — the available on-device models can do simple summarization and structured reflection but cannot provide the richer behavioral guidance that a server-side model could. The concept treats this as a feature, not a bug: the constraint enforces brevity, which is consistent with the design philosophy.
+
+**Character archetypes are content-heavy.** A meaningful progression system requires more written and visual content than a typical productivity app. The concept proposes a small archetype library at launch with a clear path to user-generated archetypes over time.
+
+**Concept stage, not product stage.** This is exploratory work. The design rationale and behavioral hypotheses are documented; a shippable build would require extensive prototyping of the character progression system and on-device model evaluation.
+
+## Open questions
+
+- **Does narrative progression actually outperform streak gamification, or does it just feel like it should?** This is an empirical question. A small longitudinal study comparing engagement and self-reported focus quality across the two approaches would be the right next step.
+- **What is the right monetization shape?** Productivity apps with strong privacy postures struggle to monetize advertising. Subscription is cleaner but raises the bar for proven value. The concept currently leaves this open.
+- **How much of the AI layer can survive without cloud assistance long-term?** On-device model capability is improving; the design should remain valid as the capability ceiling rises, but the early build will be constrained.
+
+## Closing observation
+
+The hypothesis being tested: **productivity tools work better when they translate effort into something the user values intrinsically, rather than tracking it as something the user must defend.** A character that grows when you work changes the question from "did I keep my streak" to "what does my character become." That is a different — and possibly more durable — relationship with focus.

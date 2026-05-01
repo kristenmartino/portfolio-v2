@@ -1,0 +1,57 @@
+## Overview
+
+Most prioritization frameworks fail in opposite directions. RICE — Reach, Impact, Confidence, Effort — produces a clean number, but the number is only as good as the four guesses that produced it, and most teams are guessing without scaffolding. Pure AI prioritization tools, conversely, produce an answer with no defensibility — a recommendation the team cannot interrogate or revise.
+
+Tarazu sits between the two. It runs RICE as the structural backbone, but provides AI-assisted reasoning at each input dimension, treating the framework as a thinking aid rather than a calculator.
+
+<Specs>
+  <Spec label="Role" value="Strategy, design, and engineering" />
+  <Spec label="Year" value="2024" />
+  <Spec label="Domain" value="Product strategy" />
+  <Spec label="Stack" value="Next.js · TypeScript · LLM API integration" />
+  <Spec label="Status" value="Shipped" />
+</Specs>
+
+## Problem framing
+
+Three observations shape the design space:
+
+1. **The hardest part of RICE is the inputs, not the math.** Multiplying four numbers and dividing by effort is trivial. Choosing those numbers honestly — without anchoring to whatever number was used last quarter — is the actual work.
+2. **Confidence is systematically overstated.** Teams run RICE workshops where every initiative is rated 80% confidence by default. The dimension that should reduce hubris ends up reinforcing it.
+3. **Prioritization tools fail when they hide judgment.** A score that arrives without showing how it was assembled cannot be defended in a roadmap meeting and will not survive contact with engineering.
+
+The opportunity: build a tool that walks the user through each RICE dimension with structured prompts — one that asks the questions a senior PM would ask before letting a number be entered.
+
+## Solution
+
+Three design decisions defined the build:
+
+### Per-dimension AI coaching
+
+Each of the four RICE dimensions gets a dedicated prompting layer. For Reach, the user is asked to define the user segment in concrete terms before estimating size. For Impact, the user is asked what behavior changes — not just whether the metric moves. For Confidence, the user is asked to state the evidence and adjust downward when the evidence is thin. For Effort, the user is asked which engineer estimated it and how recently the estimate was made.
+
+Each prompt is short, structural, and resistant to being skipped.
+
+### Score transparency
+
+The output is not a single number. The output is the four inputs, each labeled with the assumptions made, plus the resulting score. A roadmap discussion can rebuild the reasoning from the artifact alone. This eliminates the "where did this come from?" failure mode that kills most prioritization outputs.
+
+### Strategy guidance, separate from scoring
+
+Tarazu also produces a short strategic narrative — what the score *means* in context: comparison to other items, sensitivity to the inputs that were uncertain, and recommended next discovery. The narrative is generated separately from the score so that the math remains auditable.
+
+## Implementation considerations
+
+The design temptation was to let AI generate the inputs directly — paste in a feature description, get a RICE score. This was rejected. The point of RICE is the discipline of making the team's assumptions explicit; an AI-generated score skips the discipline and reintroduces the original problem.
+
+The build commits instead to AI as a thinking partner inside the user's process, not a replacement for it. Every input is still the user's input. The AI provides structured questions, examples drawn from comparable products, and a check on overconfident inputs — but the score belongs to the team.
+
+## Reflections
+
+- **The coaching prompts could go deeper into evidence.** Confidence dimension would benefit from a structured "what evidence do you have, and how recent is it" workflow, not just a heuristic.
+- **A retrospective surface is missing.** A useful follow-on: feed actual outcomes back in six months later and recalibrate the team's typical Confidence ratings against reality.
+- **The output format is currently web-only.** Most roadmap discussions happen in slide decks or docs. A clean export — a one-page PDF or a copy-paste markdown table — would meaningfully increase adoption.
+
+## Closing observation
+
+The principle that proved most useful: **prioritization tools should make the team's reasoning legible, not replace it.** An AI that scores for you is faster than the alternative; an AI that helps you score yourself produces decisions that survive the meeting after the workshop.

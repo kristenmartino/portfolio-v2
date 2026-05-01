@@ -22,11 +22,19 @@ export const projects: Project[] = [
     category: "Product + AI",
     summary:
       "AI-assisted prioritization platform applying the RICE framework, with interactive scoring and structured strategic guidance.",
-    href: "https://prioritize.kristenmartino.ai",
+    href: "/work/tarazu",
+    slug: "tarazu",
+    liveHref: "https://prioritize.kristenmartino.ai",
     year: "2024",
     status: "Shipped",
     mode: "Solo build",
     shape: "decision",
+    metrics: [
+      "4 RICE dimensions",
+      "Per-dimension AI coaching",
+      "No-login web app",
+      "Solo build",
+    ],
   },
   {
     index: "02",
@@ -46,11 +54,20 @@ export const projects: Project[] = [
     category: "AI News Product",
     summary:
       "AI-curated news platform aggregating 100+ sources with semantic search and multi-source comparative analysis.",
-    href: "https://siftnews.kristenmartino.ai",
+    href: "/work/sift",
+    slug: "sift",
+    liveHref: "https://siftnews.kristenmartino.ai",
+    codeHref: "https://github.com/kristenmartino/sift-api",
     year: "2024",
     status: "Shipped",
     mode: "Solo build",
     shape: "table",
+    metrics: [
+      "100+ sources",
+      "Semantic search",
+      "Multi-source comparison",
+      "FastAPI + LangGraph",
+    ],
   },
   {
     index: "04",
@@ -106,11 +123,19 @@ export const projects: Project[] = [
     category: "Mobile Product Concept",
     summary:
       "Character-driven productivity application concept integrating progression mechanics with privacy-first AI coaching.",
-    href: "https://github.com/kristenmartino/focusforge",
+    href: "/work/focusforge",
+    slug: "focusforge",
+    codeHref: "https://github.com/kristenmartino/focusforge",
     year: "2024",
     status: "Concept",
     mode: "Solo build",
     shape: "mobile",
+    metrics: [
+      "Mobile-first concept",
+      "On-device AI coaching",
+      "Character progression",
+      "Privacy-first",
+    ],
   },
   {
     index: "09",
