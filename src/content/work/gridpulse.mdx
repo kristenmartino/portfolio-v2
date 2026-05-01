@@ -1,0 +1,65 @@
+## Overview
+
+Power traders and grid operators routinely manage decisions across six or more unrelated tools — forecasting models, scheduling systems, weather services, telemetry feeds, and trading platforms. Each function holds a different view of the same underlying data, and reconciliation depends on practitioner expertise rather than process. By the time a unified picture emerges, the trading window has typically closed.
+
+GridPulse was designed and built as the integrated decision layer that work could move into — an independent exploration of how strategy, analytics, and applied AI come together in operational decision-support.
+
+<Specs>
+  <Spec label="Role" value="Strategy, design, and engineering" />
+  <Spec label="Year" value="2024" />
+  <Spec label="Industry" value="Energy / Power markets" />
+  <Spec label="Stack" value="Next.js · Cloud Run · PostgreSQL · Python forecasting" />
+  <Spec label="Status" value="Shipped" />
+</Specs>
+
+## Problem framing
+
+Three structural constraints shape this problem space:
+
+1. **Weather as an unowned input.** Forecasters, operators, and traders consult different weather sources. Reconciliation occurs informally, often during the decision itself.
+2. **Scenario analysis bound to a weekly cycle.** Significant decisions wait for a Friday meeting because no team trusts on-the-fly modeling.
+3. **Decisions vary by role; the interface does not.** Traders require four-hour ramp-risk visibility. Operators require seven-day curtailment outlooks. A shared interface serves neither well.
+
+<Diagram title="Decision graph informing the architecture">
+  <NodeGraph />
+</Diagram>
+
+The resulting design principle: GridPulse would not be a dashboard. It would be an integrated operating layer in which inputs converged, scenario analysis was immediate, and the surface adapted by role.
+
+## Solution
+
+Three planes were built, each addressing a specific constraint.
+
+### Operating view
+
+The default surface presents live grid state, weighted forecasts, and the open decisions appropriate to the user's role. Traders see ramp windows, congestion risk, and pricing bands. Operators see curtailment risk and reserve margins. The underlying data is shared; the presentation adapts.
+
+The design hypothesis: collapsing three browser tabs into one operating surface eliminates roughly a hundred small mental switches per session — a non-trivial gain in cognitive throughput for time-pressured decisions.
+
+### Models
+
+Forecasting alone is insufficient — confidence is what enables decision-making. GridPulse runs four model classes (physics-based, statistical, machine learning, and ensemble) with associated backtests and confidence intervals exposed at the surface. When model spread widens, the platform surfaces the uncertainty rather than presenting a single value.
+
+### Scenarios
+
+The weekly scenario cycle was replaced with on-demand modeling. A user adjusts a single input — temperature delta, unit outage, policy assumption — and observes the cascade through dependent systems immediately.
+
+## Implementation considerations
+
+The principal design challenge was selecting what to omit from the operating view. A trader at 6:30am cannot reasonably evaluate model selection. The platform makes the selection and surfaces alternatives as secondary signals. This stands in deliberate contrast to tools that present the choice as if model selection were the user's responsibility.
+
+The role-based interface system added implementation cost. Three roles required three information architectures, three default scenario sets, and three alerting thresholds. A consolidated power-user interface was rejected as a regression — generic interfaces consistently underperform role-specific ones in operational environments.
+
+## Reflections
+
+Three observations from the build:
+
+- **Earlier integration with bid-submission systems would have shortened the decision-to-action cycle.** GridPulse stops at the decision; the natural next step is the action itself.
+- **A top-level uncertainty indicator should have been incorporated from day one.** Confidence intervals existed inside model views but were not surfaced in the operating layer — the meta-signal traders use to size positions.
+- **A retrospective surface would have improved stickiness.** The platform was tuned for live decisions, not for review of past performance.
+
+## Closing observation
+
+The most durable outcome of the build was not forecasting accuracy or interface design — it was that the operating view did not need to be the system of record. It needed to be the place where the actual decision occurred. That is a meaningfully lower threshold than "consolidated platform," and a meaningfully higher one than "another dashboard."
+
+For decision-support work in operations-intensive environments, the principle that proved most reliable: **ship the proof of the decision, not the proof of the data.**

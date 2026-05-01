@@ -1,16 +1,43 @@
 import type { Metadata } from "next";
-import "@fontsource/ibm-plex-sans/400.css";
-import "@fontsource/ibm-plex-sans/500.css";
-import "@fontsource/ibm-plex-sans/600.css";
-import "@fontsource/ibm-plex-sans/700.css";
-import "@fontsource/ibm-plex-mono/400.css";
-import "@fontsource/ibm-plex-mono/500.css";
+import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import { site } from "@/content/site";
 import "./globals.css";
 
+const plexSans = IBM_Plex_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-plex-sans",
+  display: "swap",
+});
+
+const plexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-plex-mono",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "Kristen Martino — Product, Data & Applied AI",
-  description:
-    "Systems-oriented leader across product strategy, business analysis, and applied AI.",
+  title: site.metadata.title,
+  description: site.metadata.description,
+  metadataBase: new URL(`https://${site.domain}`),
+  openGraph: {
+    title: site.metadata.title,
+    description: site.metadata.description,
+    url: `https://${site.domain}`,
+    siteName: "Kristen Martino",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: site.metadata.title,
+    description: site.metadata.description,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
@@ -19,8 +46,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased">
-      <body className="min-h-full flex flex-col" style={{ fontFamily: "'IBM Plex Sans', sans-serif" }}>
+    <html
+      lang="en"
+      className={`h-full antialiased ${plexSans.variable} ${plexMono.variable}`}
+    >
+      <body className="relative min-h-full flex flex-col font-sans bg-[var(--color-soot)] text-[var(--color-bone)]">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[var(--color-signal-blue)] focus:text-[var(--color-bone)] focus:text-sm"
+        >
+          Skip to content
+        </a>
         {children}
       </body>
     </html>
