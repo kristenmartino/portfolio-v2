@@ -19,7 +19,7 @@ export function Hero() {
     <section
       id="hero"
       ref={ref}
-      className="relative bg-[var(--color-soot)]"
+      className="relative min-h-[100svh] flex flex-col justify-center bg-[var(--color-soot)]"
     >
       {/* grid overlay */}
       <div
@@ -47,7 +47,7 @@ export function Hero() {
 
       <motion.div
         style={{ opacity, y }}
-        className="relative z-10 max-w-[1440px] mx-auto w-full px-6 md:px-12 lg:px-16 pb-14 md:pb-20 pt-32 md:pt-36"
+        className="relative z-10 max-w-[1440px] mx-auto w-full px-6 md:px-12 lg:px-16 py-20 md:py-24"
       >
         <motion.div
           initial={{ opacity: 0 }}
