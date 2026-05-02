@@ -19,7 +19,7 @@ export function Hero() {
     <section
       id="hero"
       ref={ref}
-      className="relative min-h-[80svh] flex flex-col justify-end bg-[var(--color-soot)]"
+      className="relative bg-[var(--color-soot)]"
     >
       {/* grid overlay */}
       <div
