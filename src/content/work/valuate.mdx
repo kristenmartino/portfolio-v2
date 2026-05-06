@@ -22,7 +22,7 @@ Three observations shape the design:
 
 ## Solution
 
-The agent extracts each line item along one of two tracks, with explicit fallback rules and confidence calibration.
+The agent extracts each line item through one of two tracks, with confidence calibration and a deterministic derivation step for fields that neither track can fill.
 
 ### Track A — XBRL company facts
 
@@ -32,9 +32,13 @@ SEC filers tag financial statements with us-gaap concepts (`Revenues`, `Operatin
 
 Where Track A leaves a field unfilled, Track B runs. The 10-K's Item 8 (Financial Statements) section is sliced out by anchor pattern, sent to Claude with a confidence-calibrated extraction prompt, and parsed into the same `LineItem` schema. Every value Claude returns carries a verbatim 5–30 word source quote from the filing — visible in the human-in-the-loop review surface for one-click verification. The static system prompt is marked for prompt caching so subsequent extractions amortize the prefix cost.
 
+### Derivation backstop
+
+A small set of accounting-identity fallbacks runs between Track B and composition. Some filers don't tag a field at all — JNJ and NKE don't report a separate operating income line; NKE and KO don't expose a total-liabilities tag. Rather than fail the request, derive: operating income from `income_before_tax + interest_expense`; total liabilities from `total_assets − shareholders_equity`. Both write `source=DERIVED` with a synthetic source quote describing the formula, so provenance survives the inference and the HITL surface can flag them for review.
+
 ### Composition and validation
 
-The `Company` is composed at the very end, after both tracks have run. Required fields that neither track filled raise an explicit error to the API caller. Validation flags low-confidence items (<0.80) and balance-sheet identity violations (>50bps). Overrides are persisted as `LineItem` entries with `source=USER_OVERRIDE` and re-trigger validation on each write.
+The `Company` is composed at the end, after both tracks plus derivation have run. Required fields that even derivation can't reach raise an explicit error. Validation flags low-confidence items (<0.80) and balance-sheet identity violations (>50bps). Overrides are persisted as `LineItem` entries with `source=USER_OVERRIDE` and re-trigger validation on each write.
 
 ### Modeling and Monte Carlo
 
@@ -51,8 +55,8 @@ Once the line items are in place, the user adjusts assumptions on sliders — re
 ## Reflections
 
 - **The 10-ticker universe is intentional.** Banks, insurers, REITs, and energy E&P are V2 problems that would dilute the architectural narrative. The scope ceiling is the part most demos hide.
-- **The HITL surface has API endpoints but only flag display in the UI.** The override flow is wired through `PUT /company/{ticker}/override`, re-validates on submit, and supports source-quote attribution — but the front end currently surfaces flags without an inline edit affordance.
-- **Multi-period extraction would be a small change.** The schema already supports a list of `FinancialPeriod` per `Company`; the orchestrator currently calls it for the most recent year only.
+- **Three of ten tickers needed Track B or derivation to compose.** XBRL tagging consistency turned out to be worse than the universe size suggests — even among hand-picked clean-reporting filers, ~30% have at least one required line item that's untagged or under a non-canonical concept. The two-track-plus-derivation architecture earns its keep on this universe; expanding to messier filers (banks, insurers) doesn't make the structure less necessary, only more.
+- **Persistence is the next real engineering step.** Overrides currently live in process memory — a Railway redeploy wipes them. Postgres + a small persistence layer is the most concrete remaining work; multi-period extraction (3-5 years of comparatives, which the schema already supports) lands behind that.
 
 ## Closing observation
 
