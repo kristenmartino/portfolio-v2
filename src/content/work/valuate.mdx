@@ -38,7 +38,7 @@ A small set of accounting-identity fallbacks runs between Track B and compositio
 
 ### Composition and validation
 
-The `Company` is composed at the end, after both tracks plus derivation have run. Required fields that even derivation can't reach raise an explicit error. Validation flags low-confidence items (<0.80) and balance-sheet identity violations (>50bps). Overrides are persisted as `LineItem` entries with `source=USER_OVERRIDE` and re-trigger validation on each write.
+The `Company` is composed at the end, after both tracks plus derivation have run. Required fields that even derivation can't reach raise an explicit error. Validation flags low-confidence items (less than 0.80) and balance-sheet identity violations (over 50bps). Overrides are persisted as `LineItem` entries with `source=USER_OVERRIDE` and re-trigger validation on each write.
 
 ### Modeling and Monte Carlo
 
