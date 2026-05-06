@@ -123,6 +123,27 @@ export const featuredProject: FeaturedProject = {
 export const projects: Project[] = [
   {
     index: "01",
+    title: "Valuate",
+    category: "AI Financial Agent",
+    summary:
+      "AI-augmented DCF agent — extracts financial line items from SEC 10-Ks via XBRL and Claude, then runs a Monte Carlo valuation with cell-level source attribution.",
+    href: "/work/valuate",
+    slug: "valuate",
+    liveHref: "https://valuate.kristenmartino.ai",
+    codeHref: "https://github.com/kristenmartino/valuate-api",
+    year: "2026",
+    status: "Shipped",
+    mode: "Solo build",
+    shape: "pipeline",
+    metrics: [
+      "10 S&P 500 tickers",
+      "Two-track extraction (XBRL + LLM)",
+      "Source quotes + HITL review",
+      "10K Monte Carlo iterations",
+    ],
+  },
+  {
+    index: "02",
     title: "Tarazu",
     category: "Product + AI",
     summary:
@@ -142,7 +163,7 @@ export const projects: Project[] = [
     ],
   },
   {
-    index: "02",
+    index: "03",
     title: "GTM Healthcare Intelligence",
     category: "Analytics Platform",
     summary:
@@ -154,7 +175,7 @@ export const projects: Project[] = [
     shape: "data-viz",
   },
   {
-    index: "03",
+    index: "04",
     title: "Sift",
     category: "AI News Product",
     summary:
@@ -175,7 +196,7 @@ export const projects: Project[] = [
     ],
   },
   {
-    index: "04",
+    index: "05",
     title: "Sift Intelligence Pipeline",
     category: "AI Backend",
     summary:
@@ -187,7 +208,7 @@ export const projects: Project[] = [
     shape: "pipeline",
   },
   {
-    index: "05",
+    index: "06",
     title: "Revenue Recovery Audit Workflow",
     category: "Enterprise Systems",
     summary:
@@ -199,7 +220,7 @@ export const projects: Project[] = [
     shape: "table",
   },
   {
-    index: "06",
+    index: "07",
     title: "Platform Migration + ARR Growth",
     category: "Cross-Functional Delivery",
     summary:
@@ -211,7 +232,7 @@ export const projects: Project[] = [
     shape: "pipeline",
   },
   {
-    index: "07",
+    index: "08",
     title: "RMS Fare Validation System",
     category: "Decision Support",
     summary:
@@ -223,7 +244,7 @@ export const projects: Project[] = [
     shape: "decision",
   },
   {
-    index: "08",
+    index: "09",
     title: "FocusForge",
     category: "Mobile Product Concept",
     summary:
@@ -243,7 +264,7 @@ export const projects: Project[] = [
     ],
   },
   {
-    index: "09",
+    index: "10",
     title: "Flight Disruption Recovery",
     category: "Operational Decision Support",
     summary:
