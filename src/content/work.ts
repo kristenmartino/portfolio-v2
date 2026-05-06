@@ -7,8 +7,13 @@ export const featuredProject: FeaturedProject = {
   summary:
     "An integrated decision platform for power markets — unifying weather forecasts, scenario analysis, and grid telemetry across operating roles.",
   description:
-    "An independent build exploring decision-support design for power markets. Weather, forecasts, and scenario analysis consolidated into role-based operating views for traders and grid operators — eight regions, four model classes, deployed on Cloud Run.",
-  metrics: ["16 BAs", "4 model classes", "Role-based views", "Cloud Run"],
+    "An independent build exploring decision-support design for power markets. Weather, forecasts, and scenario analysis consolidated into role-based operating views for traders and grid operators — 51 US balancing authorities (~99% of lower-48 demand), four-model ensemble with real holdout metrics, deployed on Cloud Run with scheduled scoring + training jobs.",
+  metrics: [
+    "51 BAs · ~99% lower-48",
+    "XGBoost · Prophet · SARIMAX ensemble",
+    "Real holdout metrics",
+    "Cloud Run + scheduled jobs",
+  ],
   liveHref: "https://gridpulse.kristenmartino.ai",
   codeHref: "https://github.com/kristenmartino/gridpulse",
   caseStudyHref: "/work/gridpulse",
@@ -111,8 +116,8 @@ export const featuredProject: FeaturedProject = {
         },
         {
           metric: "Regional reach",
-          after: "16 BAs",
-          note: "Cloud Run · expanding coverage",
+          after: "51 BAs",
+          note: "~99% of lower-48 demand · Cloud Run",
         },
       ],
     },
