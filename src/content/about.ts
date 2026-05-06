@@ -2,7 +2,7 @@ import type { Pillar } from "@/lib/types";
 
 export const about = {
   heading: "An operator's approach.",
-  bio: "Six years embedded in enterprise teams — billing, pricing, fare logic, platform migrations — where systems had to keep working under load. Recent independent work brings the same operational rigor to applied AI and decision-support products.",
+  bio: "A decade inside enterprise systems — three years actuarial analytics, then operator seats covering billing, pricing, fare logic, and platform migrations, where systems had to keep working under load. Recent independent work brings the same operational rigor to applied AI and decision-support products.",
   pullQuote:
     "Durable systems are systems stakeholders can explain, audit, and operate with confidence.",
   tags: ["Product strategy", "Business analysis", "Applied AI"],

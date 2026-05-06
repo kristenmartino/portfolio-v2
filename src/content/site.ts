@@ -5,9 +5,9 @@ export const site = {
   email: "hello@kristenmartino.ai",
   metadata: {
     title:
-      "Kristen Martino — Strategy, analytics, and applied AI for enterprise environments.",
+      "Kristen Martino — Strategy, analytics, and applied AI, informed by enterprise systems work.",
     description:
-      "Independent work at the intersection of strategy, analytics, and applied AI in enterprise environments. Six years operator-seat experience inside enterprise systems.",
+      "Independent work at the intersection of strategy, analytics, and applied AI in enterprise environments. A decade across actuarial analytics and operator-seat experience inside enterprise systems.",
   },
   tagline: "Strategy. Analytics. Applied AI.",
   currentFocus:

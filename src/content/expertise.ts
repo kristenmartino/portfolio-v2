@@ -9,11 +9,11 @@ export const expertise: Expertise[] = [
   {
     number: "02",
     title: "Business Analysis",
-    text: "Six years analyzing and restructuring enterprise systems — billing, pricing, fare logic, platform migrations — to improve accuracy, auditability, and operational efficiency for the teams that run them.",
+    text: "A decade analyzing enterprise systems — actuarial pricing and risk modeling, then billing, fare logic, and platform migrations — to improve accuracy, auditability, and operational efficiency for the teams that run them.",
   },
   {
     number: "03",
     title: "Applied AI + Data",
-    text: "Forecasting, retrieval, and AI-enabled decision tools designed to be production-ready, validated, and explainable. The practical end of applied AI — built with the operational rigor enterprise environments require.",
+    text: "Forecasting layers, retrieval pipelines, and LLM-assisted decision tools. Independent builds where the AI sits inside the user's reasoning — designed for inputs you can audit and outputs you can defend.",
   },
 ];

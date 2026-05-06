@@ -70,9 +70,9 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: DUR.slow, delay: 0.3, ease: EASE.outExpo }}
         >
-          Strategy, analytics,{" "}
+          I build systems that{" "}
           <span className="text-[var(--color-signal-blue-soft)]">
-            and applied AI.
+            hold up under load.
           </span>
         </motion.h1>
 
@@ -86,10 +86,10 @@ export function Hero() {
             className="text-base md:text-lg leading-relaxed"
             style={{ color: "var(--color-graphite-40)" }}
           >
-            Independent work for complex enterprise environments — informed
-            by six years inside enterprise systems where billing, pricing,
-            fare logic, and platform migrations had to keep working under
-            load.
+            Independent product builds for complex enterprise environments
+            — AI in the loop, operator judgment in the seat. Informed by a
+            decade across enterprise systems, from actuarial analytics to
+            billing, pricing, fare logic, and platform migrations.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <a
