@@ -1,24 +1,25 @@
 import type { Pillar } from "@/lib/types";
 
 export const about = {
-  heading: "An operator's approach.",
+  heading:
+    "I'm most at home in ambiguity, in the space before the structure exists.",
   bio: "A decade inside enterprise systems — three years actuarial analytics, then operator seats covering billing, pricing, fare logic, and platform migrations, where systems had to keep working under load. Recent independent work brings the same operational rigor to applied AI and decision-support products.",
   pullQuote:
-    "Durable systems are systems stakeholders can explain, audit, and operate with confidence.",
+    "I'll take the messy thing nobody wants to touch, break it apart, and make it work.",
   tags: ["Product strategy", "Business analysis", "Applied AI"],
 } as const;
 
 export const pillars: Pillar[] = [
   {
     title: "Diagnose first.",
-    text: "Work begins with structured discovery — defining the actual question before solutioning.",
+    text: "I reduce ambiguity early so teams can move with more confidence and less noise.",
   },
   {
     title: "Design for trust.",
-    text: "Systems endure when stakeholders can explain, audit, and operate them with confidence.",
+    text: "Work has to be understandable, credible, and grounded enough that people actually use it.",
   },
   {
     title: "Ship the proof.",
-    text: "The deliverable is the operational result — not the deck, not the prototype.",
+    text: "Workflow, execution, outcomes — not the deck, not the prototype.",
   },
 ];

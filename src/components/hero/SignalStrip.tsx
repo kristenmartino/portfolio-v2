@@ -6,8 +6,8 @@ import { EASE, DUR } from "@/lib/motion";
 
 const signals = [
   {
-    label: "Operating clarity",
-    sub: "Translating fragmented systems into structured workflows and durable processes.",
+    label: "Clarity in ambiguity",
+    sub: "Turning messy problems into structure.",
     accent: "var(--color-signal-blue)",
   },
   {
@@ -16,8 +16,8 @@ const signals = [
     accent: "var(--color-signal-teal)",
   },
   {
-    label: "AI in production",
-    sub: "Practical systems that measurably improve efficiency and accuracy.",
+    label: "AI in the loop",
+    sub: "Operator judgment in the seat.",
     accent: "var(--color-signal-magenta)",
   },
 ];
