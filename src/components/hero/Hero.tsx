@@ -70,9 +70,9 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: DUR.slow, delay: 0.3, ease: EASE.outExpo }}
         >
-          I build systems that{" "}
+          I build{" "}
           <span className="text-[var(--color-signal-blue-soft)]">
-            hold up under load.
+            clarity into complex systems.
           </span>
         </motion.h1>
 

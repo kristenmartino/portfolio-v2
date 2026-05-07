@@ -20,8 +20,8 @@ export function Contact() {
         <p className="mt-5 text-base md:text-lg leading-relaxed max-w-2xl text-[var(--color-graphite-40)]">
           Currently exploring senior product roles and consulting work where
           systems thinking, analytics, and applied AI intersect — especially
-          in operationally-heavy industries like energy, transportation,
-          financial services, and healthcare.
+          in operations-heavy contexts where decisions have to survive
+          contact with the floor.
         </p>
 
         <div className="mt-10 flex flex-wrap gap-3">
