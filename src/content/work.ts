@@ -211,14 +211,130 @@ export const projects: Project[] = [
   {
     index: "05",
     title: "GTM Healthcare Intelligence",
-    category: "Analytics Platform",
+    category: "Healthcare GTM Analytics",
     summary:
-      "Healthcare go-to-market analytics suite combining account scoring, benchmarking, diagnostics, and AI-enabled query tools.",
-    href: "https://gtm.kristenmartino.ai",
+      "Specialty-EHR go-to-market analytics architecture organized across four maturity layers — governance, descriptive, diagnostic, prescriptive — so Sales, Marketing, and Finance can share a source of truth without sharing a surface.",
+    href: "/work/gtm-healthcare",
+    slug: "gtm-healthcare",
+    liveHref: "https://gtm.kristenmartino.ai",
     year: "2024",
     status: "Shipped",
     mode: "Cross-functional",
     shape: "data-viz",
+    metrics: [
+      "7 sub-projects · 4 maturity layers",
+      "CMS NPPES · Medicare PUF · Census",
+      "L2 logistic regression",
+      "React · Next.js · Python · Claude API",
+    ],
+    artifact: {
+      problem: {
+        situation:
+          "Specialty-EHR vendors run go-to-market with Sales, Marketing, and Finance each maintaining their own pipeline definitions, conversion math, and revenue forecasts — built around the cadences and decision rituals each function actually trusts.",
+        complication:
+          "When the three functions disagree on inputs, downstream forecasts and territory decisions become negotiations rather than analyses. Centralized BI rollouts under-perform precisely because they ask each function to abandon the surface it knows; standardization stalls when no team will adopt a definition it didn't author.",
+        question:
+          "Can a single analytics layer serve all three functions without flattening the differences in how each one actually decides?",
+      },
+      requirements: [
+        {
+          stakeholder: "Sales leadership",
+          need: "Funnel diagnostics by specialty and metro — what's dropping off and where, named — surfaced inside the views the team already uses for pipeline review.",
+          evidence: "ConvertPath used in mock pre-QBR sessions",
+        },
+        {
+          stakeholder: "Marketing",
+          need: "Account scoring grounded in fit + intent signals from public data, with conversion math that survives quarterly review.",
+          evidence: "Anchored to MGMA/HFMA benchmarks and CMS NPPES",
+        },
+        {
+          stakeholder: "Finance",
+          need: "A metric registry with conflict resolution and anomaly detection so close-the-books forecasts trace back to a defined source.",
+        },
+        {
+          stakeholder: "Cross-function",
+          need: "A natural-language layer where any function can ask 'why are we losing X' and get a structured answer with cited sources — not a black-box recommendation.",
+          evidence: "AskGTM returns sourced reasoning, not bare numbers",
+        },
+      ],
+      decisions: {
+        criteria: [
+          "Multi-stakeholder fit",
+          "Adoption friction",
+          "Source-of-truth integrity",
+          "Build effort",
+        ],
+        options: [
+          {
+            option: "Centralized BI dashboard (one surface for all three)",
+            scores: ["partial", "unmet", "met", "met"],
+          },
+          {
+            option:
+              "Per-function surfaces over a shared metric registry",
+            chosen: true,
+            scores: ["met", "met", "met", "partial"],
+            rationale:
+              "Function-specific surfaces match the rituals each team actually uses — Sales lives in funnel views, Finance in close-the-books cycles, Marketing in scoring loops. The registry keeps definitions reconcilable without forcing a uniform interface. The 4× build cost (four maturity layers, multiple consumer surfaces) is justified by the documented failure rate of single-dashboard rollouts in cross-functional GTM contexts.",
+          },
+          {
+            option: "Embedded analytics in the CRM (Salesforce-native only)",
+            scores: ["unmet", "partial", "unmet", "met"],
+          },
+        ],
+      },
+      solution: {
+        summary:
+          "A four-layer analytics architecture organized by decision maturity — each function enters at the layer that matches its rituals and crosses into others when needed.",
+        pillars: [
+          {
+            title: "Governance",
+            detail:
+              "NorthStar — metric registry with conflict resolution, reporting adoption tracker, shadow-spreadsheet monitor, and anomaly detection. The single source of truth for what \"pipeline\" means.",
+          },
+          {
+            title: "Descriptive",
+            detail:
+              "PracticeFlow + SpecialtyPulse — benchmarking against MGMA/HFMA standards and trend monitoring at practice and specialty level, anchored on CMS NPPES, Medicare PUF, and Census demographics.",
+          },
+          {
+            title: "Diagnostic",
+            detail:
+              "ConvertPath + SpectrumIQ — funnel-decay analysis showing where deals drop off by specialty, plus metro-level opportunity scoring via L2 logistic regression.",
+          },
+          {
+            title: "Prescriptive",
+            detail:
+              "AskGTM + AskPractice — natural-language query layer over the same governed data; \"why are we losing Ortho deals?\" returns a structured, sourced answer rather than a hidden inference.",
+          },
+        ],
+      },
+      outcome: {
+        kind: "metrics",
+        items: [
+          {
+            metric: "Architecture",
+            after: "4 maturity layers",
+            note: "Governance · Descriptive · Diagnostic · Prescriptive",
+          },
+          {
+            metric: "Sub-projects",
+            after: "7 mapped",
+            note: "Each tied to a specific decision moment",
+          },
+          {
+            metric: "Public data anchors",
+            after: "5 sources",
+            note: "CMS NPPES · Medicare PUF · Census · MGMA · HFMA",
+          },
+          {
+            metric: "Build status",
+            after: "End-to-end demo",
+            note: "Synthetic + public data only · no proprietary or patient data",
+          },
+        ],
+      },
+    },
   },
   {
     index: "06",
