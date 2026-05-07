@@ -1,0 +1,11 @@
+Most "AI extracts X from documents" demos quietly hide their failures. They limit themselves to clean inputs without saying so, raise generic exceptions when one field is missing, and produce confident outputs without provenance. The failures live in the cases the demo doesn't show.
+
+The design move that turns an extraction agent from a demo into something a domain reviewer would trust is **per-cell source attribution** — every value carrying a verbatim quote from the source document, visible in a one-click verification surface. The reviewer doesn't have to hunt; the system shows where each value came from.
+
+Three patterns that consistently improve extraction agents:
+
+- **Surface the partial.** Don't fail the request when one field is missing. Return whatever was extracted, flag the gaps, and let downstream resolution — a fallback track, a derivation, a user override — fill them. "8 of 10 fields verified, 2 derived" beats a generic exception every time.
+- **Calibrate confidence per output.** Confidence is a per-cell property, not a session property. Mark low-confidence outputs for review; let high-confidence outputs flow through. Aggregate confidence is misleading.
+- **Persist user overrides as first-class data.** When a reviewer corrects a value, the correction should carry its own provenance and re-trigger validation downstream. Overrides are inputs to the next extraction, not exceptions to it.
+
+The strongest signal that an extraction agent is ready for domain use is that a reviewer can ask "where did this number come from?" and get an answer in one click. That threshold is meaningfully higher than "the demo runs end-to-end," and meaningfully more predictive of long-term trust.

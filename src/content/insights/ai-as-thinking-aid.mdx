@@ -1,0 +1,15 @@
+Two failure modes dominate AI-augmented decision tools.
+
+The **calculator failure** produces a clean output the user cannot defend. A meeting opens with "the model says we should ship feature X" and immediately stalls — nobody on the team can reconstruct the assumptions behind the score. The output cannot survive the discussion that follows.
+
+The **vanilla failure** produces an output the user *can* defend, but the inputs are still being guessed without scaffolding. Confidence ratings cluster at 80% by default; the dimension meant to reduce hubris reinforces it. The output is defensible but no better than what the team would have produced on their own.
+
+The middle path: **AI as thinking aid, not calculator.** The AI sits inside the user's reasoning — asking the questions a senior colleague would ask, surfacing comparable examples, checking overconfident inputs — but the inputs and the score belong to the user.
+
+Three design principles for tools in this register:
+
+- **Each input gets a dedicated prompting layer.** Generic "tell me your assumptions" prompts get skipped. Structural questions about the specific dimension — segment definition, behavioral change, evidence quality — get answered.
+- **The output reconstructs the reasoning.** Show the inputs and the assumptions behind them, not just the final number. A discussion can rebuild the argument from the artifact alone — no one has to ask "where did this come from?"
+- **Strategic narrative, separate from scoring.** Generated independently from the math, so the math stays auditable. The narrative explains what the score *means* in context; the math is reconstructable line by line.
+
+An AI that scores for you is faster than the alternative. An AI that helps you score yourself produces decisions that survive the meeting after the workshop.

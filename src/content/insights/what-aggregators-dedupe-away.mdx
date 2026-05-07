@@ -1,0 +1,13 @@
+News aggregators optimize for volume. More sources, more headlines, more frequent updates — measured in throughput, evaluated on coverage. The implicit theory: the reader who consults more sources understands more.
+
+The empirical evidence is mixed. A reader who consults five outlets on the same story typically encounters minor variations — different headlines, slightly different framings — and rarely the substantive disagreement that would change their view. The aggregator's optimization for volume actively works against the comparative reading the serious reader is trying to do.
+
+What the serious reader actually wants from cross-source consumption: **what is each source choosing to highlight, and what are they choosing not to mention.** Aggregators treat this as duplication and dedupe it away.
+
+Three design implications:
+
+- **The cluster is the unit, not the article.** A reader should not be able to land on a single source's story without seeing what other sources said about the same event. The architecture has to enforce comparative consumption; if an article-first surface is available, readers will default to it.
+- **Embedding similarity alone produces false merges and false splits.** Two articles about the same event can use entirely different vocabularies; two articles that look similar can discuss different events that share entities. Pair embedding distance with structured entity extraction to reduce both error modes.
+- **Describe framing, don't characterize it.** A summarizer that asks for "comparison-relevant facts" is constrained productively. A summarizer that labels sources as "biased" or "objective" requires more context than the pipeline has — and labeling is the failure mode that has degraded most existing news products.
+
+The interesting signal lives in cross-source disagreement, not in the volume of any one source. A news product that organizes around clusters rather than articles changes what readers do — they spend less time consuming and more time comparing, which is the activity that actually changes their view.
