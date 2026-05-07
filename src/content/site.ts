@@ -2,7 +2,7 @@ import type { ContactLink, NavItem } from "@/lib/types";
 
 export const site = {
   domain: "kristenmartino.ai",
-  email: "hello@kristenmartino.ai",
+  email: "kristen@kristenmartino.ai",
   metadata: {
     title:
       "Kristen Martino — Strategy, analytics, and applied AI, informed by enterprise systems work.",
@@ -32,7 +32,7 @@ export const sectionOrder = [
 ] as const;
 
 export const contactLinks: ContactLink[] = [
-  { label: "Email", href: "mailto:hello@kristenmartino.ai", primary: true },
+  { label: "Email", href: "mailto:kristen@kristenmartino.ai", primary: true },
   { label: "LinkedIn", href: "https://linkedin.com/in/kristenmartino" },
   { label: "GitHub", href: "https://github.com/kristenmartino" },
   { label: "Resume", href: "/resume" },
