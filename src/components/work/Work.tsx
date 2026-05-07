@@ -27,7 +27,7 @@ export function Work() {
             Selected projects.
           </h2>
           <p className="mt-4 text-base md:text-lg leading-relaxed text-[var(--color-graphite-60)] max-w-xl">
-            Independent builds exploring strategy, analytics, and applied AI in
+            Independent builds in strategy, analytics, and applied AI for
             enterprise and operational contexts.
           </p>
         </div>

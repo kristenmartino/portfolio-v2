@@ -169,18 +169,6 @@ export const projects: Project[] = [
   },
   {
     index: "03",
-    title: "GTM Healthcare Intelligence",
-    category: "Analytics Platform",
-    summary:
-      "Healthcare go-to-market analytics suite combining account scoring, benchmarking, diagnostics, and AI-enabled query tools.",
-    href: "https://gtm.kristenmartino.ai",
-    year: "2024",
-    status: "Shipped",
-    mode: "Cross-functional",
-    shape: "data-viz",
-  },
-  {
-    index: "04",
     title: "Sift",
     category: "AI News Product",
     summary:
@@ -201,55 +189,7 @@ export const projects: Project[] = [
     ],
   },
   {
-    index: "05",
-    title: "Sift Intelligence Pipeline",
-    category: "AI Backend",
-    summary:
-      "FastAPI and LangGraph service handling ingestion, summarization, embedding generation, and cross-source comparison.",
-    href: "https://github.com/kristenmartino/sift-api",
-    year: "2024",
-    status: "Shipped",
-    mode: "Solo build",
-    shape: "pipeline",
-  },
-  {
-    index: "06",
-    title: "Revenue Recovery Audit Workflow",
-    category: "Enterprise Systems",
-    summary:
-      "Billing validation workflow for mismatch detection, finance reconciliation, and improved revenue accuracy at scale.",
-    href: "#contact",
-    year: "2023",
-    status: "Shipped",
-    mode: "Cross-functional",
-    shape: "table",
-  },
-  {
-    index: "07",
-    title: "Platform Migration + ARR Growth",
-    category: "Cross-Functional Delivery",
-    summary:
-      "Cross-functional migration and revenue expansion program spanning payments, systems, operations, and growth execution.",
-    href: "#contact",
-    year: "2023",
-    status: "Shipped",
-    mode: "Cross-functional",
-    shape: "pipeline",
-  },
-  {
-    index: "08",
-    title: "RMS Fare Validation System",
-    category: "Decision Support",
-    summary:
-      "Logic-driven pricing validation model addressing complex fare rules and downstream revenue decisions.",
-    href: "#contact",
-    year: "2022",
-    status: "Shipped",
-    mode: "Cross-functional",
-    shape: "decision",
-  },
-  {
-    index: "09",
+    index: "04",
     title: "FocusForge",
     category: "iOS Mobile App",
     summary:
@@ -269,7 +209,55 @@ export const projects: Project[] = [
     ],
   },
   {
-    index: "10",
+    index: "05",
+    title: "GTM Healthcare Intelligence",
+    category: "Analytics Platform",
+    summary:
+      "Healthcare go-to-market analytics suite combining account scoring, benchmarking, diagnostics, and AI-enabled query tools.",
+    href: "https://gtm.kristenmartino.ai",
+    year: "2024",
+    status: "Shipped",
+    mode: "Cross-functional",
+    shape: "data-viz",
+  },
+  {
+    index: "06",
+    title: "Platform Migration + ARR Growth",
+    category: "Cross-Functional Delivery",
+    summary:
+      "Cross-functional migration and revenue expansion program spanning payments, systems, operations, and growth execution.",
+    href: "#contact",
+    year: "2023",
+    status: "Shipped",
+    mode: "Cross-functional",
+    shape: "pipeline",
+  },
+  {
+    index: "07",
+    title: "Revenue Recovery Audit Workflow",
+    category: "Enterprise Systems",
+    summary:
+      "Billing validation workflow for mismatch detection, finance reconciliation, and improved revenue accuracy at scale.",
+    href: "#contact",
+    year: "2023",
+    status: "Shipped",
+    mode: "Cross-functional",
+    shape: "table",
+  },
+  {
+    index: "08",
+    title: "RMS Fare Validation System",
+    category: "Decision Support",
+    summary:
+      "Logic-driven pricing validation model addressing complex fare rules and downstream revenue decisions.",
+    href: "#contact",
+    year: "2022",
+    status: "Shipped",
+    mode: "Cross-functional",
+    shape: "decision",
+  },
+  {
+    index: "09",
     title: "Flight Disruption Recovery",
     category: "Operational Decision Support",
     summary:
