@@ -16,8 +16,8 @@ const signals = [
     accent: "var(--color-signal-teal)",
   },
   {
-    label: "AI in the loop",
-    sub: "Operator judgment in the seat.",
+    label: "Auditable AI",
+    sub: "Inputs traced. Outputs explainable.",
     accent: "var(--color-signal-magenta)",
   },
 ];

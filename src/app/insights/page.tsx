@@ -8,7 +8,7 @@ import { notes } from "@/content/insights/index";
 export const metadata: Metadata = {
   title: "Insights — Kristen Martino",
   description:
-    "Perspectives on enterprise strategy, analytics, and applied AI from current and recent engagements.",
+    "Short pieces on strategy, analytics, and applied AI in enterprise environments — perspectives from independent builds and operator-era work.",
 };
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {

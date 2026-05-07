@@ -13,10 +13,10 @@ export const notes: Note[] = [
   {
     slug: "decompose-ambiguity",
     index: "02",
-    title: "Structured discovery in ambiguous engagements.",
+    title: "Structured discovery in ambiguous projects.",
     date: "2026-03-14",
     excerpt:
-      "Engagements that begin in ambiguity benefit from a discipline most teams skip: structured discovery before hypothesis formation.",
+      "Projects that begin in ambiguity benefit from a discipline most teams skip: structured discovery before hypothesis formation.",
     readingMinutes: 4,
   },
 ];

@@ -86,10 +86,10 @@ export function Hero() {
             className="text-base md:text-lg leading-relaxed"
             style={{ color: "var(--color-graphite-40)" }}
           >
-            Independent product builds for complex enterprise environments
-            — AI in the loop, operator judgment in the seat. Informed by a
-            decade across enterprise systems, from actuarial analytics to
-            billing, pricing, fare logic, and platform migrations.
+            Independent product builds — AI in the loop, operator judgment
+            in the seat. Informed by a decade across enterprise systems,
+            from actuarial analytics to billing, pricing, fare logic, and
+            platform migrations.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <a
