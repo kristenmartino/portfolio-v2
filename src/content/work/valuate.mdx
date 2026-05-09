@@ -22,11 +22,11 @@ Three observations shape the design:
 
 ## Solution
 
-The agent extracts each line item through one of two tracks, with confidence calibration and a deterministic derivation step for fields that neither track can fill.
+The agent extracts each line item through one of two tracks, with confidence calibration and a deterministic derivation step for fields that neither track can fill. At ingest time the filer's SIC code routes the rest of the pipeline through the right industry path — industrials and tech share one canonical schema and a 5-year FCFF DCF; banks have their own schema variant (net interest income / provisions / loans / deposits) and a Gordon dividend-discount model.
 
 ### Track A — XBRL company facts
 
-SEC filers tag financial statements with us-gaap concepts (`Revenues`, `OperatingIncomeLoss`, `NetIncomeLoss`, ...). Track A queries SEC's pre-tagged company-facts JSON, deduplicates restatements by matching on period-end date, and returns whatever it can find. Filer inconsistency is the rule, not the exception — Apple uses `RevenueFromContractWithCustomerExcludingAssessedTax`, Caterpillar uses `ProfitLoss` for net income, Google reports only `Depreciation` rather than a combined D&A tag. The canonical-concept map carries multiple alternates per logical line item.
+SEC filers tag financial statements with us-gaap concepts (`Revenues`, `OperatingIncomeLoss`, `NetIncomeLoss`, ...). Track A queries SEC's pre-tagged company-facts JSON, deduplicates restatements by matching on period-end date, and returns whatever it can find. Filer inconsistency is the rule, not the exception — Apple uses `RevenueFromContractWithCustomerExcludingAssessedTax`, Caterpillar uses `ProfitLoss` for net income, Google reports only `Depreciation` rather than a combined D&A tag. The canonical-concept map carries multiple alternates per logical line item, and per-industry maps cover the divergent vocabulary (banks use `InterestIncomeExpenseNet` and the post-CECL `FinancingReceivableExcludingAccruedInterestAfterAllowanceForCreditLoss` instead of revenue / total loans).
 
 ### Track B — Claude over the 10-K HTML
 
@@ -44,6 +44,8 @@ The `Company` is composed at the end, after both tracks plus derivation have run
 
 Once the line items are in place, the user adjusts assumptions on sliders — revenue growth, operating margin, terminal growth, WACC — and a 5-year three-statement projection, 10,000 Monte Carlo iterations, and a 7×7 sensitivity grid recompute under 200 ms. The Monte Carlo distribution and sensitivity heatmap are surfaced as Recharts visualizations alongside the per-share fair value.
 
+For banks the workspace switches to a Gordon dividend-discount model: `P = D₀(1 + g) / (r − g)`, where the cost-of-equity and dividend-growth sliders replace WACC and terminal growth. The same Monte Carlo loop runs over those two drivers; sensitivity is hidden because the rev-growth × op-margin axes don't enter DDM. The valuation flavor is a function of `period.industry` end-to-end — schema variants on the wire, dispatch in `compute_projection`, slider relabeling on the frontend — rather than a special case grafted on top of the FCFF flow.
+
 ## Implementation considerations
 
 **The hardest design problem was making Track A non-fatal.** The first version raised an exception whenever any one required field was missing, which meant Track B never got a chance for filers that didn't tag operating income (NKE, JNJ) or didn't tag total liabilities (NKE, KO). The architectural fix was to refactor Track A to return a partial dict and let Track B fill required gaps too. Composition happens at the end, not at Track A's exit.
@@ -54,9 +56,9 @@ Once the line items are in place, the user adjusts assumptions on sliders — re
 
 ## Reflections
 
-- **The 10-ticker universe is intentional.** Banks, insurers, REITs, and energy E&P are V2 problems that would dilute the architectural narrative. The scope ceiling is the part most demos hide.
-- **Three of ten tickers needed Track B or derivation to compose.** XBRL tagging consistency turned out to be worse than the universe size suggests — even among hand-picked clean-reporting filers, ~30% have at least one required line item that's untagged or under a non-canonical concept. The two-track-plus-derivation architecture earns its keep on this universe; expanding to messier filers (banks, insurers) doesn't make the structure less necessary, only more.
-- **Persistence is the next real engineering step.** Overrides currently live in process memory — a Railway redeploy wipes them. Postgres + a small persistence layer is the most concrete remaining work; multi-period extraction (3-5 years of comparatives, which the schema already supports) lands behind that.
+- **The original universe was 10 industrial / tech tickers; banks landed as the first variant.** Banks were initially parked in the V2 column for the same reason most demos hide their scope ceiling: the FCFF schema doesn't fit a business whose primary product is the spread between deposit costs and loan yields. The architecture turned out to expand cleanly — discriminated unions on each statement, a per-industry concept map, an industry-aware composer, and a DDM dispatch in `compute_projection` — rather than requiring a parallel codebase. Insurers, REITs, and energy E&P remain Phase 2-4 work, with their stubs already wired into the SIC classifier.
+- **Three of the original ten tickers needed Track B or derivation to compose.** XBRL tagging consistency turned out to be worse than the universe size suggests — even among hand-picked clean-reporting filers, ~30% have at least one required line item that's untagged or under a non-canonical concept. JPM, by contrast, extracted cleanly through Track A alone (post-CECL bank tags are well-standardized across the major US banks). The two-track-plus-derivation architecture earns its keep on industrials; banks are the demo's clearest example of why having a structured fallback for non-canonical schemas was the right call from day one.
+- **Persistence is the most recently shipped piece.** Overrides used to live in process memory; a Railway redeploy wiped them. The repo layer now picks Postgres automatically when `DATABASE_URL` is present (via Railway's Postgres plugin) and falls back to in-memory locally — same JSONB blob per ticker, same override semantics, but durable.
 
 ## Closing observation
 
