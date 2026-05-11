@@ -325,7 +325,7 @@ export const projects: Project[] = [
             chosen: true,
             scores: ["met", "met", "met", "partial"],
             rationale:
-              "Each RICE dimension gets a dedicated prompting layer that asks the structural questions before letting a number be entered. The output is the four labeled inputs plus the resulting score — a roadmap discussion rebuilds the reasoning from the artifact, not the number alone. AI sits inside the user's process as a thinking partner, not a replacement for it. The score belongs to the team. The 2–3× build cost over a vanilla calculator is justified because it eliminates the failure mode that kills most prioritization outputs.",
+              "Each RICE dimension gets a dedicated prompting layer that asks the structural questions before letting a number be entered. The output is the four labeled inputs plus the resulting score, so a roadmap discussion rebuilds the reasoning from the artifact itself. AI sits inside the user's process as a thinking partner; the score belongs to the team. The 2–3× build cost over a vanilla calculator is justified because it eliminates the failure mode that kills most prioritization outputs.",
           },
         ],
       },
@@ -569,7 +569,7 @@ export const projects: Project[] = [
             chosen: true,
             scores: ["met", "met", "met", "partial"],
             rationale:
-              "Cosmetic unlocks gate on streak days, not total minutes — eliminates the streak-preservation farming behavior. The AI coach is a deterministic template engine over computed signals (completion rate, abandonment rate, average session length, streak risk) — selecting and rendering structured reflections without sending data to a server. The privacy commitment is structural, not policy-based. Inference is on-device by construction. The constraint shrinks coach flexibility and the design philosophy welcomes that constraint — an LLM upgrade is reserved for when on-device models can do the job without uploading.",
+              "Cosmetic unlocks gate on streak days rather than total minutes, which eliminates the streak-preservation farming behavior trackers usually create. The AI coach is a deterministic template engine over computed behavior signals (completion rate, abandonment rate, average session length, streak risk), producing structured reflections without sending data to a server. Privacy is structural by construction — inference is on-device. The constraint shrinks coach flexibility; the design philosophy welcomes that. An LLM upgrade is reserved for when on-device models can do the job without uploading.",
           },
         ],
       },
