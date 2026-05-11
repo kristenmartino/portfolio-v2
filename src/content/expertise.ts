@@ -4,7 +4,7 @@ export const expertise: Expertise[] = [
   {
     number: "01",
     title: "Product Strategy",
-    text: "Diagnostic-led product direction. Translating ambiguous problems into structured roadmaps with measurable success criteria, and aligning cross-functional teams around shared definitions of done.",
+    text: "Product direction when the problem isn't framed yet — finding the actual question, then writing the spec.",
   },
   {
     number: "02",

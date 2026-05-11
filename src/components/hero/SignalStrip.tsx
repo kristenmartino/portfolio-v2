@@ -12,7 +12,7 @@ const signals = [
   },
   {
     label: "Decision-grade analytics",
-    sub: "Insight stakeholders can audit, explain, and rely on.",
+    sub: "Insight that holds up to interrogation.",
     accent: "var(--color-signal-teal)",
   },
   {

@@ -8,4 +8,4 @@ Three patterns that consistently improve extraction agents:
 - **Calibrate confidence per output.** Confidence is a per-cell property, not a session property. Mark low-confidence outputs for review; let high-confidence outputs flow through. Aggregate confidence is misleading.
 - **Persist user overrides as first-class data.** When a reviewer corrects a value, the correction should carry its own provenance and re-trigger validation downstream. Overrides are inputs to the next extraction, not exceptions to it.
 
-The strongest signal that an extraction agent is ready for domain use is that a reviewer can ask "where did this number come from?" and get an answer in one click. That threshold is meaningfully higher than "the demo runs end-to-end," and meaningfully more predictive of long-term trust.
+The strongest signal that an extraction agent is ready for domain use is that a reviewer can ask "where did this number come from?" and get an answer in one click. That's the bar that actually matters. "The demo runs end-to-end" is necessary but doesn't get you there.
