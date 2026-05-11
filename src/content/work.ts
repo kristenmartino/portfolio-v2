@@ -746,7 +746,7 @@ export const projects: Project[] = [
     title: "Revenue Recovery Audit Workflow",
     category: "Enterprise Systems",
     summary:
-      "Billing validation workflow for mismatch detection, finance reconciliation, and improved revenue accuracy at scale.",
+      "Billing validation workflow for mismatch detection, finance reconciliation, and recovered revenue.",
     href: "#contact",
     year: "2023",
     status: "Shipped",

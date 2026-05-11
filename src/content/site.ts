@@ -11,7 +11,7 @@ export const site = {
   },
   tagline: "Strategy. Analytics. Applied AI.",
   currentFocus:
-    "Forecasting and decision-grade AI for operational environments.",
+    "Forecasting and applied AI for operations-heavy environments.",
   builtWith: ["Next.js 16", "IBM Plex", "Framer Motion", "Vercel"],
 } as const;
 

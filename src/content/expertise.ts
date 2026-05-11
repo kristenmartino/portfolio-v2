@@ -9,7 +9,7 @@ export const expertise: Expertise[] = [
   {
     number: "02",
     title: "Business Analysis",
-    text: "A decade analyzing enterprise systems — actuarial pricing and risk modeling, then billing, fare logic, and platform migrations — to improve accuracy, auditability, and operational efficiency for the teams that run them.",
+    text: "A decade analyzing enterprise systems — actuarial pricing and risk modeling first, then billing, fare logic, and platform migrations. Always toward accuracy, auditability, and operational efficiency for operators.",
   },
   {
     number: "03",
