@@ -38,7 +38,7 @@ The design hypothesis: collapsing three browser tabs into one operating surface 
 
 ### Models
 
-Forecasting alone is insufficient — confidence is what enables decision-making. GridPulse runs four model classes (physics-based, statistical, machine learning, and ensemble) with associated backtests and confidence intervals exposed at the surface. When model spread widens, the platform surfaces the uncertainty rather than presenting a single value.
+Forecasting alone is insufficient — confidence is what enables decision-making. GridPulse runs three forecasting models (Prophet for additive seasonality, SARIMAX for stationary structure, XGBoost for non-linear weather-demand response) plus an inverse-MAPE weighted ensemble that down-weights underperforming models automatically. Backtests and confidence intervals are surfaced at the operating layer, not buried inside model views. When model spread widens, the platform surfaces the uncertainty rather than presenting a single value.
 
 ### Scenarios
 
