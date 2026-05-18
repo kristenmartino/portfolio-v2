@@ -380,95 +380,101 @@ export const projects: Project[] = [
   {
     index: "03",
     title: "Sift",
-    category: "AI News Product",
+    category: "Civic-Literacy News Product",
     summary:
-      "AI-curated news platform aggregating 100+ sources with semantic search and multi-source comparative analysis.",
+      "Read the news with civic footnotes. Every politician, organization, bill, and political term in an article links to a plain-English explainer — sourced from public records, threaded into the reading flow.",
     href: "/work/sift",
     slug: "sift",
     liveHref: "https://siftnews.kristenmartino.ai",
-    codeHref: "https://github.com/kristenmartino/sift-api",
-    year: "2024",
+    codeHref: "https://github.com/kristenmartino/sift",
+    year: "2024–2026",
     status: "Shipped",
     mode: "Solo build",
     shape: "table",
     metrics: [
-      "100+ sources",
-      "Semantic search",
-      "Multi-source comparison",
-      "FastAPI + LangGraph",
+      "Dossiers · politicians · orgs · bills · outlets",
+      "Inline glossary + adaptive primers",
+      "FastAPI + LangGraph + Anthropic",
+      "Neon Postgres entity graph",
     ],
     artifact: {
       problem: {
         situation:
-          "News aggregators optimize for volume — more sources, more headlines, more frequent updates. Readers consult multiple outlets on the same story, typically encountering minor variations rather than substantive disagreement.",
+          "News aggregators optimize for volume — more sources, more headlines, more frequent updates. I started Sift believing the gap was upstream of the reader: that AI-curated summaries from live web search could deliver broader source diversity, comprehension-shaped summaries, and structured subtopic coverage that wire feeds couldn't.",
         complication:
-          "What a serious reader actually wants from cross-source reading — what each source chose to highlight, and what each chose not to mention — is treated as duplication by aggregators and deduped away. Topic clustering is tractable; cross-source comparison requires deliberate synthesis. Embedding similarity alone produces both false merges (different events with shared entities) and false splits (same event with different vocabularies).",
+          "Two things broke the original hypothesis once the product was in real use. Live click-time generation cost ~15 seconds per category load, which forced the AI off the user's critical path; once it moved to a background pipeline, the AI was no longer visible to users as a product feature. Worse, the multi-source comparison view — the centerpiece of the original framing — kept producing outputs that were technically interesting and substantively dull when applied to a curated mainstream corpus. Asking AI to compare three wire descriptions of the same Senate vote tells the reader something they could see by skimming three headlines.",
         question:
-          "Can an aggregator surface the disagreement instead of hiding it — at the unit of the cluster, not the article?",
+          "Where does the real bottleneck for an engaged reader actually sit — and what would a news product look like if it solved that instead?",
       },
       requirements: [
         {
-          stakeholder: "Serious reader",
-          need: "The cluster must be the unit — landing on a single source's story should never be possible without seeing what other sources said about the same event.",
+          stakeholder: "Engaged reader",
+          need: "Civic scaffolding inside the reading flow — who the senator is, what the bill does, what the lobbying group wants, how the framing has shifted — without leaving the article.",
+          evidence: "The thing readers needed turned out to be context, not volume",
         },
         {
-          stakeholder: "Editorial signal-seeker",
-          need: "Each source's distinctive framing surfaced as comparison-relevant facts — described, not characterized as \"biased\" or \"objective.\"",
-          evidence: "Labeling is the failure mode that has degraded most existing news products",
+          stakeholder: "Methodology defender",
+          need: "Every claim sourced from public records (OpenSecrets, GovTrack, ProPublica, FARA, FEC, Vote Smart) with the citation one click away. No computed bias judgments; AllSides + MBFC surfaced verbatim.",
+        },
+        {
+          stakeholder: "Latency-sensitive UX",
+          need: "Live request latency stays under 100ms regardless of how heavy the AI work gets. AI cost moves to a budget the operator controls, not a per-click tax on the reader.",
+          evidence: "15s → ~50ms by moving AI off the critical path",
         },
         {
           stakeholder: "Pipeline operator",
-          need: "The corpus must be re-runnable — prompt and model changes applied to historical articles without re-ingesting.",
-        },
-        {
-          stakeholder: "Disambiguation accuracy",
-          need: "Embedding distance must pair with structured entity extraction to reduce both false merges and false splits.",
+          need: "AI processing must be re-runnable across the historical corpus — primer regeneration, entity extraction, comparison synthesis — without re-ingesting articles.",
         },
       ],
       decisions: {
         criteria: [
-          "Surfaces real disagreement",
-          "Avoids editorial labeling",
-          "Re-runnable on prompt/model change",
+          "Surfaces the actual bottleneck",
+          "Avoids judgment-layer overclaim",
+          "Live latency stays sub-100ms",
           "Build effort",
         ],
         options: [
           {
-            option: "Article-level aggregator (one cluster page, dedupe variants)",
-            scores: ["unmet", "met", "partial", "met"],
+            option: "Stay with AI-curation framing (volume + summaries + multi-source compare as headliner)",
+            scores: ["unmet", "met", "met", "met"],
           },
           {
-            option: "Cluster-level with embedding similarity only",
-            scores: ["partial", "met", "partial", "met"],
+            option: "Add a trust/propaganda judgment layer to differentiate from wire feeds",
+            scores: ["partial", "unmet", "met", "partial"],
           },
           {
             option:
-              "Cluster-as-unit with embedding + entity extraction, intentionally constrained per-source summarization, and re-runnable historical synthesis",
+              "Pivot to civic literacy — dossier graph, inline glossary, adaptive primers, framing observation (not labeling)",
             chosen: true,
             scores: ["met", "met", "met", "partial"],
             rationale:
-              "Embedding similarity within a rolling time window, paired with structured entity extraction to disambiguate same-vocabulary-different-event and same-event-different-vocabulary cases. Per-source summaries are intentionally constrained — comparison-relevant facts only, no opinion or labeling. The pipeline persists raw articles + embeddings so prompt and model changes re-run without re-ingestion. The frontend can never surface a single article without its cluster context — the design move that turns reading into comparing.",
+              "The dossier graph (politicians, orgs, bills, outlets — all sourced from public records) puts the civic scaffolding inside the reading flow itself. Inline glossary surfaces civic terms contextually. Primers expand when a story sits on top of complex policy. Cross-spectrum framing describes what each outlet emphasized — observation, not labeling — because labeling mainstream sources requires claims the corpus can't support. AI moves to a background pipeline so live latency stays sub-100ms regardless of how heavy the work gets. The build is heavier than a wire feed, but the surface is unfakeable: anyone with an API key can build AI summaries; the dossier graph and methodology are the part that has to be earned.",
           },
         ],
       },
       solution: {
         summary:
-          "Two layers — a reader-facing frontend organized around clusters and a FastAPI + LangGraph pipeline that does the analytical work.",
+          "A civic-literacy news reader with four surfaces — dossiers, inline glossary, adaptive primers, cross-spectrum framing observation — over a Next.js + FastAPI + LangGraph stack with the AI work moved off the user's critical path.",
         pillars: [
           {
-            title: "Frontend — comparative reading",
+            title: "Civic dossier graph",
             detail:
-              "Each cluster is one underlying event with contributing sources arranged side by side. AI-generated per-source distinctive-framing summary above the article links. Semantic search at the top moves the reader from \"what's happening now\" to \"what has been said about X over the past month.\"",
+              "Politicians (committees, top industries by PAC contributions, interest-group ratings), organizations (political lean, finances, major funders, FARA registration), bills (status, sponsor, cosponsors, lobbying spend), and news outlets (ownership, funding, AllSides + MBFC ratings). Sourced from OpenSecrets, GovTrack, ProPublica Nonprofit Explorer, FARA, FEC, Vote Smart. Every dossier links the public record.",
           },
           {
-            title: "Pipeline — ingest, embed, summarize, synthesize",
+            title: "Inline glossary and adaptive primers",
             detail:
-              "100+ RSS sources normalized into a common schema. Articles embedded; clusters formed by semantic similarity within a rolling time window, paired with entity extraction. Per-source summarization runs first, cross-source synthesis runs second. LangGraph orchestrates the workflow.",
+              "Civic terms surface contextually inside the article — defined where the reader needs them, in the language they need. When a story sits on top of complex policy (the Inflation Reduction Act, debt-ceiling mechanics, FTC consent decrees), a primer expands to fit. Per-paragraph triggering is the next move; instrumentation in flight.",
           },
           {
-            title: "Constraint by design",
+            title: "Cross-spectrum framing — described, not labeled",
             detail:
-              "Summarization asks for comparison-relevant facts, not opinion. Editorial framing is described, not labeled — both because the labeling judgment requires more context than the pipeline has, and because labeling is the failure mode that has degraded most existing news products.",
+              "When multiple outlets cover the same story, Sift shows what each chose to emphasize. AllSides political-lean shown verbatim alongside MBFC factual-reporting tier — Sift never computes its own. The reader does the interpretation; the product does the legwork.",
+          },
+          {
+            title: "AI off the critical path",
+            detail:
+              "Ten LangGraph services run on a Railway-hosted background pipeline (primer generation, entity extraction, entity linking, summarization, story synthesis, story clustering, civic context, batched API, comparison workflow, usage tracking). Frontend reads from Neon Postgres in <50ms. AI cost is a throttle-able budget, not a per-click tax.",
           },
         ],
       },
@@ -476,24 +482,25 @@ export const projects: Project[] = [
         kind: "metrics",
         items: [
           {
-            metric: "Sources",
-            after: "100+ RSS feeds",
-            note: "Normalized into a common article schema",
+            metric: "Live latency",
+            before: "~15s per category",
+            after: "~50ms",
+            note: "AI moved off the user's critical path",
           },
           {
-            metric: "Cross-source layer",
-            after: "Per-cluster synthesis",
-            note: "Comparison-relevant facts, not opinion",
+            metric: "Civic surfaces",
+            after: "4 dossier types + glossary + primers",
+            note: "Sourced from OpenSecrets, GovTrack, ProPublica, FARA, FEC",
           },
           {
-            metric: "Re-runnability",
-            after: "Historical archive",
-            note: "Prompt/model changes without re-ingesting",
+            metric: "Pipeline",
+            after: "10 LangGraph services",
+            note: "Background batch; user requests never touch Claude",
           },
           {
-            metric: "Stack",
-            after: "FastAPI + LangGraph",
-            note: "Pipeline; Next.js frontend",
+            metric: "Methodology",
+            after: "Public + symmetric",
+            note: "AllSides + MBFC verbatim; identical dossier shape per outlet",
           },
         ],
       },

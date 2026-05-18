@@ -1,58 +1,52 @@
 ## Overview
 
-News aggregators optimize for volume — more sources, more headlines, more frequent updates. Sift takes the opposite position: that the bottleneck for most readers is the inability to compare what different sources are saying about the same event. What changes a reader's view is the disagreement between sources.
-
-Sift was built as an independent exploration of how AI-assisted aggregation can surface that signal — at the product layer for end readers, and at the pipeline layer for the system underneath.
+**Read the news with civic footnotes.** Sift turns news into something you can actually understand — every politician, organization, bill, and political term in an article links to a plain-English explainer. The product earns its place not as an AI-curated alternative to wire feeds, but as a civic-literacy layer that decodes who the players are, what the bills do, and where each outlet's framing sits relative to the others.
 
 <Specs>
   <Spec label="Role" value="Strategy, design, and engineering (frontend + backend)" />
-  <Spec label="Year" value="2024" />
-  <Spec label="Domain" value="AI-assisted media" />
-  <Spec label="Stack" value="Next.js · FastAPI · LangGraph · Vector embeddings · 100+ RSS sources" />
+  <Spec label="Year" value="2024–2026" />
+  <Spec label="Domain" value="Civic-literacy media" />
+  <Spec label="Stack" value="Next.js · FastAPI · LangGraph · Anthropic · Postgres" />
   <Spec label="Status" value="Shipped" />
 </Specs>
 
-## Problem framing
+## The hypothesis I started with — and the one that survived
 
-Three observations shape the design:
+I started building an AI-curated alternative to wire-feed aggregators: a hundred-plus sources, semantic clustering, side-by-side comparison of how outlets covered the same event. The pipeline worked. The frontend shipped. But the design that emerged from real reading sessions pointed at a different bottleneck.
 
-1. **Reading more sources is not the same as understanding more.** A reader who consults five outlets on the same story typically encounters minor variations — different headlines, slightly different framings — and rarely the substantive disagreement that would change their view.
-2. **Topic clustering is a tractable problem; cross-source comparison is harder.** Grouping articles about the same event is a well-understood retrieval problem. Surfacing *what each source emphasizes that the others omit* requires deliberate synthesis.
-3. **Editorial framing is not noise.** The signal a serious reader actually wants is "what is each source choosing to highlight, and what are they choosing not to mention." Most aggregators treat this as duplication and dedupe it away.
+Most readers do not lack volume. They lack context. They can read five outlets on the same Senate vote and still have no idea who the senator is, what the bill actually does, what the relevant lobbying body wants, or how the framing differs from the last time the question came up. The thing they actually need is not more articles — it is the political, organizational, and legislative scaffolding embedded around each story.
 
-## Solution
+That is the version of Sift that shipped. Same engineering substrate, different unit of value: for people who want to follow what is happening without already knowing the players.
 
-The product is built in two layers — a reader-facing frontend and an ingestion pipeline that does the analytical work.
+## What's there now
 
-### Frontend: comparative reading
+Sift is a news reader where every entity in a story — politician, organization, bill, outlet, civic term — links to a plain-English explainer:
 
-The reader-facing surface presents news as clusters. Each cluster is one underlying event with the contributing sources arranged side by side. A short AI-generated summary of each source's distinctive framing sits above the article links. Semantic search at the top lets the reader move from "what's happening now" to "what has been said about X over the past month."
+- **Dossiers.** Each politician, organization, bill, and outlet has a structured page: who they are, what they have done, the relevant numbers. Citations are inline; the underlying source is always one click away.
+- **Inline glossary.** Civic terms surface contextually inside the article itself — not in a separate panel a reader has to seek out. Defined where the reader needs them, in the language they need.
+- **Adaptive primers.** When a story sits on top of complex policy (the Inflation Reduction Act, debt-ceiling mechanics, FTC consent decrees), the primer expands to fit what the reader needs without overwhelming what they do not.
+- **Cross-spectrum framing.** When multiple outlets cover the same story, Sift shows what each chose to emphasize — described, not labeled "biased" or "objective." The reader does the interpretation; the product does the legwork.
 
-The deliberate design choice: the cluster is the unit, not the article. A reader cannot land on a single source's story without seeing what the other sources said about the same event.
+## Pipeline
 
-### Pipeline: ingestion, summarization, comparison
+Early on the AI work happened at click-time, and the experience cost roughly fifteen seconds per category load. So the architecture inverted: a scheduled pipeline does the analytical work and the frontend serves enriched content from cache. Live latency went from 15s to ~50ms, and AI cost moved from a per-click tax to a budget I can throttle.
 
-The backend (Sift Intelligence Pipeline) is a FastAPI service running a LangGraph workflow:
-
-1. **Ingestion.** RSS feeds from 100+ sources are polled and normalized into a common article schema.
-2. **Embedding and clustering.** Each article is embedded; clusters are formed by semantic similarity within a rolling time window.
-3. **Per-source summarization.** Within each cluster, each source's article is summarized along the dimensions that matter for comparison — what facts are emphasized, what framing is chosen, what is omitted.
-4. **Cross-source synthesis.** A second pass produces the cluster-level comparative summary surfaced in the frontend.
-
-The pipeline is designed to be re-runnable: prompt and model changes can be applied to the historical archive without re-ingesting.
+The pipeline (FastAPI + LangGraph + Anthropic) runs ten services: primer generation, entity extraction, entity linking to dossiers, summarization, story synthesis, story clustering, civic context generation, multi-source comparison, batched API client, and usage tracking. The frontend reads from Postgres.
 
 ## Implementation considerations
 
-**The hardest design problem was distinguishing "different framing" from "different story."** Two articles about the same event can use entirely different vocabularies (technical vs. political, U.S. vs. international). Two articles that look similar can be discussing different events that share entities. Embedding similarity alone produces both false merges and false splits. The pipeline pairs embedding distance with structured entity extraction to reduce both error modes.
+**Source curation became a quieter problem than I expected.** My initial corpus pulled from mainstream outlets via aggregated feeds. That corpus is fine for civic decoding — dossiers, glossary, and primers work the same regardless of source — but it neutralized the more aggressive features I had built (trust scoring, propaganda tagging, extremism flags). Mainstream outlets do not give those features anything to do. I left them out of the shipped surface rather than apply judgment claims I could not defend at the corpus level.
 
-**The summarization layer is intentionally constrained.** The model is asked to produce comparison-relevant facts, not opinion. Editorial framing is *described*, not characterized as "biased" or "objective" — both because that judgment requires more context than the pipeline has, and because labeling is the failure mode that has degraded most existing news products.
+**The dossier graph proved more interesting than the cluster graph.** Cluster-based comparison was the original product unit — group articles about the same event, show the side-by-sides. What proved more useful was the entity graph: every politician, organization, and bill becomes a node, every story becomes a path, and a reader following any story gets pulled into the surrounding civic structure. The cluster surface still exists. The dossier surface is what gets daily use.
 
 ## Reflections
 
-- **The 100+ source corpus is broad, not deep.** Adding a smaller set of sources with much higher per-source frequency would likely improve cluster quality more than further breadth.
-- **The comparative summary could be parameterized.** A reader could plausibly want different comparison axes — fact emphasis, source stance, geographic origin — surfaced on demand. Currently the synthesis returns one fixed shape.
-- **No reader feedback loop.** A read-confirmed cluster could be promoted; a "this is two different stories" signal could split one. Neither exists.
+- **Per-paragraph primer triggers.** Primers attach to articles by topic match. A reader-pacing model that surfaces primers in the reading flow, not above the fold, is the next move.
+- **Outlet observation, not outlet judgment.** Cross-spectrum compare shows side-by-side framing. The version worth shipping next describes what *each* outlet chose to emphasize, without claiming any of them are wrong. Observation is honest; labeling is brittle.
+- **A trust layer for the corpus it was built for.** The flags I built (trust scoring, propaganda tagging, extremism) produce nothing meaningful applied to mainstream sources. The genuinely useful version of that layer would apply to propaganda outlets — a different product on a different corpus with a different audience.
 
 ## Closing observation
 
-The principle that proved most useful: **the interesting signal lives in cross-source disagreement, not in the volume of any one source.** A news product that organizes around clusters rather than articles changes what readers do — they spend less time consuming and more time comparing, which is the activity that actually changes their view.
+I started building an AI-curated alternative to wire-feed aggregators. The differentiator turned out not to be the AI — it was civic decoding. Sift is not "news synthesized by AI." It is news for people who want to follow what is happening without already knowing the players: *read the headline, learn the civics as you go.*
+
+The AI is still load-bearing — primers, dossiers, and cross-spectrum framing all run on it. But the AI is infrastructure now, not the product. The product is the reader being able to follow a story without first having to research who everyone is.

@@ -10,4 +10,8 @@ Three design implications:
 - **Embedding similarity alone produces false merges and false splits.** Two articles about the same event can use entirely different vocabularies; two articles that look similar can discuss different events that share entities. Pair embedding distance with structured entity extraction to reduce both error modes.
 - **Describe framing, don't characterize it.** A summarizer that asks for "comparison-relevant facts" is constrained productively. A summarizer that labels sources as "biased" or "objective" requires more context than the pipeline has — and labeling is the failure mode that has degraded most existing news products.
 
-Cross-source disagreement is the actual signal. A product organized around clusters rather than articles redirects time from consuming to comparing — and comparing is where view shifts happen.
+Cross-source disagreement is one signal. A product organized around clusters rather than articles redirects time from consuming to comparing — and comparing is where view shifts happen.
+
+---
+
+*A note on what shipped:* The cluster-based design argued for here is one answer to the aggregator problem — and the one I started building Sift around. In real-world use a different bottleneck surfaced. Most readers, even consulting five outlets on the same story, do not actually know who the senator is, what the bill does, or who funds the relevant lobbying body. The cross-source disagreement matters less than the **civic scaffolding around every story.** Sift's shipped version is built around that scaffolding — a dossier graph of politicians, organizations, bills, and outlets sourced from public records, an inline glossary for civic terms, and primers that expand when a story sits on top of complex policy. The argument above still stands as one cut at the aggregator problem; what shipped is the cut that earned its place in real reading.
