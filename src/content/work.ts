@@ -457,22 +457,22 @@ export const projects: Project[] = [
           "Two layers — a working news aggregator (foundation) plus a civic-literacy layer (differentiator) — over a Next.js + FastAPI + LangGraph stack with AI split between a background pipeline and live endpoints.",
         pillars: [
           {
-            title: "The reader surface — 10 categories, AI summaries, topic search, multi-source compare",
+            title: "The reader surface",
             detail:
               "News across 10 categories from ~50 vetted outlets. AI-generated summaries on every article (pipeline-side, not click-side). Topic search via Voyage AI vector similarity with SSE streaming and Claude web-search fallback. Multi-source comparison via a LangGraph fan-out workflow that pulls coverage across outlets, extracts claims, and shows the framing side-by-side. Bookmarks (Clerk-synced), dark/light themes, auth.",
           },
           {
-            title: "The civic-literacy layer — primer, glossary, dossiers, cross-spectrum framing",
+            title: "The civic-literacy layer",
             detail:
               "*'What you should know first'* — an adaptive primer above each story with the key terms and context the article assumes you already have. Inline glossary on every civic term, with chip tooltips and click-through to the full dossier. Civic dossiers for politicians (committees, top industries by PAC contributions, interest-group ratings), organizations (political lean, finances, funders, FARA registration), bills (status, sponsor, cosponsors, lobbying spend), and news outlets (ownership, AllSides + MBFC ratings) — all sourced from public records. Cross-spectrum framing shows how Left / Center / Right outlets covered the same story.",
           },
           {
-            title: "AI split by SLA — browse path vs. live path",
+            title: "AI split by SLA",
             detail:
               "The browse path is pre-computed in a background pipeline (FastAPI + LangGraph + Anthropic on Railway, 10-minute cadence) and served from Neon Postgres in ~50ms. The live AI path — compare and topic search — runs AI on request and accepts ~10–15s because the user is asking for analysis. Ten services run on the pipeline: primer generation, entity extraction, entity linking, summarization, story synthesis, story clustering, civic context, batched API, cross-source comparison, usage tracking.",
           },
           {
-            title: "Public-records sourcing, verbatim ratings",
+            title: "Public-records sourcing",
             detail:
               "Every civic claim cites its source — OpenSecrets, GovTrack, ProPublica Nonprofit Explorer, FARA, FEC, Vote Smart. Outlet political-lean and factual-reporting come from AllSides + MBFC, shown verbatim. Sift never computes its own ratings; the methodology is public at /methodology.",
           },
@@ -484,23 +484,23 @@ export const projects: Project[] = [
           {
             metric: "Reader surface",
             after: "10 categories · ~50 outlets",
-            note: "AI summaries · topic search · multi-source compare · bookmarks",
+            note: "AI summaries · topic search · multi-source compare",
           },
           {
             metric: "Civic-literacy layer",
             after: "Primer + glossary + 4 dossier types",
-            note: "Sourced from OpenSecrets, GovTrack, ProPublica, FARA, FEC, Vote Smart",
+            note: "OpenSecrets · GovTrack · ProPublica · FARA · FEC",
           },
           {
-            metric: "Live latency",
-            before: "~15s on every click",
-            after: "~50ms (browse) · ~10–15s (compare)",
-            note: "AI split by SLA: pre-computed browse, live compare/search",
+            metric: "Browse latency",
+            before: "~15s",
+            after: "~50ms",
+            note: "AI moved to background; compare/search on a separate live path",
           },
           {
             metric: "Pipeline",
             after: "10 LangGraph services",
-            note: "Primer, entity extraction, linking, synthesis, clustering, compare, usage tracking",
+            note: "Primer · entity extraction · linking · synthesis · compare",
           },
         ],
       },
