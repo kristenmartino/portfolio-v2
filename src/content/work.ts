@@ -380,9 +380,9 @@ export const projects: Project[] = [
   {
     index: "03",
     title: "Sift",
-    category: "Civic-Literacy News Product",
+    category: "AI News + Civic Literacy",
     summary:
-      "Read the news with civic footnotes. Every politician, organization, bill, and political term in an article links to a plain-English explainer — sourced from public records, threaded into the reading flow.",
+      "A news aggregator with civic footnotes. Reads ~50 outlets across the political spectrum, AI-summarizes today's stories across 10 categories — and on top, every politician, organization, bill, and political term in an article links to a structured dossier sourced from public records.",
     href: "/work/sift",
     slug: "sift",
     liveHref: "https://siftnews.kristenmartino.ai",
@@ -392,89 +392,89 @@ export const projects: Project[] = [
     mode: "Solo build",
     shape: "table",
     metrics: [
-      "Dossiers · politicians · orgs · bills · outlets",
-      "Inline glossary + adaptive primers",
+      "10 categories · ~50 outlets · AI summaries",
+      "Topic search + multi-source compare",
+      "Dossiers · primer · inline glossary",
       "FastAPI + LangGraph + Anthropic",
-      "Neon Postgres entity graph",
     ],
     artifact: {
       problem: {
         situation:
-          "News aggregators optimize for volume — more sources, more headlines, more frequent updates. I started Sift believing the gap was upstream of the reader: that AI-curated summaries from live web search could deliver broader source diversity, comprehension-shaped summaries, and structured subtopic coverage that wire feeds couldn't.",
+          "News aggregators optimize for volume — more sources, more headlines, more frequent updates. I started Sift believing the gap was upstream of the reader: that AI-curated summaries across categories, AI-powered topic search, and multi-source comparison could deliver what wire feeds couldn't.",
         complication:
-          "Two things broke the original hypothesis once the product was in real use. Live click-time generation cost ~15 seconds per category load, which forced the AI off the user's critical path; once it moved to a background pipeline, the AI was no longer visible to users as a product feature. Worse, the multi-source comparison view — the centerpiece of the original framing — kept producing outputs that were technically interesting and substantively dull when applied to a curated mainstream corpus. Asking AI to compare three wire descriptions of the same Senate vote tells the reader something they could see by skimming three headlines.",
+          "Sift shipped the aggregator and the AI features worked, but once it was in real use, the AI-summary layer alone wasn't the differentiator I thought it would be. Most readers can read a wire description and an AI summary and not really tell the difference. The actual bottleneck surfaced underneath: most readers don't know who the players are. They can read five outlets on the same Senate vote and still not know who the senator is, what the bill does, or who funds the relevant lobbying body.",
         question:
-          "Where does the real bottleneck for an engaged reader actually sit — and what would a news product look like if it solved that instead?",
+          "What can be added on top of a working news aggregator that turns it into a daily-driver people actually learn from?",
       },
       requirements: [
         {
           stakeholder: "Engaged reader",
-          need: "Civic scaffolding inside the reading flow — who the senator is, what the bill does, what the lobbying group wants, how the framing has shifted — without leaving the article.",
-          evidence: "The thing readers needed turned out to be context, not volume",
+          need: "Civic scaffolding inside the reading flow — who the senator is, what the bill does, what the lobbying group wants — without leaving the article.",
+          evidence: "The bottleneck turned out to be context, not volume",
+        },
+        {
+          stakeholder: "Daily-driver user",
+          need: "Sift has to work as a real news app first — 10 categories, summaries, topic search, comparison, bookmarks. The civic layer adds value; it doesn't replace the daily browsing experience.",
         },
         {
           stakeholder: "Methodology defender",
-          need: "Every claim sourced from public records (OpenSecrets, GovTrack, ProPublica, FARA, FEC, Vote Smart) with the citation one click away. No computed bias judgments; AllSides + MBFC surfaced verbatim.",
+          need: "Every civic claim sourced from public records (OpenSecrets, GovTrack, ProPublica, FARA, FEC, Vote Smart) with citations one click away. AllSides + MBFC surfaced verbatim; no computed bias judgments.",
         },
         {
           stakeholder: "Latency-sensitive UX",
-          need: "Live request latency stays under 100ms regardless of how heavy the AI work gets. AI cost moves to a budget the operator controls, not a per-click tax on the reader.",
-          evidence: "15s → ~50ms by moving AI off the critical path",
-        },
-        {
-          stakeholder: "Pipeline operator",
-          need: "AI processing must be re-runnable across the historical corpus — primer regeneration, entity extraction, comparison synthesis — without re-ingesting articles.",
+          need: "Browse experience stays ~50ms. Heavier AI work (compare, topic search) lives on its own path and streams, accepting ~10–15s because the user is asking for analysis, not browsing.",
+          evidence: "Two-path AI architecture: pre-computed for browse, live for compare/search",
         },
       ],
       decisions: {
         criteria: [
-          "Surfaces the actual bottleneck",
-          "Avoids judgment-layer overclaim",
-          "Live latency stays sub-100ms",
+          "Daily-driver fit",
+          "Civic context legibility",
+          "Live latency on browse",
           "Build effort",
         ],
         options: [
           {
-            option: "Stay with AI-curation framing (volume + summaries + multi-source compare as headliner)",
-            scores: ["unmet", "met", "met", "met"],
+            option: "AI-curated aggregator only — better summaries, topic search, compare; no civic layer",
+            scores: ["partial", "unmet", "met", "met"],
           },
           {
-            option: "Add a trust/propaganda judgment layer to differentiate from wire feeds",
-            scores: ["partial", "unmet", "met", "partial"],
+            option: "Civic-literacy reader only — dossiers and glossary without the daily news flow",
+            scores: ["unmet", "met", "met", "partial"],
           },
           {
             option:
-              "Pivot to civic literacy — dossier graph, inline glossary, adaptive primers, framing observation (not labeling)",
+              "AI-powered aggregator with a civic-literacy layer on top — both shipped, AI split by SLA",
             chosen: true,
             scores: ["met", "met", "met", "partial"],
             rationale:
-              "The dossier graph (politicians, orgs, bills, outlets — all sourced from public records) puts the civic scaffolding inside the reading flow itself. Inline glossary surfaces civic terms contextually. Primers expand when a story sits on top of complex policy. Cross-spectrum framing describes what each outlet emphasized — observation, not labeling — because labeling mainstream sources requires claims the corpus can't support. AI moves to a background pipeline so live latency stays sub-100ms regardless of how heavy the work gets. The build is heavier than a wire feed, but the surface is unfakeable: anyone with an API key can build AI summaries; the dossier graph and methodology are the part that has to be earned.",
+              "The aggregator is the daily-driver experience that builds the habit; the civic layer is what makes the daily reading worth doing. Stacked together, every article comes with the civic context the news assumes the reader already has — politicians, organizations, bills, outlets, terms, comparisons — without losing the categorized-feed UX. AI splits by SLA: browse is pre-computed and served from Postgres in ~50ms; compare and topic search run live and accept ~10–15s. The build is heavier than either layer alone, but the surface is unfakeable: anyone with an API key can build AI summaries; the dossier graph, the public-records sourcing, and the methodology are the part that has to be earned.",
           },
         ],
       },
       solution: {
         summary:
-          "A civic-literacy news reader with four surfaces — dossiers, inline glossary, adaptive primers, cross-spectrum framing observation — over a Next.js + FastAPI + LangGraph stack with the AI work moved off the user's critical path.",
+          "Two layers — a working news aggregator (foundation) plus a civic-literacy layer (differentiator) — over a Next.js + FastAPI + LangGraph stack with AI split between a background pipeline and live endpoints.",
         pillars: [
           {
-            title: "Civic dossier graph",
+            title: "The reader surface — 10 categories, AI summaries, topic search, multi-source compare",
             detail:
-              "Politicians (committees, top industries by PAC contributions, interest-group ratings), organizations (political lean, finances, major funders, FARA registration), bills (status, sponsor, cosponsors, lobbying spend), and news outlets (ownership, funding, AllSides + MBFC ratings). Sourced from OpenSecrets, GovTrack, ProPublica Nonprofit Explorer, FARA, FEC, Vote Smart. Every dossier links the public record.",
+              "News across 10 categories from ~50 vetted outlets. AI-generated summaries on every article (pipeline-side, not click-side). Topic search via Voyage AI vector similarity with SSE streaming and Claude web-search fallback. Multi-source comparison via a LangGraph fan-out workflow that pulls coverage across outlets, extracts claims, and shows the framing side-by-side. Bookmarks (Clerk-synced), dark/light themes, auth.",
           },
           {
-            title: "Inline glossary and adaptive primers",
+            title: "The civic-literacy layer — primer, glossary, dossiers, cross-spectrum framing",
             detail:
-              "Civic terms surface contextually inside the article — defined where the reader needs them, in the language they need. When a story sits on top of complex policy (the Inflation Reduction Act, debt-ceiling mechanics, FTC consent decrees), a primer expands to fit. Per-paragraph triggering is the next move; instrumentation in flight.",
+              "*'What you should know first'* — an adaptive primer above each story with the key terms and context the article assumes you already have. Inline glossary on every civic term, with chip tooltips and click-through to the full dossier. Civic dossiers for politicians (committees, top industries by PAC contributions, interest-group ratings), organizations (political lean, finances, funders, FARA registration), bills (status, sponsor, cosponsors, lobbying spend), and news outlets (ownership, AllSides + MBFC ratings) — all sourced from public records. Cross-spectrum framing shows how Left / Center / Right outlets covered the same story.",
           },
           {
-            title: "Cross-spectrum framing — described, not labeled",
+            title: "AI split by SLA — browse path vs. live path",
             detail:
-              "When multiple outlets cover the same story, Sift shows what each chose to emphasize. AllSides political-lean shown verbatim alongside MBFC factual-reporting tier — Sift never computes its own. The reader does the interpretation; the product does the legwork.",
+              "The browse path is pre-computed in a background pipeline (FastAPI + LangGraph + Anthropic on Railway, 10-minute cadence) and served from Neon Postgres in ~50ms. The live AI path — compare and topic search — runs AI on request and accepts ~10–15s because the user is asking for analysis. Ten services run on the pipeline: primer generation, entity extraction, entity linking, summarization, story synthesis, story clustering, civic context, batched API, cross-source comparison, usage tracking.",
           },
           {
-            title: "AI off the critical path",
+            title: "Public-records sourcing, verbatim ratings",
             detail:
-              "Ten LangGraph services run on a Railway-hosted background pipeline (primer generation, entity extraction, entity linking, summarization, story synthesis, story clustering, civic context, batched API, comparison workflow, usage tracking). Frontend reads from Neon Postgres in <50ms. AI cost is a throttle-able budget, not a per-click tax.",
+              "Every civic claim cites its source — OpenSecrets, GovTrack, ProPublica Nonprofit Explorer, FARA, FEC, Vote Smart. Outlet political-lean and factual-reporting come from AllSides + MBFC, shown verbatim. Sift never computes its own ratings; the methodology is public at /methodology.",
           },
         ],
       },
@@ -482,25 +482,25 @@ export const projects: Project[] = [
         kind: "metrics",
         items: [
           {
-            metric: "Live latency",
-            before: "~15s per category",
-            after: "~50ms",
-            note: "AI moved off the user's critical path",
+            metric: "Reader surface",
+            after: "10 categories · ~50 outlets",
+            note: "AI summaries · topic search · multi-source compare · bookmarks",
           },
           {
-            metric: "Civic surfaces",
-            after: "4 dossier types + glossary + primers",
-            note: "Sourced from OpenSecrets, GovTrack, ProPublica, FARA, FEC",
+            metric: "Civic-literacy layer",
+            after: "Primer + glossary + 4 dossier types",
+            note: "Sourced from OpenSecrets, GovTrack, ProPublica, FARA, FEC, Vote Smart",
+          },
+          {
+            metric: "Live latency",
+            before: "~15s on every click",
+            after: "~50ms (browse) · ~10–15s (compare)",
+            note: "AI split by SLA: pre-computed browse, live compare/search",
           },
           {
             metric: "Pipeline",
             after: "10 LangGraph services",
-            note: "Background batch; user requests never touch Claude",
-          },
-          {
-            metric: "Methodology",
-            after: "Public + symmetric",
-            note: "AllSides + MBFC verbatim; identical dossier shape per outlet",
+            note: "Primer, entity extraction, linking, synthesis, clustering, compare, usage tracking",
           },
         ],
       },

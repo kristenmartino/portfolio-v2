@@ -1,52 +1,63 @@
 ## Overview
 
-**Read the news with civic footnotes.** Sift turns news into something you can actually understand — every politician, organization, bill, and political term in an article links to a plain-English explainer. The product earns its place not as an AI-curated alternative to wire feeds, but as a civic-literacy layer that decodes who the players are, what the bills do, and where each outlet's framing sits relative to the others.
+**A news aggregator with civic footnotes.** Sift reads from ~50 outlets across the political spectrum, AI-summarizes today's stories across 10 categories, and lets you search any topic or compare coverage across sources — *and* on top of that, every politician, organization, bill, and political term in an article links to a structured dossier sourced from public records (OpenSecrets, GovTrack, ProPublica, FARA, FEC). The aggregator is the foundation. The civic-literacy layer is what makes it different.
 
 <Specs>
   <Spec label="Role" value="Strategy, design, and engineering (frontend + backend)" />
   <Spec label="Year" value="2024–2026" />
-  <Spec label="Domain" value="Civic-literacy media" />
-  <Spec label="Stack" value="Next.js · FastAPI · LangGraph · Anthropic · Postgres" />
+  <Spec label="Domain" value="News + civic-literacy media" />
+  <Spec label="Stack" value="Next.js · FastAPI · LangGraph · Anthropic · Neon Postgres + pgvector" />
   <Spec label="Status" value="Shipped" />
 </Specs>
 
-## The hypothesis I started with — and the one that survived
+## The hypothesis I started with — and what got added
 
-I started building an AI-curated alternative to wire-feed aggregators: a hundred-plus sources, semantic clustering, side-by-side comparison of how outlets covered the same event. The pipeline worked. The frontend shipped. But the design that emerged from real reading sessions pointed at a different bottleneck.
+I started building an AI-curated alternative to wire-feed aggregators: a hundred-plus sources, AI summaries across 10 categories, semantic topic search, side-by-side multi-source comparison of how outlets covered the same event. The aggregator shipped and worked. But once it was in real use, the AI-summary layer alone wasn't the differentiator I thought it would be — most readers can read a wire description and an AI summary and not really tell them apart.
 
-Most readers do not lack volume. They lack context. They can read five outlets on the same Senate vote and still have no idea who the senator is, what the bill actually does, what the relevant lobbying body wants, or how the framing differs from the last time the question came up. The thing they actually need is not more articles — it is the political, organizational, and legislative scaffolding embedded around each story.
+The bottleneck wasn't the summary. It was that most readers don't already know who the players are. They can read five outlets on the same Senate vote and still have no idea who the senator is, what the bill does, what the relevant lobbying body wants, or how the framing has shifted from the last time the question came up.
 
-That is the version of Sift that shipped. Same engineering substrate, different unit of value: for people who want to follow what is happening without already knowing the players.
+So I kept the aggregator and added a civic-literacy layer on top. Same engineering substrate, expanded unit of value.
 
 ## What's there now
 
-Sift is a news reader where every entity in a story — politician, organization, bill, outlet, civic term — links to a plain-English explainer:
+### The reader surface — foundation
 
-- **Dossiers.** Each politician, organization, bill, and outlet has a structured page: who they are, what they have done, the relevant numbers. Citations are inline; the underlying source is always one click away.
-- **Inline glossary.** Civic terms surface contextually inside the article itself — not in a separate panel a reader has to seek out. Defined where the reader needs them, in the language they need.
-- **Adaptive primers.** When a story sits on top of complex policy (the Inflation Reduction Act, debt-ceiling mechanics, FTC consent decrees), the primer expands to fit what the reader needs without overwhelming what they do not.
-- **Cross-spectrum framing.** When multiple outlets cover the same story, Sift shows what each chose to emphasize — described, not labeled "biased" or "objective." The reader does the interpretation; the product does the legwork.
+- **10 news categories** — Top, Technology, Business, Science, Energy, World, Health, Politics, Sports, Entertainment.
+- **AI summaries on every article**, generated in the background pipeline.
+- **Topic search** — vector similarity over a pre-built article index (Voyage AI + pgvector), SSE streaming, Claude web-search fallback for niche queries.
+- **Multi-source comparison** — LangGraph fan-out across outlets, claim extraction, side-by-side framing.
+- **Bookmarks** with Clerk server sync; dark/light themes ("Late Edition" / "Newsprint"); auth.
 
-## Pipeline
+### The civic-literacy layer — differentiator
 
-Early on the AI work happened at click-time, and the experience cost roughly fifteen seconds per category load. So the architecture inverted: a scheduled pipeline does the analytical work and the frontend serves enriched content from cache. Live latency went from 15s to ~50ms, and AI cost moved from a per-click tax to a budget I can throttle.
+- **"What you should know first"** — adaptive primer above each story. Key terms and context the article assumes you already have, AI-generated at ingest, expandable when the story sits on top of complex policy (the Inflation Reduction Act, debt-ceiling mechanics, FTC consent decrees).
+- **Inline glossary** — civic terms surface contextually inside the article itself. Chip tooltips with previews; click-through to the full dossier.
+- **Civic dossiers** — every politician, organization, bill, and news outlet in a story links to a structured page: committee assignments, top industries by PAC contributions, interest-group ratings, ownership, funding, FARA registration, AllSides political-lean rating, MBFC factual-reporting tier. All sourced from public records. Citations one click away.
+- **Cross-spectrum framing** — when multiple outlets cover the same story, what each Left / Center / Right outlet chose to emphasize. AllSides + MBFC shown verbatim; Sift never computes its own ratings.
 
-The pipeline (FastAPI + LangGraph + Anthropic) runs ten services: primer generation, entity extraction, entity linking to dossiers, summarization, story synthesis, story clustering, civic context generation, multi-source comparison, batched API client, and usage tracking. The frontend reads from Postgres.
+## Pipeline — AI split by SLA
+
+Early on the AI work happened at click-time, and certain endpoints cost 15+ seconds per load. So the architecture split the AI into two paths by SLA:
+
+- **Browse path:** pre-computed in a background pipeline on a 10-minute cadence; frontend reads enriched content from Postgres in ~50ms. The whole category-browsing experience is a database read.
+- **Live AI path:** multi-source compare and topic search still run AI live (fan-out across outlets, claim extraction, web search). They accept ~10–15s and stream as they go, because the user is asking for analysis, not browsing.
+
+The pipeline (FastAPI + LangGraph + Anthropic on Railway) runs ten services: primer generation, entity extraction, entity linking to dossiers, summarization, story synthesis, story clustering, civic context generation, batched API client, comparison workflow, usage tracking.
 
 ## Implementation considerations
 
-**Source curation became a quieter problem than I expected.** My initial corpus pulled from mainstream outlets via aggregated feeds. That corpus is fine for civic decoding — dossiers, glossary, and primers work the same regardless of source — but it neutralized the more aggressive features I had built (trust scoring, propaganda tagging, extremism flags). Mainstream outlets do not give those features anything to do. I left them out of the shipped surface rather than apply judgment claims I could not defend at the corpus level.
+**Source curation became a quieter problem than I expected.** The corpus is curated mainstream — Reuters, AP, BBC, NYT, WSJ, Bloomberg, Axios, Politico, plus trade press by sector. That's fine for civic decoding (dossiers, glossary, primers work the same regardless of source), but it neutralized the more aggressive features I had built (trust scoring, propaganda tagging, extremism flags). Mainstream outlets do not give those features anything to do. I left them out of the shipped surface rather than apply judgment claims I could not defend at the corpus level.
 
-**The dossier graph proved more interesting than the cluster graph.** Cluster-based comparison was the original product unit — group articles about the same event, show the side-by-sides. What proved more useful was the entity graph: every politician, organization, and bill becomes a node, every story becomes a path, and a reader following any story gets pulled into the surrounding civic structure. The cluster surface still exists. The dossier surface is what gets daily use.
+**The dossier graph proved more interesting than the cluster graph.** Cluster-based comparison was the original organizing unit — group articles about the same event, show the side-by-sides. What proved more useful in usage was the entity graph: every politician, organization, and bill becomes a node, every story becomes a path, and a reader following any story gets pulled into the surrounding civic structure. The cluster surface still ships. The dossier surface is what gets daily use.
 
 ## Reflections
 
-- **Per-paragraph primer triggers.** Primers attach to articles by topic match. A reader-pacing model that surfaces primers in the reading flow, not above the fold, is the next move.
+- **Per-paragraph primer triggers.** Primers attach to articles by topic match. A reader-pacing model that surfaces primers in the reading flow, not above the fold, is the next move; instrumentation is in flight.
 - **Outlet observation, not outlet judgment.** Cross-spectrum compare shows side-by-side framing. The version worth shipping next describes what *each* outlet chose to emphasize, without claiming any of them are wrong. Observation is honest; labeling is brittle.
 - **A trust layer for the corpus it was built for.** The flags I built (trust scoring, propaganda tagging, extremism) produce nothing meaningful applied to mainstream sources. The genuinely useful version of that layer would apply to propaganda outlets — a different product on a different corpus with a different audience.
 
 ## Closing observation
 
-I started building an AI-curated alternative to wire-feed aggregators. The differentiator turned out not to be the AI — it was civic decoding. Sift is not "news synthesized by AI." It is news for people who want to follow what is happening without already knowing the players: *read the headline, learn the civics as you go.*
+The combination matters more than either piece alone. An aggregator without civic context is a commodity — every news app shows the same Reuters and AP stories in roughly the same order. A civic-context tool without the daily news flow is a research database — useful when you need it, not the daily-driver experience that builds a habit. *An aggregator with civic footnotes* — the news app that adds the civic context the news assumes you already have — is what changes the reading experience.
 
-The AI is still load-bearing — primers, dossiers, and cross-spectrum framing all run on it. But the AI is infrastructure now, not the product. The product is the reader being able to follow a story without first having to research who everyone is.
+I started building the aggregator. The civic layer is what made it Sift.
