@@ -386,6 +386,153 @@ export const projects: Project[] = [
   },
   {
     index: "03",
+    title: "Eval Harness",
+    category: "Applied LLM Evaluation",
+    summary:
+      "Defensible cost/quality eval comparing 9 LLMs (5 open-weight on DGX Spark via Ollama, 4 closed-weight via API) across 4 real production tasks from Sift. Cross-vendor judging, hardware-amortized cost, verifiable held-out lock. Routing-decision framework, not a benchmark.",
+    href: "/work/eval-harness",
+    slug: "eval-harness",
+    liveHref: "https://evals.kristenmartino.ai",
+    codeHref: "https://github.com/kristenmartino/eval-harness",
+    year: "2026",
+    status: "In progress",
+    mode: "Solo build",
+    shape: "data-viz",
+    metrics: [
+      "9 models · 4 tasks · n=870 across eval sets",
+      "Cross-vendor judging · Bradley-Terry MM ranking",
+      "Verifiable held-out lock (SHA-256 + git)",
+      "Hardware-amortized cost on DGX Spark",
+    ],
+    artifact: {
+      problem: {
+        situation:
+          "Public LLM leaderboards (MMLU, HumanEval, BIG-bench) measure general capability on synthetic tasks. They tell an applied team whether a model is competent in the abstract.",
+        complication:
+          "They do not answer the question that actually drives a production routing decision: for this specific pipeline stage, on this specific corpus, can this specific open-weight model replace the frontier API I'm paying for, and at what cost-per-quality-point trade-off? The only honest way to answer that is to run the actual workload through both and measure with a methodology that holds up under reviewer pressure.",
+        question:
+          "What does an eval need to look like for an applied team to defensibly route LLM calls between local open-weight and frontier APIs — and what does the methodology have to do to survive scrutiny when the conclusions land?",
+      },
+      requirements: [
+        {
+          stakeholder: "Applied team making a routing decision",
+          need: "Per-task cost/quality framing, not a single composite score. The decision is per pipeline stage — categorization may route differently from summarization.",
+          evidence:
+            "Four task modules (categorization, summarization, extraction, RAG) each scored on its own quality + cost frontier",
+        },
+        {
+          stakeholder: "Skeptical reviewer",
+          need: "LLM-as-judge architecture that controls for self-preference bias — Sonnet scoring Sonnet's outputs is unfalsifiable.",
+          evidence:
+            "Cross-vendor judging: Sonnet 4.6 judges non-Anthropic-containing pairs (21 of 36); GPT-4o judges Anthropic-containing pairs (15 of 36). 50-pair overlap with inter-judge Cohen's κ reported.",
+        },
+        {
+          stakeholder: "Reproducibility-first reader",
+          need: "Held-out discipline that survives the obvious 'how do I know you didn't peek' question.",
+          evidence:
+            "20% held-out items SHA-256 hashed and committed to git before any prompt iteration; runner enforces an explicit flag for held-out access; proof is in the commit history.",
+        },
+        {
+          stakeholder: "Procurement / cost-side reader",
+          need: "Hardware-amortized cost methodology comparable to published API rates — not a hand-wave.",
+          evidence:
+            "DGX Spark capex / 3-year useful life + measured wall-clock × FL kWh rate. All assumptions stated; dual production-scale view scoped for v0.3.",
+        },
+      ],
+      decisions: {
+        criteria: [
+          "Methodological defensibility under reviewer pressure",
+          "Per-task actionability for routing decisions",
+          "Reproducibility from commit history alone",
+          "Reusability across other production systems",
+        ],
+        options: [
+          {
+            option:
+              "Extend a public benchmark suite (MMLU + HumanEval + BIG-bench) with cost-per-1M-tokens columns",
+            scores: ["partial", "unmet", "partial", "partial"],
+          },
+          {
+            option:
+              "Run Sift's pipeline through each model and report aggregate accuracy / cost without cross-vendor judging or held-out controls",
+            scores: ["unmet", "partial", "unmet", "partial"],
+          },
+          {
+            option:
+              "Production-workload eval with cross-vendor judging architecture, verifiable held-out lock, hardware-amortized cost methodology, Bradley-Terry MM pairwise ranking, and a v0.2 spec critique round before any code was written",
+            chosen: true,
+            scores: ["met", "met", "met", "met"],
+            rationale:
+              "The methodology IS the deliverable; the leaderboard is the worked example. Cross-vendor judging eliminates self-preference bias on the pairwise summarization task — the single most common LLM-eval methodology failure. Bradley-Terry MM (Hunter 2004) over all 36 model pairs yields a global strength ranking rather than the asymmetric everyone-vs-Haiku design, which would leave Haiku itself unrankable. Hardware-amortized cost lets local compute be compared to API token pricing on a single axis. The verifiable held-out lock — SHA-256 of the held-out items committed before any iteration — moves 'I held out 20%' from a vibes claim to a verifiable one. The v0.2 critique round caught nine real methodology issues (judge contamination, scoring conflation on JSON, sample-size power, 70B-on-Task-A throughput infeasibility) before any number was computed, applied them as a tracked diff, and deferred three to v0.3 as post-data-collection decisions.",
+          },
+        ],
+      },
+      solution: {
+        summary:
+          "A reusable harness (adapter Protocol + task modules + runner) plus a publication-quality methodology page plus a routing-decision framework — with the leaderboard as the worked example, not the primary artifact.",
+        pillars: [
+          {
+            title: "Cross-vendor judging on pairwise summarization",
+            detail:
+              "Sonnet 4.6 judges 21 of 36 model pairs (non-Anthropic-containing); GPT-4o judges 15 of 36 (Anthropic-containing). A 50-pair overlap subset is judged by both with inter-judge Cohen's κ reported (caveat triggered if κ < 0.6). Bradley-Terry MM fits a global strength ranking from the full pairwise matrix.",
+          },
+          {
+            title: "Verifiable held-out lock",
+            detail:
+              "Held-out items live in data/holdout/ separately from data/dev/. holdout.sha256 is committed to git before any prompt tuning begins. The runner requires an explicit --include-held-out flag. Any reviewer can verify (a) the hash hasn't changed since the pre-iteration commit, (b) the runner logs include the held-out flag only on the final run.",
+          },
+          {
+            title: "Hardware-amortized cost methodology",
+            detail:
+              "Local compute cost = DGX Spark capex / (3 years × 365 × 24 hours) × wall-clock + measured power draw × FL residential kWh rate. API models priced at posted token rates as of run date. Per-task tier split: 70B Q4 reported as quality ceiling but excluded from the deployment cost view because expected DGX Spark throughput is infeasible at Sift's daily article volume.",
+          },
+          {
+            title: "Reusable adapter + task abstractions",
+            detail:
+              "ModelAdapter is a Protocol with one method (complete(prompt, params) → Completion). Tasks are self-contained modules exporting a prompt template, a parser, and a scorer. Swapping the tasks/ directory and pointing at a new dataset is what makes the harness reusable for GridPulse, Tarazu, or any other ML product without re-engineering the runner.",
+          },
+        ],
+      },
+      outcome: {
+        kind: "metrics",
+        items: [
+          {
+            metric: "Methodology page",
+            after:
+              "Shipped publication-quality at evals.kristenmartino.ai/methodology",
+            note: "Cross-vendor judging, hardware-amortized cost, contamination acknowledgement, 10 sections, 9 cited refs (incl. Hunter 2004 BT MM, Panickssery 2024 self-preference)",
+          },
+          {
+            metric: "Harness infrastructure",
+            after: "End-to-end with 25 tests passing",
+            note: "Adapter Protocol (Ollama + Anthropic + OpenAI + Mock) · task modules (categorization + summarization) · runner with JSONL reproducibility headers + resumability · Bradley-Terry MM",
+          },
+          {
+            metric: "Pre-flight scripts",
+            after: "5 stdlib-only",
+            note: "Timing benchmark · length-stratified sampler · category distribution check · API cost estimator · annotation validator",
+          },
+          {
+            metric: "v0.2 spec critique",
+            after: "9 of 11 items applied",
+            note: "Cross-judge calibration overlap, JSON-validity vs F1 split, 70B tier split, held-out lock mechanism, sample-size power statement; 3 items deferred to v0.3 as post-Task-A decisions",
+          },
+          {
+            metric: "Projected v0.2 API spend",
+            after: "$99.96",
+            note: "4 closed-weight × 4 tasks + safety + cross-judge overlap, ~3 hours wall-clock at 50 RPM rate limit; Sonnet 4.6 = 69% (candidate + primary judge)",
+          },
+          {
+            metric: "Phase 1 leaderboard numbers",
+            after: "Pending",
+            note: "Execution begins once Sift corpus is pulled + 70B timing benchmark runs on DGX Spark",
+          },
+        ],
+      },
+    },
+  },
+  {
+    index: "04",
     title: "Tarazu",
     category: "Product + AI",
     summary:
@@ -507,7 +654,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "04",
+    index: "05",
     title: "Sift",
     category: "AI News + Civic Literacy",
     summary:
@@ -636,7 +783,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "05",
+    index: "06",
     title: "FocusForge",
     category: "iOS Mobile App",
     summary:
@@ -738,7 +885,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "06",
+    index: "07",
     title: "GTM Healthcare Intelligence",
     category: "Healthcare GTM Analytics",
     summary:
@@ -866,7 +1013,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "07",
+    index: "08",
     title: "Platform Migration + ARR Growth",
     category: "Cross-Functional Delivery",
     summary:
@@ -878,7 +1025,7 @@ export const projects: Project[] = [
     shape: "pipeline",
   },
   {
-    index: "08",
+    index: "09",
     title: "Revenue Recovery Audit Workflow",
     category: "Enterprise Systems",
     summary:
@@ -890,7 +1037,7 @@ export const projects: Project[] = [
     shape: "table",
   },
   {
-    index: "09",
+    index: "10",
     title: "RMS Fare Validation System",
     category: "Decision Support",
     summary:
@@ -902,7 +1049,7 @@ export const projects: Project[] = [
     shape: "decision",
   },
   {
-    index: "10",
+    index: "11",
     title: "Flight Disruption Recovery",
     category: "Operational Decision Support",
     summary:
