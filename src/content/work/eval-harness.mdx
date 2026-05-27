@@ -1,0 +1,74 @@
+## Overview
+
+Most leaderboards for open-weight vs frontier LLMs answer a question one level too abstract for an applied team — *"how does Llama 3.1 8B score on MMLU vs Sonnet 4.6"* — and stop there. The question that determines whether a team actually switches is the next one down: *for this specific pipeline stage, on this specific corpus, can this specific open-weight model replace the frontier API I'm paying for, and at what cost-per-quality-point trade-off?*
+
+This harness answers that question on a real production workload — [Sift](/work/sift)'s news-pipeline stages (categorization, summarization, structured extraction, grounded RAG) — across nine LLMs (five open-weight on a local DGX Spark via Ollama; four closed-weight via API). The deliverable is a routing-decision framework, not a benchmark leaderboard. The leaderboard is the worked example.
+
+<Specs>
+  <Spec label="Role" value="Strategy, experimental design, methodology, harness engineering" />
+  <Spec label="Year" value="2026" />
+  <Spec label="Domain" value="Applied LLM evaluation · production routing" />
+  <Spec label="Stack" value="Python · Ollama · Anthropic + OpenAI APIs · Bradley-Terry MM · Next.js (site)" />
+  <Spec label="Hardware" value="NVIDIA DGX Spark · 128 GB unified memory · Ollama local inference" />
+  <Spec label="Status" value="Methodology shipped · Phase 1 execution in progress" />
+</Specs>
+
+## Problem framing
+
+Three observations shape the design:
+
+1. **Public benchmarks measure general capability; production teams need workload-specific answers.** MMLU and HumanEval tell you whether a model is competent in the abstract. They don't tell you whether Qwen 2.5 7B can replace Claude Haiku in *your* article-categorization step without quality regression. The only way to know that is to run your actual workload through both and measure.
+2. **LLM-as-judge methodology is one bad choice away from being unfalsifiable.** Pairwise preference judged by Sonnet, on a candidate set that includes Sonnet, produces a number you cannot falsify — judges measurably favor their own outputs ([Panickssery et al. 2024](https://arxiv.org/abs/2404.13076)). The fix isn't to drop the methodology; it's to architect around it. Cross-vendor judging is the lever.
+3. **"I held out 20% for final scoring" is a vibes claim unless the lock is verifiable.** Anyone can say they held out the data and didn't peek during prompt iteration. The version that survives scrutiny is the one where the held-out set is SHA-256 hashed and committed to git *before* any tuning happens, and the runner enforces the gate. Then the proof is in the commit history, not the author's word.
+
+## Design
+
+**Nine models, three tiers.**
+
+- **Open-weight, deployment-feasible** (eligible for hybrid-routing recommendations) — Llama 3.1 8B Instruct, Qwen 2.5 7B Instruct, Qwen 2.5 14B Instruct, DeepSeek V2 Lite.
+- **Open-weight, quality-ceiling reference** — Llama 3.1 70B Q4. Included as an upper bound on what open-weight can achieve on Sift's tasks, but excluded from the deployment cost view because expected DGX Spark throughput (~10–15 tok/s on 3–4K-token articles) is infeasible at Sift's daily volume. A pre-flight timing benchmark confirms or rejects this split before the full eval runs.
+- **Closed-weight reference** — Claude Haiku 4.5 (Sift's current production model; the bar to beat), Claude Sonnet 4.6 (quality ceiling; also primary judge), GPT-4o (cross-vendor judge), GPT-4o mini.
+
+**Four tasks chosen because they're the actual pipeline.** Task A is multi-label categorization (the highest-volume step, biggest cost lever). Task B is summarization for the UI (user-facing quality matters most). Task C is structured entity extraction (tests whether open-weight can hold schemas). Task D is grounded RAG with citations (the agentic capability the rest of the industry actually cares about). Plus a 50-prompt safety smoke test for deployment-blocking regressions.
+
+**Identical prompt content across models; native chat templates per model.** A foreign chat template (Qwen prompts wrapped in Llama 3's role tokens) measurably degrades performance for tokenizer reasons unrelated to capability. So the content is shared, the framing is per-model.
+
+## Methodology decisions worth flagging
+
+The credibility of a leaderboard sits in its methodology, not its numbers. Five decisions that earn the most reviewer trust:
+
+1. **Cross-vendor judging architecture.** Sonnet 4.6 judges the 21 of 36 model pairs that don't include an Anthropic candidate; GPT-4o judges the 15 of 36 pairs that do. A 50-pair overlap subset is judged by both, with inter-judge Cohen's κ reported (caveat triggered if κ &lt; 0.6). Eliminates the case where Sonnet's outputs are judged by Sonnet — which would otherwise make Sonnet's score unfalsifiable.
+2. **Bradley-Terry MM ranking across all 36 pairs**, not pairwise-vs-reference. Asymmetric pairwise (everyone-vs-Haiku) makes Haiku unrankable as a candidate. The BT MM algorithm ([Hunter 2004](https://www.jstor.org/stable/3448513)) fits a global strength ranking from the full pairwise matrix and lets every model be evaluated against every other.
+3. **Hardware-amortized cost methodology**, reported alongside published API rates. Local compute cost = DGX Spark capex amortized over a 3-year useful life + measured wall-clock × FL residential kWh rate. All assumptions pinned and stated; a dual view (individual-developer vs production-scale) is deferred to v0.3 for the procurement audience.
+4. **Per-task split between schema-adherence and extraction quality.** Task C reports two metrics, not one: JSON validity rate (capability A) and entity F1 conditional on validity (capability B). Splitting prevents conflating "weak at JSON" with "weak at extraction" — which the leaderboard would otherwise do silently, because invalid JSON gates everything else.
+5. **A v0.2 spec critique round before any code was written.** Eleven methodology items surfaced in a structured peer-review pass — judge contamination, pairwise design ambiguity, the 70B-on-Task-A throughput problem, scoring conflation, sample-size power, contamination acknowledgement, and others. Nine applied directly to the spec; three deferred to v0.3 as post-data-collection decisions. The spec critique is the artifact most worth pointing senior reviewers at; it shows the methodology bend-tested before any number was computed.
+
+## Pre-flight and the held-out lock
+
+The held-out discipline is what separates a benchmark from a defensible eval, so the mechanism is worth describing concretely:
+
+- Held-out items live in `data/holdout/`, separate from `data/dev/`.
+- `holdout.sha256` is committed to git *before any prompt iteration begins*.
+- Prompt-iteration scripts only have read access to `data/dev/`; the runner requires an explicit `--include-held-out` flag.
+- The final-scoring run commits results alongside the unchanged hash file. Any reviewer can verify (a) the hash hasn't changed since the pre-iteration commit, (b) the runner invocation logs include the held-out flag only on the final run.
+
+> The proof is in the commit history, not the author's word.
+
+Pre-flight scripts (five, stdlib-only) close the rest of the loop before Phase 1 runs: a timing benchmark on the DGX Spark to confirm the 70B-Task-A tier split, a length-stratified sampler for Task A, a category distribution check that drops any category with fewer than 20 articles (upsampling biases macro-F1), an API cost estimator that prints to the dollar and rate-limit hour, and an annotation validator that catches schema violations before they enter the eval set.
+
+## What the routing-decision framework will answer
+
+The leaderboard alone is a snapshot — a model-by-model table at a single point in time. The artifact worth shipping is a *routing-decision framework* that the leaderboard feeds: for each pipeline stage, the framework will name the model to route to, the conditions under which to do it, the escalation rule when the model's confidence drops, and the failure mode that disqualifies a model regardless of its headline score. Those specific calls — which model, what threshold, what escalation, what kill condition — get committed only after Phase 1 runs and the held-out numbers come back. Until then, the methodology is what's defensible; the decisions live downstream of the data.
+
+## Reflections
+
+- **The methodology page is the deliverable; the leaderboard numbers are the worked example.** A leaderboard with weak methodology is forgettable. A methodology that holds up under reviewer pressure is the part that gets cited. The site at evals.kristenmartino.ai leads with methodology and treats the leaderboard as the supporting evidence — not the other way around.
+- **Pre-execution scoping has been the highest-leverage time spent.** The v0.2 critique round caught nine real methodology issues that would have invalidated specific claims if shipped. The cost of catching them after Phase 1 ran would have been a complete rerun. Rigor up-front is cheaper than rework downstream.
+- **The harness is reusable by design — adapters and tasks are clean modules.** A `ModelAdapter` is a Protocol with one method (`complete(prompt, params) → Completion`); a task is a self-contained module that exports a prompt template, a parser, and a scorer. Swapping `tasks/` and pointing at a new dataset is what makes this harness work for [GridPulse](/work/gridpulse), [Tarazu](/work/tarazu), or any other ML product without re-engineering the runner.
+- **Cost methodology is the most-probed section in any technical review pass.** Anyone with infrastructure intuition asks first about cost amortization and second about anything else. Pinning DGX Spark capex, FL kWh rate, measured power draw, and useful-life assumption — and stating each as an explicit number rather than a hand-wave — is what makes the cost view defensible.
+
+## Closing observation
+
+The framing question isn't *"how does open-weight compare to frontier on a benchmark"* — that's published already, in many forms, none of them actionable. The framing question is *"for this real production system, where does open-weight already meet the bar, and where does it not."* The eval-harness is the apparatus that answers that question for Sift specifically — and the methodology, adapter abstractions, and decision-framework structure are what make the same apparatus reusable for the next production system that needs the same answer.
+
+The deliverable a hiring manager remembers is the methodology. The numbers come from running the apparatus the methodology describes.
