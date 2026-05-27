@@ -1,0 +1,104 @@
+## Overview
+
+Most quantization evaluations report whole-benchmark scores — *"Llama 3.1 8B at Q4 retains 96% of FP16's MMLU"* — and stop there. That's a leaderboard number. A PM choosing what precision to ship for a feature needs the next layer of question: *for which workloads is that 4% loss concentrated, and which workloads pass through unaffected?*
+
+This study runs three quantization arms (FP16, Q8_0, Q4_K_M) of Llama 3.1 8B Instruct across two contrasting tasks — MMLU and CoNLL-2003 NER — under a paired design, with the same items, prompts, and seed across every arm. The deliverable is a decision framework, not a leaderboard.
+
+<Specs>
+  <Spec label="Role" value="Strategy, experimental design, statistical analysis, writing" />
+  <Spec label="Year" value="2026" />
+  <Spec label="Domain" value="Applied LLM evaluation" />
+  <Spec label="Stack" value="Python · Ollama · llama.cpp Metal backend · NumPy · SciPy · HuggingFace datasets" />
+  <Spec label="Hardware" value="MacBook Pro · Apple M4 Max · 36 GB unified memory" />
+  <Spec label="Status" value="Shipped" />
+</Specs>
+
+## Problem framing
+
+Three observations shape the design:
+
+1. **Quantization is a real production decision, and most teams pick by feel.** Ship at FP16 and pay for the GPU memory; ship at Q4 and absorb some quality loss for cheaper, faster inference. The cost side is concrete and easy to measure. The quality side is where the hand-waving happens.
+2. **Published evaluations are leaderboards, not decision frameworks.** *"Q4 retains 96% of FP16's MMLU"* is one number per arm and doesn't separate the workloads where the loss is concentrated from the workloads where it isn't.
+3. **Independent-sample comparisons throw away variance reduction the design is sitting on.** Same items run through every arm means the per-example difference is paired data — exploit that with paired CIs and you get materially tighter effects at the same sample size.
+
+## Design
+
+**Three arms.** FP16 (control), Q8_0, Q4_K_M. All pulled from Ollama: `llama3.1:8b-instruct-{fp16|q8_0|q4_K_M}`.
+
+**Two tasks chosen for contrast.**
+
+- **MMLU** — knowledge/reasoning, four-way multiple choice. Stratified subset of 500 questions across 10 subjects (STEM, humanities, professional). Mechanically scored: parse the first A–D character from the output.
+- **CoNLL-2003 NER** — structured information extraction. 300 sentences from the test split, model returns a JSON array of `(entity, type)` pairs. Span-level F1 with type-match required (the canonical CoNLL metric); malformed JSON scored as 0.
+
+The contrast is the point. MMLU is closer to *"did the model retain the knowledge"*; NER is closer to *"did the model produce the structured artifact the downstream system expects."* Different failure modes surface in different tasks.
+
+**Paired design with round-robin scheduling.** Every example scored across all three arms before moving on. Warmups for all three arms precede the timed loop, so cold-start latency doesn't bias whichever arm runs first. Without round-robin, an hour of one arm's runtime collects thermal and macOS-daemon-load drift that distorts the tok/sec column.
+
+**Deterministic sampling.** Temperature 0, fixed seed (42), identical prompts and system messages, max-tokens task-appropriate. Held constant across arms.
+
+## Headline result
+
+<Diagram title="Quality vs throughput — paired Pareto across three quantization arms">
+  <img src="/work/quantization-pareto.png" alt="Pareto plot of three quantization arms: FP16 and Q8_0 sit at near-identical quality, with Q8 at roughly 1.8× the throughput. Q4_K_M extends the frontier on throughput but loses quality on NER." className="w-full" />
+</Diagram>
+
+**Q8_0 is statistically indistinguishable from FP16 on both tasks** — MMLU accuracy Δ = −0.2pp (95% CI: [−0.8, +0.4]) and NER F1 Δ = +0.0003 (95% CI: [−0.006, +0.007]) — at roughly 1.8× the throughput and half the memory footprint. The strongest evidence in the study is for Q8_0 ≈ FP16, not for any quantization-vs-quantization degradation.
+
+**Q4_K_M loses 5.0pp F1 on NER** (95% CI: [+2.1, +8.1pp]; Holm-adjusted p = 0.003) for an additional ~40% throughput and an ~3× smaller memory footprint than FP16. The MMLU regression (1.6pp) does not reach significance.
+
+## The failure mode
+
+A finding worth flagging: **Q4 actually emits well-formed JSON at a slightly higher parse rate than FP16** (99.7% vs 99.0%), but it produces 95 well-formed-but-zero-F1 outputs vs 76 for FP16. Q4 writes valid JSON arrays that *name the wrong entities*.
+
+The brittleness is **semantic, not syntactic**. That matters downstream: structural validation (JSON parses, schema validates) won't catch it, because the structure is intact. Whatever validates the content has to validate the content — there's no cheaper proxy. Anyone shipping Q4_K_M for structured information extraction should know this before they ship.
+
+The published intuition that *"Q4 is fine for pattern-matching, hurts on reasoning"* doesn't hold here. NER is a structured pattern-extraction task, and it's where Q4 visibly degrades. MMLU (more reasoning-heavy) shows a numerically smaller Q4 regression that doesn't reach significance. **The mechanism worth pointing at: Q4 is sensitive to output-structure fidelity, not problem difficulty.**
+
+## Statistical methodology
+
+The paired design earns its keep in the analysis:
+
+- **Per-arm CIs.** Wilson 95% interval for binary outcomes (MMLU accuracy); bootstrap percentile interval for continuous (NER span-F1).
+- **Pairwise differences.** Paired bootstrap CI on per-example deltas. Same items in both arms means the per-example difference is a real number whose variance is reduced by the pairing.
+- **p-values.** McNemar's test for binary outcomes (exact binomial for ≤25 discordants; Yates continuity-corrected χ² otherwise); paired bootstrap centered under H0 for continuous outcomes.
+- **Multiple-comparison correction.** Holm-Bonferroni applied *per task* across the three pairwise tests. Per-task framing matches the reader's per-section interpretation; Holm is uniformly more powerful than Bonferroni and doesn't require the BH PRDS assumption (which paired tests within a task violate).
+- **Cluster-bootstrap on subjects** for the MMLU overall CI. Examples within an MMLU subject are correlated — questions in `professional_medicine` look like other `professional_medicine` questions. The iid bootstrap underestimates variance; cluster-bootstrap resamples subject IDs with replacement and pulls all examples from chosen subjects, giving the correct width.
+
+**Power.** At n=499 aligned per arm on MMLU, the design detects ≥3.8pp accuracy differences at 80% power, α=0.05 (paired diff SD = 0.30 observed). At n=300 per arm on NER, ≥4.3pp span-F1 (paired diff SD = 0.27 observed). Both post-hoc verified on the actual data.
+
+## Where the effect concentrates
+
+The Q4-vs-FP16 gap on MMLU is concentrated in `miscellaneous` (−6.0pp) and `professional_medicine` (−6.0pp), with smaller regressions in `moral_scenarios`, `abstract_algebra`, and `machine_learning` (each −4.0pp). Several subjects move the other way — `professional_law` (+4.0pp), `college_computer_science` (+2.0pp), `high_school_us_history` (+2.0pp) — within the noise band for n=50/subject.
+
+**None of the per-subject pairwise differences survives Holm correction within the per-subject family of three tests.** This is suggestive heterogeneity worth flagging, not replicable evidence of subject-specific quantization sensitivity. A properly powered subject-level study would need ~3× the per-subject sample size. The pattern is consistent with the published intuition that quantization hits broad-knowledge recall harder than narrow reasoning, but the data here can only suggest it.
+
+## A decision framework
+
+What a PM actually needs from a study like this:
+
+**Pick Q8_0 — the default.**
+- Same measured quality as FP16 on both tasks, at ~1.8× throughput. The strongest evidence in the study is for Q8_0 ≈ FP16.
+- Right call when a single model serves heterogeneous workloads.
+- Right call when reasoning depth matters (multi-step, legal, medical) — MMLU shows Q8 holds.
+
+**Pick Q4_K_M only when:**
+- Throughput is the binding constraint and a measurable F1 hit on structured extraction is acceptable downstream (human review, retry logic, low-stakes outputs).
+- Memory is the binding constraint: Q4_K_M's ~5 GB footprint vs FP16's ~16 GB matters on memory-limited machines (laptops, edge, multi-tenant serving).
+
+> Avoid Q4_K_M for structured information extraction. The 5pp NER gap is significant, and Q4 emits well-formed JSON with the wrong entities — harder to detect downstream than malformed output.
+
+**Stay at FP16 when:**
+- Accuracy is the binding constraint (regulated outputs, safety-critical, eval ground truth).
+- The throughput delta from Q8 (~1.8×) doesn't move unit economics — inference cost isn't the constraint.
+
+## Reflections
+
+- **The single most consequential design choice was pairing.** Same items, prompts, and seed across all three arms means the per-example difference is a real number whose variance is reduced by the pairing. Published Q4 evaluations that report unpaired benchmark numbers throw away the variance reduction the design hands them for free. Pairing turned a study that would have been underpowered on NER into one that detected a 5pp effect at p_adj=0.003.
+- **Round-robin scheduling matters more than it looks.** The first draft of the harness ran arms sequentially (all of FP16, then all of Q8, then all of Q4). A senior review pass surfaced the failure mode: thermal drift and macOS daemon load on a laptop are real, and an hour of one arm's runtime collects enough drift to distort the tok/sec column by single-digit percentage points. Round-robin interleaves arms per example; the throughput numbers in the writeup are the cleaner ones.
+- **Multiple-comparison correction is where rigor pays.** Three pairwise tests per task, two tasks — six tests total. Without correction, one of the marginal MMLU pairs would have been written up as suggestive. With Holm, it's correctly not significant. The corrected p-values are the ones in the README; the uncorrected ones aren't shown.
+- **The failure mode is the lede, not the headline number.** *"Q4 loses 5pp on NER"* is the number. *"Q4 emits well-formed JSON that names the wrong entities, so structural validation downstream won't catch it"* is the finding. The second is what changes how a team using Q4 should think about their validation pipeline. Putting it in the TL;DR was the right call.
+- **A senior cross-functional review pass caught nine things I'd missed.** Self-narrating Limitations meta-comments, a duplicated `non-obvious` qualifier, an unverified parse-rate number I'd written without checking, a mischaracterized MMLU duplicate (it really is a duplicate — verified), a `datasets` version pin that needed an explanatory comment, an unused import, a stale docstring with template numbers, missing Prerequisites + license-acknowledgment sections, and no CI badge. The fixes shipped in four small commits; the review was where the actual quality work happened.
+
+## Closing observation
+
+The unit of value isn't the benchmark score. **The unit of value is the decision framework with specific findings tied to specific pick-conditions.** A PM reading the TL;DR can pick Q8_0 confidently for most workloads, knows the one workload class to avoid Q4 on, and has a concrete description of how Q4 fails when it does. That's a more useful artifact than a four-decimal benchmark table — and it's the format the work was actually trying to produce.
