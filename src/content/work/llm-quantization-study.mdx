@@ -28,7 +28,7 @@ Three observations shape the design:
 **Two tasks chosen for contrast.**
 
 - **MMLU** — knowledge/reasoning, four-way multiple choice. Stratified subset of 500 questions across 10 subjects (STEM, humanities, professional). Mechanically scored: parse the first A–D character from the output.
-- **CoNLL-2003 NER** — structured information extraction. 300 sentences from the test split, model returns a JSON array of `(entity, type)` pairs. Span-level F1 with type-match required (the canonical CoNLL metric); malformed JSON scored as 0.
+- **CoNLL-2003 NER** — structured information extraction. 300 sentences from the test split, model returns a JSON array of `(entity, type)` pairs, scored by exact span match with type agreement. Reported two ways: **corpus micro-F1** (the canonical CoNLL/conlleval metric — pool TP/FP/FN, then F1) as the headline, and **per-sentence macro-F1** (mean of per-example F1) as a brittleness view. The gap between them turns out to localize the failure mode.
 
 The contrast is the point. MMLU is closer to *"did the model retain the knowledge"*; NER is closer to *"did the model produce the structured artifact the downstream system expects."* Different failure modes surface in different tasks.
 
@@ -42,29 +42,33 @@ The contrast is the point. MMLU is closer to *"did the model retain the knowledg
   <img src="/work/quantization-pareto.png" alt="Pareto plot of three quantization arms: FP16 and Q8_0 sit at near-identical quality, with Q8 at roughly 1.8× the throughput. Q4_K_M extends the frontier on throughput but loses quality on NER." className="w-full" />
 </Diagram>
 
-**Q8_0 is statistically indistinguishable from FP16 on both tasks** — MMLU accuracy Δ = −0.2pp (95% CI: [−0.8, +0.4]) and NER F1 Δ = +0.0003 (95% CI: [−0.006, +0.007]) — at roughly 1.8× the throughput and half the memory footprint. The strongest evidence in the study is for Q8_0 ≈ FP16, not for any quantization-vs-quantization degradation.
+**Q8_0 is *practically equivalent* to FP16 — a positive claim, not just "not significant."** Against a pre-declared ±1pp margin, a TOST clears equivalence on MMLU accuracy (Δ = −0.2pp, p_TOST = 0.019) and on NER per-sentence F1 (Δ = +0.0003, p_TOST = 0.002), and the canonical NER micro-F1 95% CI ([−0.9, +0.2]pp) sits entirely inside ±1pp. All this at ~1.8× the throughput and half the memory footprint.
 
-**Q4_K_M loses 5.0pp F1 on NER** (95% CI: [+2.1, +8.1pp]; Holm-adjusted p = 0.003) for an additional ~40% throughput and an ~3× smaller memory footprint than FP16. The MMLU regression (1.6pp) does not reach significance.
+**Q4_K_M loses 3.2pp on canonical corpus micro-F1** (95% CI: [0.7, 5.7pp]; Holm-adjusted p = 0.032), and **5.0pp on per-sentence macro-F1** (CI: [2.1, 8.1pp]; p = 0.003) — significant under *both* estimands, so the degradation is robust to metric choice. You buy that for ~40% more throughput and an ~3× smaller footprint. The MMLU regression (1.6pp) does not reach significance.
 
 ## The failure mode
 
-A finding worth flagging: **Q4 actually emits well-formed JSON at a slightly higher parse rate than FP16** (99.7% vs 99.0%), but it produces 95 well-formed-but-zero-F1 outputs vs 76 for FP16. Q4 writes valid JSON arrays that *name the wrong entities*.
+The gap between the two F1 metrics is the tell. **Q4's NER hit is over-extraction, not missed entities** — decomposing the corpus counts, it loses 4.1pp of precision but only 0.9pp of recall versus FP16. It invents entities rather than dropping them.
 
-The brittleness is **semantic, not syntactic**. That matters downstream: structural validation (JSON parses, schema validates) won't catch it, because the structure is intact. Whatever validates the content has to validate the content — there's no cheaper proxy. Anyone shipping Q4_K_M for structured information extraction should know this before they ship.
+That over-extraction concentrates on **entity-free sentences**. Of the 72 sentences (24% of the corpus) whose correct answer is the empty set, FP16 and Q8_0 correctly return `[]` ~60% of the time; Q4 only 37.5% — it hallucinates a spurious entity on the rest. This is exactly why macro-F1 (5.0pp) exceeds micro-F1 (3.2pp): per-sentence averaging gives each empty sentence full weight, so one hallucination tanks the whole sentence to zero, while corpus micro-F1 dilutes the same spurious entities across the entity pool.
 
-The published intuition that *"Q4 is fine for pattern-matching, hurts on reasoning"* doesn't hold here. NER is a structured pattern-extraction task, and it's where Q4 visibly degrades. MMLU (more reasoning-heavy) shows a numerically smaller Q4 regression that doesn't reach significance. **The mechanism worth pointing at: Q4 is sensitive to output-structure fidelity, not problem difficulty.**
+It matters downstream because it's **structurally invisible**: Q4 has the *highest* JSON parse rate of the three arms (99.7%), so schema validation passes — the content is just wrong. Whatever checks the entities has to check the entities; there's no cheaper proxy.
+
+The published intuition that *"Q4 is fine for pattern-matching, hurts on reasoning"* doesn't hold here. NER is a structured pattern-extraction task, and it's where Q4 visibly degrades; MMLU (more reasoning-heavy) shows a numerically smaller Q4 regression that doesn't reach significance. In this run the degradation reads as a *precision/calibration* failure — Q4 over-commits to entities, especially where there are none — rather than a reasoning-difficulty one. That's an observed pattern in this data, not a claim about the model's internals.
 
 ## Statistical methodology
 
 The paired design earns its keep in the analysis:
 
-- **Per-arm CIs.** Wilson 95% interval for binary outcomes (MMLU accuracy); bootstrap percentile interval for continuous (NER span-F1).
-- **Pairwise differences.** Paired bootstrap CI on per-example deltas. Same items in both arms means the per-example difference is a real number whose variance is reduced by the pairing.
-- **p-values.** McNemar's test for binary outcomes (exact binomial for ≤25 discordants; Yates continuity-corrected χ² otherwise); paired bootstrap centered under H0 for continuous outcomes.
+- **Per-arm CIs.** Wilson 95% interval for MMLU accuracy; bootstrap CI on the canonical corpus micro-F1 for NER (resample examples, re-pool TP/FP/FN), with per-sentence macro-F1 reported alongside.
+- **Pairwise differences.** Paired bootstrap on per-example deltas (macro / accuracy) and on the pooled micro-F1 difference. Same items in both arms means the difference is a real number whose variance is reduced by the pairing.
+- **p-values.** McNemar's test for binary outcomes (exact binomial for ≤25 discordants; Yates continuity-corrected χ² otherwise); paired bootstrap centered under H0 for the F1 estimands.
+- **Equivalence ≠ non-significance.** "Q8_0 ≈ FP16" is a TOST (two one-sided tests) against a pre-declared ±1pp margin — equivalently, the 90% CI lying inside ±0.01. A non-significant difference test would *not* establish equivalence; the TOST does.
 - **Multiple-comparison correction.** Holm-Bonferroni applied *per task* across the three pairwise tests. Per-task framing matches the reader's per-section interpretation; Holm is uniformly more powerful than Bonferroni and doesn't require the BH PRDS assumption (which paired tests within a task violate).
 - **Cluster-bootstrap on subjects** for the MMLU overall CI. Examples within an MMLU subject are correlated — questions in `professional_medicine` look like other `professional_medicine` questions. The iid bootstrap underestimates variance; cluster-bootstrap resamples subject IDs with replacement and pulls all examples from chosen subjects, giving the correct width.
+- **Provenance.** A committed `experiment_manifest.json` records the per-arm weight-blob SHA256s, modelfiles, Ollama version, and host — so "only quantization varied across arms" is backed by recorded artifact identity rather than assumed.
 
-**Power.** At n=499 aligned per arm on MMLU, the design detects ≥3.8pp accuracy differences at 80% power, α=0.05 (paired diff SD = 0.30 observed). At n=300 per arm on NER, ≥4.3pp span-F1 (paired diff SD = 0.27 observed). Both post-hoc verified on the actual data.
+**Power.** At n=499 aligned per arm on MMLU, the design detects ≥3.8pp accuracy differences at 80% power, α=0.05 (paired diff SD = 0.30 observed). At n=300 per arm on NER, ≥4.3pp per-sentence F1 (paired diff SD = 0.27 observed). Both post-hoc verified on the actual data.
 
 ## Where the effect concentrates
 
@@ -77,7 +81,7 @@ The Q4-vs-FP16 gap on MMLU is concentrated in `miscellaneous` (−6.0pp) and `pr
 What a PM actually needs from a study like this:
 
 **Pick Q8_0 — the default.**
-- Same measured quality as FP16 on both tasks, at ~1.8× throughput. The strongest evidence in the study is for Q8_0 ≈ FP16.
+- Practically equivalent to FP16 on both tasks (TOST, ±1pp), at ~1.8× throughput. The strongest evidence in the study is for Q8_0 ≡ FP16.
 - Right call when a single model serves heterogeneous workloads.
 - Right call when reasoning depth matters (multi-step, legal, medical) — MMLU shows Q8 holds.
 
@@ -85,7 +89,7 @@ What a PM actually needs from a study like this:
 - Throughput is the binding constraint and a measurable F1 hit on structured extraction is acceptable downstream (human review, retry logic, low-stakes outputs).
 - Memory is the binding constraint: Q4_K_M's ~5 GB footprint vs FP16's ~16 GB matters on memory-limited machines (laptops, edge, multi-tenant serving).
 
-> Avoid Q4_K_M for structured information extraction. The 5pp NER gap is significant, and Q4 emits well-formed JSON with the wrong entities — harder to detect downstream than malformed output.
+> Avoid Q4_K_M for structured information extraction. The NER gap is significant under both F1 estimands (3.2pp micro / 5.0pp macro), and it comes from over-extraction — Q4 emits well-formed JSON that adds spurious entities, harder to catch downstream than malformed output: schema validation passes, the content is wrong.
 
 **Stay at FP16 when:**
 - Accuracy is the binding constraint (regulated outputs, safety-critical, eval ground truth).
@@ -93,11 +97,11 @@ What a PM actually needs from a study like this:
 
 ## Reflections
 
-- **The single most consequential design choice was pairing.** Same items, prompts, and seed across all three arms means the per-example difference is a real number whose variance is reduced by the pairing. Published Q4 evaluations that report unpaired benchmark numbers throw away the variance reduction the design hands them for free. Pairing turned a study that would have been underpowered on NER into one that detected a 5pp effect at p_adj=0.003.
+- **The single most consequential design choice was pairing.** Same items, prompts, and seed across all three arms means the per-example difference is a real number whose variance is reduced by the pairing. Published Q4 evaluations that report unpaired benchmark numbers throw away the variance reduction the design hands them for free. Pairing is what let the NER effect clear significance under the canonical metric (3.2pp micro-F1, p_adj=0.032) at n=300.
 - **Round-robin scheduling matters more than it looks.** The first draft of the harness ran arms sequentially (all of FP16, then all of Q8, then all of Q4). A senior review pass surfaced the failure mode: thermal drift and macOS daemon load on a laptop are real, and an hour of one arm's runtime collects enough drift to distort the tok/sec column by single-digit percentage points. Round-robin interleaves arms per example; the throughput numbers in the writeup are the cleaner ones.
 - **Multiple-comparison correction is where rigor pays.** Three pairwise tests per task, two tasks — six tests total. Without correction, one of the marginal MMLU pairs would have been written up as suggestive. With Holm, it's correctly not significant. The corrected p-values are the ones in the README; the uncorrected ones aren't shown.
-- **The failure mode is the lede, not the headline number.** *"Q4 loses 5pp on NER"* is the number. *"Q4 emits well-formed JSON that names the wrong entities, so structural validation downstream won't catch it"* is the finding. The second is what changes how a team using Q4 should think about their validation pipeline. Putting it in the TL;DR was the right call.
-- **A senior cross-functional review pass caught nine things I'd missed.** Self-narrating Limitations meta-comments, a duplicated `non-obvious` qualifier, an unverified parse-rate number I'd written without checking, a mischaracterized MMLU duplicate (it really is a duplicate — verified), a `datasets` version pin that needed an explanatory comment, an unused import, a stale docstring with template numbers, missing Prerequisites + license-acknowledgment sections, and no CI badge. The fixes shipped in four small commits; the review was where the actual quality work happened.
+- **The failure mode is the lede, not the headline number.** *"Q4 loses 3.2pp on NER"* is the number. *"Q4 over-extracts — it hallucinates entities on entity-free sentences, so schema validation downstream won't catch it"* is the finding. The second is what changes how a team using Q4 should think about their validation pipeline. Putting it in the TL;DR was the right call.
+- **A second senior review caught a real metric error — and fixing it made the result stronger, not weaker.** I had labeled the NER score "canonical CoNLL metric," but the code computed per-sentence (macro) F1; the canonical conlleval metric is corpus micro-F1. Recomputed from the committed outputs, the Q4 drop is 3.2pp micro (not 5.0pp), still significant — and reporting *both* metrics is what surfaced the actual mechanism: the macro/micro gap is the over-extraction-on-empty-sentences signal. I also turned "statistically indistinguishable" into a real TOST equivalence claim, added a provenance manifest (model digests) to back the causal framing, and verified one flagged "bug" was a non-issue (the MMLU parser misfire would have *corrupted* the numbers — checked all 1,500 outputs first). Every corrected number was recomputed from the committed data, with a CI job that now re-derives the summary so the writeup can't silently drift from the evidence.
 
 ## Closing observation
 

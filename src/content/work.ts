@@ -271,8 +271,8 @@ export const projects: Project[] = [
     metrics: [
       "3 arms × 800 examples (n=2,400)",
       "Paired bootstrap + Holm correction",
-      "Q8_0 ≈ FP16 at 1.8× throughput",
-      "Q4_K_M: −5.0pp F1 on NER (p_adj=0.003)",
+      "Q8_0 ≡ FP16 (TOST, ±1pp margin)",
+      "Q4_K_M: −3.2pp micro-F1 on NER (p_adj=0.032)",
     ],
     artifact: {
       problem: {
@@ -302,7 +302,7 @@ export const projects: Project[] = [
         {
           stakeholder: "Failure-mode characterization",
           need: "Not just \"Q4 is worse\" but how it fails — so downstream teams know what to guard against.",
-          evidence: "Q4 emits well-formed JSON at a slightly higher parse rate than FP16, but selects the wrong entities — the brittleness is semantic, not syntactic.",
+          evidence: "Q4 emits well-formed JSON at a slightly higher parse rate than FP16, but over-extracts — the NER hit is a precision loss (−4.1pp), not recall, concentrated on entity-free sentences.",
         },
       ],
       decisions: {
@@ -348,7 +348,7 @@ export const projects: Project[] = [
           {
             title: "Statistical methodology built for the paired design",
             detail:
-              "Wilson 95% CI for binary outcomes (MMLU accuracy); bootstrap percentile CI for continuous (NER span-F1). Pairwise differences via paired bootstrap; p-values via McNemar (binary) or paired bootstrap centered under H0 (continuous). Holm-Bonferroni applied per task across the three pairwise tests. Cluster-bootstrap on subjects for the MMLU overall CI.",
+              "Wilson 95% CI for MMLU accuracy; corpus micro-F1 (the canonical CoNLL metric) as the primary NER number, with per-sentence macro-F1 reported alongside as a brittleness view. Pairwise differences via paired bootstrap; p-values via McNemar (binary) or paired bootstrap centered under H0. Holm-Bonferroni per task. Cluster-bootstrap on subjects for the MMLU overall CI. Equivalence (Q8≈FP16) stated as a TOST result against a pre-declared ±1pp margin, not as the absence of a significant difference.",
           },
           {
             title: "Decision framework as deliverable",
@@ -367,13 +367,13 @@ export const projects: Project[] = [
           },
           {
             metric: "Q8_0 vs FP16",
-            after: "Statistically indistinguishable",
-            note: "MMLU Δ = −0.2pp [−0.8, +0.4] · NER Δ = +0.0003 [−0.006, +0.007]",
+            after: "Practically equivalent (TOST, ±1pp)",
+            note: "MMLU p_TOST=0.019 · NER macro p_TOST=0.002 · a positive equivalence claim, not non-significance",
           },
           {
             metric: "Q4_K_M vs FP16 on NER",
-            after: "−5.0pp F1 (significant)",
-            note: "95% CI: [+2.1, +8.1pp] · Holm-adjusted p = 0.003",
+            after: "−3.2pp micro-F1 (significant)",
+            note: "canonical CoNLL micro-F1, 95% CI [0.7, 5.7pp], p_adj=0.032 · −5.0pp on per-sentence macro-F1 (p_adj=0.003)",
           },
           {
             metric: "Throughput / memory at Q8_0",
