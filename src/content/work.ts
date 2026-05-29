@@ -348,7 +348,7 @@ export const projects: Project[] = [
           {
             title: "Statistical methodology built for the paired design",
             detail:
-              "Wilson 95% CI for MMLU accuracy; corpus micro-F1 (the canonical CoNLL metric) as the primary NER number, with per-sentence macro-F1 reported alongside as a brittleness view. Pairwise differences via paired bootstrap; p-values via McNemar (binary) or paired bootstrap centered under H0. Holm-Bonferroni per task. Cluster-bootstrap on subjects for the MMLU overall CI. Equivalence (Q8≈FP16) stated as a TOST result against a pre-declared ±1pp margin, not as the absence of a significant difference.",
+              "Wilson 95% CI for MMLU accuracy; corpus micro-F1 (the canonical CoNLL metric) as the primary NER number, with per-sentence macro-F1 reported alongside as a brittleness view. Pairwise differences via paired bootstrap; p-values via McNemar (binary) or paired bootstrap centered under H0. Holm-Bonferroni per task. Cluster-bootstrap on subjects for the MMLU overall CI. Equivalence (Q8≈FP16) stated as a TOST result against a specified ±1pp practical-equivalence margin, not as the absence of a significant difference.",
           },
           {
             title: "Decision framework as deliverable",
