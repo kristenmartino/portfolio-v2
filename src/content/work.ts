@@ -257,135 +257,6 @@ export const projects: Project[] = [
   },
   {
     index: "02",
-    title: "Quantization Study",
-    category: "Applied LLM Research",
-    summary:
-      "Controlled experiment on Llama 3.1 8B at FP16 / Q8_0 / Q4_K_M — paired design across MMLU and CoNLL-2003 NER (n=2,400). Decision framework, not a leaderboard.",
-    href: "/work/llm-quantization-study",
-    slug: "llm-quantization-study",
-    codeHref: "https://github.com/kristenmartino/llm-quantization-study",
-    year: "2026",
-    status: "Shipped",
-    mode: "Solo build",
-    shape: "data-viz",
-    metrics: [
-      "3 arms × 800 examples (n=2,400)",
-      "Paired bootstrap + Holm correction",
-      "Q8_0 ≈ FP16 at 1.8× throughput",
-      "Q4_K_M: −5.0pp F1 on NER (p_adj=0.003)",
-    ],
-    artifact: {
-      problem: {
-        situation:
-          "Model quantization is a routine production decision: ship at FP16 and pay for the GPU memory, or ship at Q4 and absorb some quality loss for cheaper, faster inference. Most teams pick by feel.",
-        complication:
-          "Published quantization evaluations report whole-benchmark scores (\"Q4 retains 96% of FP16's MMLU\") — not actionable for a PM choosing what precision to ship for a specific workload. The published intuition that \"Q4 is fine for pattern-matching, hurts on reasoning\" turned out to be wrong in this study's data.",
-        question:
-          "Can a single-model, paired-design experiment produce a decision framework that picks the right precision per workload — and characterize how quantization fails, not just whether it does?",
-      },
-      requirements: [
-        {
-          stakeholder: "PM choosing a quantization level",
-          need: "Cost/quality framing per workload, not a leaderboard. \"Ship Q8_0 unless you have a specific reason not to\" beats a four-decimal benchmark score.",
-          evidence: "The deliverable is a decision framework with explicit pick-Q8 / pick-Q4 / stay-at-FP16 conditions.",
-        },
-        {
-          stakeholder: "Skeptical reviewer",
-          need: "Paired CIs, multiple-comparison correction, and real effect sizes — not point estimates that hide the variance.",
-          evidence: "Wilson + paired bootstrap + McNemar + Holm-Bonferroni; CIs reported on every effect size.",
-        },
-        {
-          stakeholder: "Anyone reproducing the result",
-          need: "Deterministic sampling, fixed seed, single-machine reruns; per-example raw outputs shipped alongside summary stats.",
-          evidence: "n=2,400 raw JSONL outputs committed; temperature=0; round-robin schedule debiases tok/sec.",
-        },
-        {
-          stakeholder: "Failure-mode characterization",
-          need: "Not just \"Q4 is worse\" but how it fails — so downstream teams know what to guard against.",
-          evidence: "Q4 emits well-formed JSON at a slightly higher parse rate than FP16, but selects the wrong entities — the brittleness is semantic, not syntactic.",
-        },
-      ],
-      decisions: {
-        criteria: [
-          "Statistical rigor on paired data",
-          "Decision-making utility for PMs",
-          "Reproducibility on commodity hardware",
-          "Scope honesty",
-        ],
-        options: [
-          {
-            option: "Single benchmark (MMLU only), one summary number per arm",
-            scores: ["partial", "unmet", "met", "partial"],
-          },
-          {
-            option: "Two benchmarks, independent-sample CIs across arms",
-            scores: ["partial", "partial", "met", "met"],
-          },
-          {
-            option:
-              "Paired design across two contrasting tasks, paired bootstrap + Holm-corrected pairwise effects, cluster-bootstrap on subjects, decision framework as deliverable",
-            chosen: true,
-            scores: ["met", "met", "met", "met"],
-            rationale:
-              "Pairing same items across arms exploits the within-example correlation that independent-sample tests discard — n=499 paired with σ_diff=0.30 detects ≥3.8pp at 80% power, materially tighter than the same n unpaired. Two tasks (MMLU = reasoning/classification; CoNLL-2003 NER = structured extraction) catch the failure mode that a single benchmark hides: Q4's NER regression isn't visible in MMLU. Holm-Bonferroni per task (3 pairwise tests each) controls family-wise error without the over-correction of cross-task Bonferroni. Cluster-bootstrap on subjects for the MMLU overall CI accounts for within-subject correlation that the iid bootstrap underestimates. The decision framework — pick Q8 by default, pick Q4 under specified constraints, stay at FP16 in other specified cases — is what a PM actually needs from this kind of study; leaderboard numbers are not.",
-          },
-        ],
-      },
-      solution: {
-        summary:
-          "Three-arm paired controlled experiment with round-robin scheduling, statistical methodology built for paired data, and a decision framework — not a benchmark leaderboard — as the deliverable.",
-        pillars: [
-          {
-            title: "Paired design with round-robin scheduling",
-            detail:
-              "Every example scored across all three arms before moving to the next. Warmups for all arms precede the timed loop; arm order interleaves per example. Debiases tok/sec against thermal and daemon drift that sequential-arm execution silently bakes in. Same items, same prompts, same seed (42).",
-          },
-          {
-            title: "Two tasks chosen for contrast",
-            detail:
-              "MMLU (knowledge/reasoning, four-way multiple choice, stratified across 10 subjects, mechanically scored from the first A–D character) and CoNLL-2003 NER (structured extraction, span-F1 with type-match required, malformed JSON scored as 0). The contrast is the point: one classification task and one structured-extraction task surface different failure modes.",
-          },
-          {
-            title: "Statistical methodology built for the paired design",
-            detail:
-              "Wilson 95% CI for binary outcomes (MMLU accuracy); bootstrap percentile CI for continuous (NER span-F1). Pairwise differences via paired bootstrap; p-values via McNemar (binary) or paired bootstrap centered under H0 (continuous). Holm-Bonferroni applied per task across the three pairwise tests. Cluster-bootstrap on subjects for the MMLU overall CI.",
-          },
-          {
-            title: "Decision framework as deliverable",
-            detail:
-              "The output is not \"Q8 = 0.587 accuracy.\" The output is \"pick Q8_0 as the default; pick Q4_K_M when memory or latency is binding and the workload doesn't include structured information extraction; stay at FP16 when accuracy is the binding constraint.\" Each pick condition tied to a specific finding with a CI and a corrected p-value.",
-          },
-        ],
-      },
-      outcome: {
-        kind: "metrics",
-        items: [
-          {
-            metric: "Sample size",
-            after: "n=2,400 raw outputs",
-            note: "3 arms × (500 MMLU + 300 NER) examples · committed alongside summary stats",
-          },
-          {
-            metric: "Q8_0 vs FP16",
-            after: "Statistically indistinguishable",
-            note: "MMLU Δ = −0.2pp [−0.8, +0.4] · NER Δ = +0.0003 [−0.006, +0.007]",
-          },
-          {
-            metric: "Q4_K_M vs FP16 on NER",
-            after: "−5.0pp F1 (significant)",
-            note: "95% CI: [+2.1, +8.1pp] · Holm-adjusted p = 0.003",
-          },
-          {
-            metric: "Throughput / memory at Q8_0",
-            after: "1.8× FP16 / 0.53× memory",
-            note: "Q4_K_M: 2.5× throughput / 0.31× memory · MacBook M4 Max",
-          },
-        ],
-      },
-    },
-  },
-  {
-    index: "03",
     title: "Eval Harness",
     category: "Applied LLM Evaluation",
     summary:
@@ -526,6 +397,135 @@ export const projects: Project[] = [
             metric: "Phase 1 leaderboard numbers",
             after: "Pending",
             note: "Execution begins once Sift corpus is pulled + 70B timing benchmark runs on DGX Spark",
+          },
+        ],
+      },
+    },
+  },
+  {
+    index: "03",
+    title: "Quantization Study",
+    category: "Applied LLM Research",
+    summary:
+      "Controlled experiment on Llama 3.1 8B at FP16 / Q8_0 / Q4_K_M — paired design across MMLU and CoNLL-2003 NER (n=2,400). Decision framework, not a leaderboard.",
+    href: "/work/llm-quantization-study",
+    slug: "llm-quantization-study",
+    codeHref: "https://github.com/kristenmartino/llm-quantization-study",
+    year: "2026",
+    status: "Shipped",
+    mode: "Solo build",
+    shape: "data-viz",
+    metrics: [
+      "3 arms × 800 examples (n=2,400)",
+      "Paired bootstrap + Holm correction",
+      "Q8_0 ≡ FP16 (TOST, ±1pp margin)",
+      "Q4_K_M: −3.2pp micro-F1 on NER (p_adj=0.032)",
+    ],
+    artifact: {
+      problem: {
+        situation:
+          "Model quantization is a routine production decision: ship at FP16 and pay for the GPU memory, or ship at Q4 and absorb some quality loss for cheaper, faster inference. Most teams pick by feel.",
+        complication:
+          "Published quantization evaluations report whole-benchmark scores (\"Q4 retains 96% of FP16's MMLU\") — not actionable for a PM choosing what precision to ship for a specific workload. The published intuition that \"Q4 is fine for pattern-matching, hurts on reasoning\" turned out to be wrong in this study's data.",
+        question:
+          "Can a single-model, paired-design experiment produce a decision framework that picks the right precision per workload — and characterize how quantization fails, not just whether it does?",
+      },
+      requirements: [
+        {
+          stakeholder: "PM choosing a quantization level",
+          need: "Cost/quality framing per workload, not a leaderboard. \"Ship Q8_0 unless you have a specific reason not to\" beats a four-decimal benchmark score.",
+          evidence: "The deliverable is a decision framework with explicit pick-Q8 / pick-Q4 / stay-at-FP16 conditions.",
+        },
+        {
+          stakeholder: "Skeptical reviewer",
+          need: "Paired CIs, multiple-comparison correction, and real effect sizes — not point estimates that hide the variance.",
+          evidence: "Wilson + paired bootstrap + McNemar + Holm-Bonferroni; CIs reported on every effect size.",
+        },
+        {
+          stakeholder: "Anyone reproducing the result",
+          need: "Deterministic sampling, fixed seed, single-machine reruns; per-example raw outputs shipped alongside summary stats.",
+          evidence: "n=2,400 raw JSONL outputs committed; temperature=0; round-robin schedule debiases tok/sec.",
+        },
+        {
+          stakeholder: "Failure-mode characterization",
+          need: "Not just \"Q4 is worse\" but how it fails — so downstream teams know what to guard against.",
+          evidence: "Q4 emits well-formed JSON at a slightly higher parse rate than FP16, but over-extracts — the NER hit is a precision loss (−4.1pp), not recall, concentrated on entity-free sentences.",
+        },
+      ],
+      decisions: {
+        criteria: [
+          "Statistical rigor on paired data",
+          "Decision-making utility for PMs",
+          "Reproducibility on commodity hardware",
+          "Scope honesty",
+        ],
+        options: [
+          {
+            option: "Single benchmark (MMLU only), one summary number per arm",
+            scores: ["partial", "unmet", "met", "partial"],
+          },
+          {
+            option: "Two benchmarks, independent-sample CIs across arms",
+            scores: ["partial", "partial", "met", "met"],
+          },
+          {
+            option:
+              "Paired design across two contrasting tasks, paired bootstrap + Holm-corrected pairwise effects, cluster-bootstrap on subjects, decision framework as deliverable",
+            chosen: true,
+            scores: ["met", "met", "met", "met"],
+            rationale:
+              "Pairing same items across arms exploits the within-example correlation that independent-sample tests discard — n=499 paired with σ_diff=0.30 detects ≥3.8pp at 80% power, materially tighter than the same n unpaired. Two tasks (MMLU = reasoning/classification; CoNLL-2003 NER = structured extraction) catch the failure mode that a single benchmark hides: Q4's NER regression isn't visible in MMLU. Holm-Bonferroni per task (3 pairwise tests each) controls family-wise error without the over-correction of cross-task Bonferroni. Cluster-bootstrap on subjects for the MMLU overall CI accounts for within-subject correlation that the iid bootstrap underestimates. The decision framework — pick Q8 by default, pick Q4 under specified constraints, stay at FP16 in other specified cases — is what a PM actually needs from this kind of study; leaderboard numbers are not.",
+          },
+        ],
+      },
+      solution: {
+        summary:
+          "Three-arm paired controlled experiment with round-robin scheduling, statistical methodology built for paired data, and a decision framework — not a benchmark leaderboard — as the deliverable.",
+        pillars: [
+          {
+            title: "Paired design with round-robin scheduling",
+            detail:
+              "Every example scored across all three arms before moving to the next. Warmups for all arms precede the timed loop; arm order interleaves per example. Debiases tok/sec against thermal and daemon drift that sequential-arm execution silently bakes in. Same items, same prompts, same seed (42).",
+          },
+          {
+            title: "Two tasks chosen for contrast",
+            detail:
+              "MMLU (knowledge/reasoning, four-way multiple choice, stratified across 10 subjects, mechanically scored from the first A–D character) and CoNLL-2003 NER (structured extraction, span-F1 with type-match required, malformed JSON scored as 0). The contrast is the point: one classification task and one structured-extraction task surface different failure modes.",
+          },
+          {
+            title: "Statistical methodology built for the paired design",
+            detail:
+              "Wilson 95% CI for MMLU accuracy; corpus micro-F1 (the canonical CoNLL metric) as the primary NER number, with per-sentence macro-F1 reported alongside as a brittleness view. Pairwise differences via paired bootstrap; p-values via McNemar (binary) or paired bootstrap centered under H0. Holm-Bonferroni per task. Cluster-bootstrap on subjects for the MMLU overall CI. Equivalence (Q8≈FP16) stated as a TOST result against a specified ±1pp practical-equivalence margin, not as the absence of a significant difference.",
+          },
+          {
+            title: "Decision framework as deliverable",
+            detail:
+              "The output is not \"Q8 = 0.587 accuracy.\" The output is \"pick Q8_0 as the default; pick Q4_K_M when memory or latency is binding and the workload doesn't include structured information extraction; stay at FP16 when accuracy is the binding constraint.\" Each pick condition tied to a specific finding with a CI and a corrected p-value.",
+          },
+        ],
+      },
+      outcome: {
+        kind: "metrics",
+        items: [
+          {
+            metric: "Sample size",
+            after: "n=2,400 raw outputs",
+            note: "3 arms × (500 MMLU + 300 NER) examples · committed alongside summary stats",
+          },
+          {
+            metric: "Q8_0 vs FP16",
+            after: "Practically equivalent (TOST, ±1pp)",
+            note: "MMLU p_TOST=0.019 · NER macro p_TOST=0.002 · a positive equivalence claim, not non-significance",
+          },
+          {
+            metric: "Q4_K_M vs FP16 on NER",
+            after: "−3.2pp micro-F1 (significant)",
+            note: "canonical CoNLL micro-F1, 95% CI [0.7, 5.7pp], p_adj=0.032 · −5.0pp on per-sentence macro-F1 (p_adj=0.003)",
+          },
+          {
+            metric: "Throughput / memory at Q8_0",
+            after: "1.8× FP16 / 0.53× memory",
+            note: "Q4_K_M: 2.5× throughput / 0.31× memory · MacBook M4 Max",
           },
         ],
       },
