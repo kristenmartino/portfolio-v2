@@ -257,6 +257,140 @@ export const projects: Project[] = [
   },
   {
     index: "02",
+    title: "Tenancy",
+    category: "AI Document Agent",
+    summary:
+      "Lease abstraction agent for multifamily operators — extracts nine structured sections from residential lease PDFs with per-field source citations, click-to-highlight overlays anchored to OCR coordinates, a human-review exception queue, and grounded Q&A. The same agent is exposed as an MCP server.",
+    href: "/work/tenancy",
+    slug: "tenancy",
+    liveHref: "https://tenancy.kristenmartino.ai",
+    codeHref: "https://github.com/kristenmartino/tenancy-api",
+    year: "2026",
+    status: "Shipped",
+    mode: "Solo build",
+    shape: "pipeline",
+    metrics: [
+      "9 lease sections · per-field citations",
+      "OCR-anchored highlight overlays (pdfplumber)",
+      "Approve / edit / reject review queue",
+      "FastAPI · LangGraph · Claude · MCP",
+    ],
+    artifact: {
+      problem: {
+        situation:
+          "Multifamily operators turn lease PDFs into structured data at portfolio scale — during acquisitions, audits, and renewals. An LLM can read a lease and emit the fields; that part is close to free. The schema was never the hard part.",
+        complication:
+          "The hard part is trust. A reviewer will not accept an extracted field — a rent amount, a deposit, a term date — without seeing where in the document it came from. Building that \"click a field, highlight the source\" link is where the system actually broke: twelve-plus iterations of fuzzy text matching produced confident, wrong-place highlights; a strict exact-match fixed wrong-place by failing silently; and asking the model to emit bounding boxes drifted three to eight percent and boxed entire section headers when the field was a blank template placeholder.",
+        question:
+          "Can the highlight be anchored to the document — trustworthy enough that a reviewer relies on it — given that a wrong highlight erodes trust faster than no highlight at all?",
+      },
+      requirements: [
+        {
+          stakeholder: "Property-management reviewer",
+          need: "Every extracted field traceable to its page with a visible highlight on the source line. A highlight in the wrong place is worse than none — it teaches the reviewer to distrust the tool.",
+          evidence: "Design rule: a silent miss beats a confident wrong-place highlight",
+        },
+        {
+          stakeholder: "Risk / compliance",
+          need: "Nothing reaches the system of record until a human approves, edits, or rejects each flagged exception; a rejected blocker keeps the lease out of the ready state.",
+          evidence: "ready_to_proceed derived per lease, gated on unresolved blockers",
+        },
+        {
+          stakeholder: "Extraction honesty",
+          need: "When a field is genuinely blank in the lease, report a null value at high confidence rather than inventing a plausible one.",
+          evidence: "match_type ∈ filled / blank / inferred / checkbox / absent",
+        },
+        {
+          stakeholder: "Engineer maintaining it",
+          need: "The highlight's coordinate source must be swappable — model vision, OCR alignment, AWS Textract — without rewriting the renderer.",
+          evidence: "Frontend consumes bboxes: BoundingBox[]; the source stays backend-internal",
+        },
+      ],
+      decisions: {
+        criteria: [
+          "Positional accuracy",
+          "Honest failure mode",
+          "Works on blank + scanned fields",
+          "Build effort",
+        ],
+        options: [
+          {
+            option: "Fuzzy text-layer matching (heuristic, 12+ iterations)",
+            scores: ["partial", "unmet", "unmet", "unmet"],
+          },
+          {
+            option: "Strict exact-normalized text match (silent miss on no match)",
+            scores: ["partial", "met", "unmet", "met"],
+          },
+          {
+            option: "Model-emitted bounding boxes (Claude vision)",
+            scores: ["partial", "partial", "partial", "met"],
+          },
+          {
+            option:
+              "OCR-anchored bboxes — pdfplumber word positions + rapidfuzz snippet alignment, one rect per line",
+            chosen: true,
+            scores: ["met", "met", "met", "partial"],
+            rationale:
+              "The model returns {value, snippet, match_type, section_label} and never coordinates; the backend aligns the snippet against pdfplumber's word-level positions in the OCR'd PDF and emits one bounding box per line, following the PDF spec's QuadPoints highlight model. Surveying production document-AI systems — docTR, Surya, PaddleOCR, Textract, Mindee, Landing.AI — they converge on the same split: OCR-first for geometry, model-second for semantics. Donut, the one mainstream system that asks a model to emit coordinates from a raster, carries a documented ~11.5% hallucination rate. The renderer consumes a bbox array and is agnostic to where the boxes came from, so the production-grade upgrade (Textract SELECTION_ELEMENT for checkbox and signature geometry) is a backend swap, not a rewrite. The build cost is higher than letting the model emit coordinates — but that option fails exactly where it matters, on the blank and scanned fields a reviewer most needs to verify.",
+          },
+        ],
+      },
+      solution: {
+        summary:
+          "A lease abstraction agent that extracts nine structured sections with per-field provenance, anchors every highlight to OCR coordinates rather than model estimation, gates output behind a human-review exception queue, and answers grounded questions over the result — exposed as both a SaaS UI and an MCP server over the same backend.",
+        pillars: [
+          {
+            title: "Page-image-grounded extraction",
+            detail:
+              "Claude Sonnet extracts nine sections (parties, property, term, rent, deposits, utilities, pets, special clauses, compliance) over OCR'd text plus a rendered PNG of each page. The image is ground truth for visual fields — checkboxes, signatures, hand-fill — and the OCR text is ground truth for dense prose. That split fixed a class of false-positive checkbox reads where OCR noise looked like a mark.",
+          },
+          {
+            title: "OCR-anchored highlight overlays",
+            detail:
+              "The backend aligns each field's source snippet against pdfplumber word positions and emits one bounding box per line; the frontend draws absolutely-positioned overlays scaled to the rendered page. Filled values land tight, multi-line values render as stacked rectangles, and blank template fields anchor on the labeled blank line rather than the section header above it.",
+          },
+          {
+            title: "Exception queue with real resolve semantics",
+            detail:
+              "Validation rules (required-field presence, date order, confidence thresholds) flag exceptions as blocking or warning. Approve accepts the current value; edit rewrites the extraction at the field path and bumps confidence to 1.0; reject closes the row for audit but keeps the blocker material. A derived ready_to_proceed flag gates the lease.",
+          },
+          {
+            title: "Grounded Q&A + MCP surface",
+            detail:
+              "Claude Haiku answers questions over the stored extraction — every answer cites field path, page, and snippet, and the citation clicks through to the same highlight. The whole agent is also a six-tool MCP server (list, get, extract, query, list-exceptions, resolve), so it runs inside Claude Desktop against the same Railway backend.",
+          },
+        ],
+      },
+      outcome: {
+        kind: "metrics",
+        items: [
+          {
+            metric: "Extraction",
+            after: "9 sections, per-field citations",
+            note: "Page, snippet, and confidence on every value; honest null on blank fields",
+          },
+          {
+            metric: "Highlight",
+            after: "OCR-anchored, not model-estimated",
+            note: "Filled tight · multi-line stacked · blank fields on the blank line · verified end-to-end on a fresh lease",
+          },
+          {
+            metric: "Coverage, stated honestly",
+            after: "Checkboxes / signatures not highlighted",
+            note: "Deferred to a Textract follow-up — a silent miss beats a wrong-place box",
+          },
+          {
+            metric: "Surfaces",
+            after: "SaaS UI + 6-tool MCP server",
+            note: "One FastAPI / LangGraph backend · Sonnet extract · Haiku Q&A",
+          },
+        ],
+      },
+    },
+  },
+  {
+    index: "03",
     title: "Eval Harness",
     category: "Applied LLM Evaluation",
     summary:
@@ -403,7 +537,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "03",
+    index: "04",
     title: "Quantization Study",
     category: "Applied LLM Research",
     summary:
@@ -532,7 +666,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "04",
+    index: "05",
     title: "Tarazu",
     category: "Product + AI",
     summary:
@@ -654,7 +788,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "05",
+    index: "06",
     title: "Sift",
     category: "AI News + Civic Literacy",
     summary:
@@ -783,7 +917,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "06",
+    index: "07",
     title: "FocusForge",
     category: "iOS Mobile App",
     summary:
@@ -885,7 +1019,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "07",
+    index: "08",
     title: "GTM Healthcare Intelligence",
     category: "Healthcare GTM Analytics",
     summary:
@@ -1013,7 +1147,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "08",
+    index: "09",
     title: "Platform Migration + ARR Growth",
     category: "Cross-Functional Delivery",
     summary:
@@ -1025,7 +1159,7 @@ export const projects: Project[] = [
     shape: "pipeline",
   },
   {
-    index: "09",
+    index: "10",
     title: "Revenue Recovery Audit Workflow",
     category: "Enterprise Systems",
     summary:
@@ -1037,7 +1171,7 @@ export const projects: Project[] = [
     shape: "table",
   },
   {
-    index: "10",
+    index: "11",
     title: "RMS Fare Validation System",
     category: "Decision Support",
     summary:
@@ -1049,7 +1183,7 @@ export const projects: Project[] = [
     shape: "decision",
   },
   {
-    index: "11",
+    index: "12",
     title: "Flight Disruption Recovery",
     category: "Operational Decision Support",
     summary:
