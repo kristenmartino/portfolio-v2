@@ -135,16 +135,16 @@ export const projects: Project[] = [
     href: "/work/valuate",
     slug: "valuate",
     liveHref: "https://valuate.kristenmartino.ai",
-    codeHref: "https://github.com/kristenmartino/valuate-api",
+    codeHref: "https://github.com/kristenmartino/valuate",
     year: "2026",
     status: "Shipped",
     mode: "Solo build",
     shape: "pipeline",
     metrics: [
-      "10 S&P 500 tickers",
+      "18 tickers, 5 industries",
       "Two-track extraction (XBRL + LLM)",
+      "97.7% extraction-eval baseline",
       "Source quotes + HITL review",
-      "10K Monte Carlo iterations",
     ],
     artifact: {
       problem: {
