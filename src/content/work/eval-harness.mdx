@@ -2,7 +2,7 @@
 
 Most leaderboards for open-weight vs frontier LLMs answer a question one level too abstract for an applied team — *"how does Llama 3.1 8B score on MMLU vs Sonnet 4.6"* — and stop there. The question that determines whether a team actually switches is the next one down: *for this specific pipeline stage, on this specific corpus, can this specific open-weight model replace the frontier API I'm paying for, and at what cost-per-quality-point trade-off?*
 
-This harness answers that question on a real production workload — [Sift](/work/sift)'s news-pipeline stages (categorization, summarization, structured extraction, grounded RAG) — across nine LLMs (five open-weight on a local DGX Spark via Ollama; four closed-weight via API). The deliverable is a routing-decision framework, not a benchmark leaderboard. The leaderboard is the worked example.
+This harness is built to answer that question on a real production workload — [Sift](/work/sift)'s news-pipeline stages (categorization, summarization, structured extraction, grounded RAG) — across nine LLMs (five open-weight on a local DGX Spark via Ollama; four closed-weight via API). The deliverable is a routing-decision framework, not a benchmark leaderboard. The leaderboard is the worked example.
 
 <Specs>
   <Spec label="Role" value="Strategy, experimental design, methodology, harness engineering" />
@@ -29,7 +29,7 @@ Three observations shape the design:
 - **Open-weight, quality-ceiling reference** — Llama 3.1 70B Q4. Included as an upper bound on what open-weight can achieve on Sift's tasks, but excluded from the deployment cost view because expected DGX Spark throughput (~10–15 tok/s on 3–4K-token articles) is infeasible at Sift's daily volume. A pre-flight timing benchmark confirms or rejects this split before the full eval runs.
 - **Closed-weight reference** — Claude Haiku 4.5 (Sift's current production model; the bar to beat), Claude Sonnet 4.6 (quality ceiling; also primary judge), GPT-4o (cross-vendor judge), GPT-4o mini.
 
-**Four tasks chosen because they're the actual pipeline.** Task A is multi-label categorization (the highest-volume step, biggest cost lever). Task B is summarization for the UI (user-facing quality matters most). Task C is structured entity extraction (tests whether open-weight can hold schemas). Task D is grounded RAG with citations (the agentic capability the rest of the industry actually cares about). Plus a 50-prompt safety smoke test for deployment-blocking regressions.
+**Four tasks chosen because they're the actual pipeline.** Task A is single-label multiclass categorization (the highest-volume step, biggest cost lever). Task B is summarization for the UI (user-facing quality matters most). Task C is structured entity extraction (tests whether open-weight can hold schemas). Task D is grounded RAG with citations (the agentic capability the rest of the industry actually cares about). Plus a 50-prompt safety smoke test for deployment-blocking regressions.
 
 **Identical prompt content across models; native chat templates per model.** A foreign chat template (Qwen prompts wrapped in Llama 3's role tokens) measurably degrades performance for tokenizer reasons unrelated to capability. So the content is shared, the framing is per-model.
 
@@ -48,9 +48,9 @@ The credibility of a leaderboard sits in its methodology, not its numbers. Five 
 The held-out discipline is what separates a benchmark from a defensible eval, so the mechanism is worth describing concretely:
 
 - Held-out items live in `data/holdout/`, separate from `data/dev/`.
-- `holdout.sha256` is committed to git *before any prompt iteration begins*.
-- Prompt-iteration scripts only have read access to `data/dev/`; the runner requires an explicit `--include-held-out` flag.
-- The final-scoring run commits results alongside the unchanged hash file. Any reviewer can verify (a) the hash hasn't changed since the pre-iteration commit, (b) the runner invocation logs include the held-out flag only on the final run.
+- The runner refuses held-out access without an explicit `--include-held-out` flag and verifies the set against a committed `holdout.sha256` manifest before scoring, rejecting any set that changed since it was locked. This gate is implemented and enforced today, with tamper-detection tests ([eval-harness #1](https://github.com/kristenmartino/eval-harness/pull/1)).
+- The real Set-1 `holdout.sha256` is committed to git *before any prompt iteration begins*, at corpus pull (Phase 1); a sample lock ships now to demonstrate the mechanism.
+- The final-scoring run then commits results alongside the unchanged hash file, so any reviewer can verify (a) the hash hasn't changed since the pre-iteration commit, (b) the runner invocation logs include the held-out flag only on the final run.
 
 > The proof is in the commit history, not the author's word.
 

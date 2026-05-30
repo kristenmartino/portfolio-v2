@@ -270,7 +270,7 @@ export const projects: Project[] = [
     mode: "Solo build",
     shape: "data-viz",
     metrics: [
-      "9 models · 4 tasks · n=870 across eval sets",
+      "9 models · 4 tasks · planned n=870 across eval sets",
       "Cross-vendor judging · Bradley-Terry MM ranking",
       "Verifiable held-out lock (SHA-256 + git)",
       "Hardware-amortized cost on DGX Spark",
@@ -289,7 +289,7 @@ export const projects: Project[] = [
           stakeholder: "Applied team making a routing decision",
           need: "Per-task cost/quality framing, not a single composite score. The decision is per pipeline stage — categorization may route differently from summarization.",
           evidence:
-            "Four task modules (categorization, summarization, extraction, RAG) each scored on its own quality + cost frontier",
+            "Four tasks (categorization, summarization, extraction, RAG), each scored on its own quality + cost frontier; modules A/B implemented, C/D specified and pending",
         },
         {
           stakeholder: "Skeptical reviewer",
@@ -301,7 +301,7 @@ export const projects: Project[] = [
           stakeholder: "Reproducibility-first reader",
           need: "Held-out discipline that survives the obvious 'how do I know you didn't peek' question.",
           evidence:
-            "20% held-out items SHA-256 hashed and committed to git before any prompt iteration; runner enforces an explicit flag for held-out access; proof is in the commit history.",
+            "Runner enforces held-out access behind an explicit --include-held-out flag and verifies the set against a committed SHA-256 manifest (implemented in eval-harness); the real 20% Set-1 lock is committed to git before any prompt iteration, at corpus pull. Proof is in the commit history.",
         },
         {
           stakeholder: "Procurement / cost-side reader",
@@ -334,7 +334,7 @@ export const projects: Project[] = [
             chosen: true,
             scores: ["met", "met", "met", "met"],
             rationale:
-              "The methodology IS the deliverable; the leaderboard is the worked example. Cross-vendor judging eliminates self-preference bias on the pairwise summarization task — the single most common LLM-eval methodology failure. Bradley-Terry MM (Hunter 2004) over all 36 model pairs yields a global strength ranking rather than the asymmetric everyone-vs-Haiku design, which would leave Haiku itself unrankable. Hardware-amortized cost lets local compute be compared to API token pricing on a single axis. The verifiable held-out lock — SHA-256 of the held-out items committed before any iteration — moves 'I held out 20%' from a vibes claim to a verifiable one. The v0.2 critique round caught nine real methodology issues (judge contamination, scoring conflation on JSON, sample-size power, 70B-on-Task-A throughput infeasibility) before any number was computed, applied them as a tracked diff, and deferred three to v0.3 as post-data-collection decisions.",
+              "The methodology IS the deliverable; the leaderboard is the worked example. Cross-vendor judging eliminates self-preference bias on the pairwise summarization task — the single most common LLM-eval methodology failure. Bradley-Terry MM (Hunter 2004) over all 36 model pairs yields a global strength ranking rather than the asymmetric everyone-vs-Haiku design, which would leave Haiku itself unrankable. Hardware-amortized cost lets local compute be compared to API token pricing on a single axis. The held-out lock — enforced in the runner, which refuses held-out access without an explicit flag and verifies the set against a committed SHA-256 manifest — moves 'I held out 20%' from a vibes claim to a verifiable one. The v0.2 critique round caught nine real methodology issues (judge contamination, scoring conflation on JSON, sample-size power, 70B-on-Task-A throughput infeasibility) before any number was computed, applied them as a tracked diff, and deferred three to v0.3 as post-data-collection decisions.",
           },
         ],
       },
@@ -350,7 +350,7 @@ export const projects: Project[] = [
           {
             title: "Verifiable held-out lock",
             detail:
-              "Held-out items live in data/holdout/ separately from data/dev/. holdout.sha256 is committed to git before any prompt tuning begins. The runner requires an explicit --include-held-out flag. Any reviewer can verify (a) the hash hasn't changed since the pre-iteration commit, (b) the runner logs include the held-out flag only on the final run.",
+              "Held-out items live in data/holdout/ separately from data/dev/. The runner refuses held-out access without an explicit --include-held-out flag and verifies the set against a committed SHA-256 manifest before scoring, with tamper-detection tests (implemented in eval-harness). The real Set-1 holdout.sha256 is committed before any prompt tuning begins, at corpus pull; the final-scoring run then lets any reviewer verify the hash never moved and that the held-out flag appears only on the final run.",
           },
           {
             title: "Hardware-amortized cost methodology",
@@ -375,8 +375,8 @@ export const projects: Project[] = [
           },
           {
             metric: "Harness infrastructure",
-            after: "End-to-end with 25 tests passing",
-            note: "Adapter Protocol (Ollama + Anthropic + OpenAI + Mock) · task modules (categorization + summarization) · runner with JSONL reproducibility headers + resumability · Bradley-Terry MM",
+            after: "End-to-end with 47 tests passing",
+            note: "Adapter Protocol (Ollama + Anthropic + OpenAI + Mock) · task modules (categorization + summarization) · runner with JSONL reproducibility headers + resumability + enforced held-out gate + CLI · Bradley-Terry MM",
           },
           {
             metric: "Pre-flight scripts",
