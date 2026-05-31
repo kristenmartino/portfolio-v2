@@ -269,6 +269,9 @@ export const projects: Project[] = [
     status: "Shipped",
     mode: "Solo build",
     shape: "pipeline",
+    image: "/work/tenancy.png",
+    imageAlt:
+      "Tenancy lease detail view — a page-one residential lease with a source highlight on the resident-name field, beside the structured extraction panel showing per-field confidence scores and source citations.",
     metrics: [
       "9 lease sections · per-field citations",
       "OCR-anchored highlight overlays (pdfplumber)",
