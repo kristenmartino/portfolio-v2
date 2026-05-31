@@ -48,7 +48,10 @@ export function Work() {
               {String(projects.length).padStart(2, "0")} projects
             </Mono>
           </div>
-          <div onMouseLeave={() => setActive(null)}>
+          <div
+            onMouseLeave={() => setActive(null)}
+            className="grid grid-cols-[2.5rem_1fr_auto] md:grid-cols-[3.5rem_minmax(0,1.4fr)_minmax(0,1fr)_auto] gap-x-4 md:gap-x-6"
+          >
             {projects.map((project, i) => (
               <ProjectRow
                 key={project.title}
