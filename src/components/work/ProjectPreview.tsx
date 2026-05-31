@@ -13,7 +13,7 @@ type ProjectPreviewProps = {
 
 export function ProjectPreview({ project }: ProjectPreviewProps) {
   return (
-    <div className="hidden lg:block sticky top-32">
+    <div className="hidden lg:block sticky top-32 self-start">
       <div
         className="relative aspect-[4/3] w-full overflow-hidden border"
         style={{ borderColor: "var(--color-graphite-10)" }}

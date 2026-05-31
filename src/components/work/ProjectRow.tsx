@@ -28,7 +28,7 @@ export function ProjectRow({
       onMouseLeave={onDeactivate}
       onFocus={() => onActivate(project)}
       onBlur={onDeactivate}
-      className="group relative grid grid-cols-[2.5rem_1fr_auto] md:grid-cols-[3.5rem_1.4fr_1fr_auto] items-baseline gap-4 md:gap-8 py-5 md:py-7 border-b transition-colors"
+      className="group relative grid grid-cols-subgrid col-span-3 md:col-span-4 items-baseline py-5 md:py-7 border-b transition-colors"
       style={{
         borderColor: active
           ? "var(--color-graphite-20)"
