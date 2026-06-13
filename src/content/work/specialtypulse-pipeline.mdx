@@ -2,13 +2,13 @@
 
 SpecialtyPulse Pipeline is the production build of an idea prototyped in [GTM Healthcare Intelligence](/work/gtm-healthcare): that healthcare go-to-market reporting lives or dies on governance, not dashboards. Where the GTM suite demonstrated the framework — a metric registry, adoption tracking, a maturity model — this project builds the enterprise version of one slice of it, end to end: CMS Medicare reimbursement data through a Databricks medallion pipeline, orchestrated by Airflow, delivered to a five-page executive dashboard behind row-level security that CI re-verifies on every push.
 
-The source is the CMS Medicare Physician & Other Practitioners Public Use File, 2021–2025 — released annually as multi-gigabyte CSVs with no types, no benchmarks, and no access model. The deliverable is what an enterprise BI team is actually accountable for: certified metrics, role-scoped access, and a pipeline that fails loudly instead of corrupting quietly.
+The source is the CMS Medicare Physician & Other Practitioners Public Use File, 2021–2023 — released annually as multi-gigabyte CSVs with no types, no benchmarks, and no access model. The deliverable is what an enterprise BI team is actually accountable for: certified metrics, role-scoped access, and a pipeline that fails loudly instead of corrupting quietly.
 
 <Specs>
   <Spec label="Role" value="Strategy, pipeline build, and BI governance" />
   <Spec label="Year" value="2026" />
   <Spec label="Domain" value="Healthcare GTM · executive reporting" />
-  <Spec label="Data" value="CMS Medicare Physician & Other Practitioners PUF · 2021–2025" />
+  <Spec label="Data" value="CMS Medicare Physician & Other Practitioners PUF · 2021–2023" />
   <Spec label="Stack" value="Databricks (PySpark · Delta Lake) · Airflow (Astro CLI) · Domo (DataSets · SQL DataFlow · PDP) · React 18 · GitHub Actions" />
   <Spec label="Status" value="Shipped · dashboard republished standalone" />
 </Specs>
@@ -27,7 +27,7 @@ Three failure modes drive the design, and all three live at the delivery layer r
   <div style={{ display: "flex", flexWrap: "wrap", alignItems: "stretch", gap: "8px", padding: "20px" }}>
     <div style={{ flex: "1 1 130px", border: "1px solid var(--color-graphite-80)", padding: "12px" }}>
       <Mono variant="caption" tone="muted">Source</Mono>
-      <p style={{ margin: "6px 0 0", fontSize: "13px" }}>CMS PUF CSVs 2021–2025, multi-GB, untyped</p>
+      <p style={{ margin: "6px 0 0", fontSize: "13px" }}>CMS PUF CSVs 2021–2023, multi-GB, untyped</p>
     </div>
     <div style={{ alignSelf: "center", color: "var(--color-graphite-60)" }}>→</div>
     <div style={{ flex: "1 1 150px", border: "1px solid var(--color-graphite-80)", padding: "12px" }}>

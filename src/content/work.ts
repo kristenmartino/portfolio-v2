@@ -157,7 +157,7 @@ export const projects: Project[] = [
     imageAlt:
       "SpecialtyPulse dashboard — Market Intelligence page with pressure index by specialty, reimbursement compression trend, and volume-versus-compression views",
     metrics: [
-      "CMS PUF 2021–2025 · Delta Lake",
+      "CMS PUF 2021–2023 · Delta Lake",
       "Databricks PySpark · Airflow",
       "Domo DataFlow · 5-page dashboard",
       "Row-level security · CI-verified",
@@ -254,7 +254,7 @@ export const projects: Project[] = [
           },
           {
             metric: "Coverage",
-            after: "CMS PUF 2021–2025",
+            after: "CMS PUF 2021–2023",
             note: "Provider × procedure × year grain → specialty-level mart",
           },
           {
