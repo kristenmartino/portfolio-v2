@@ -33,7 +33,7 @@ export function FeaturedProject() {
     <article
       ref={cardRef}
       className="grid lg:grid-cols-2 gap-0 overflow-hidden bg-[var(--color-soot)]"
-      style={{ viewTransitionName: "gridpulse-card" }}
+      style={{ viewTransitionName: `${featuredProject.slug}-card` }}
     >
       {/* left: text */}
       <div

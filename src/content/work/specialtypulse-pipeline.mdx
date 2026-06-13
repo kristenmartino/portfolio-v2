@@ -1,0 +1,103 @@
+## Overview
+
+SpecialtyPulse Pipeline is the production build of an idea prototyped in [GTM Healthcare Intelligence](/work/gtm-healthcare): that healthcare go-to-market reporting lives or dies on governance, not dashboards. Where the GTM suite demonstrated the framework — a metric registry, adoption tracking, a maturity model — this project builds the enterprise version of one slice of it, end to end: CMS Medicare reimbursement data through a Databricks medallion pipeline, orchestrated by Airflow, delivered to a five-page executive dashboard behind row-level security that CI re-verifies on every push.
+
+The source is the CMS Medicare Physician & Other Practitioners Public Use File, 2021–2025 — released annually as multi-gigabyte CSVs with no types, no benchmarks, and no access model. The deliverable is what an enterprise BI team is actually accountable for: certified metrics, role-scoped access, and a pipeline that fails loudly instead of corrupting quietly.
+
+<Specs>
+  <Spec label="Role" value="Strategy, pipeline build, and BI governance" />
+  <Spec label="Year" value="2026" />
+  <Spec label="Domain" value="Healthcare GTM · executive reporting" />
+  <Spec label="Data" value="CMS Medicare Physician & Other Practitioners PUF · 2021–2025" />
+  <Spec label="Stack" value="Databricks (PySpark · Delta Lake) · Airflow (Astro CLI) · Domo (DataSets · SQL DataFlow · PDP) · React 18 · GitHub Actions" />
+  <Spec label="Status" value="Shipped · dashboard republished standalone" />
+</Specs>
+
+## Problem framing
+
+Three failure modes drive the design, and all three live at the delivery layer rather than the transformation layer:
+
+1. **Metric disagreement surfaces at the worst possible moment.** "Average Medicare payment" supports several defensible definitions — per service, per provider, standardized or not — and the definitions diverge exactly when leadership compares numbers at a QBR. The fix isn't picking the right definition; it's recording which one won, why, who approved it, and what goes wrong if the other one is used.
+2. **Row-level security applied in the wrong place is worse than none.** Domo's PDP has a documented trap: policies attached to a DataFlow *input* are silently stripped at execution, and the output ships unfiltered. The dashboard reads as governed while serving every row to every user — a failure mode invisible until someone audits it.
+3. **The BI–Data Engineering boundary needs a written contract.** A pipeline where the schema, the suppression rules, and the validation thresholds live in someone's head doesn't survive a handoff. Here the contract is a file, and a stakeholder map records who owns, approves, and is consulted on every component.
+
+## Architecture
+
+<Diagram title="Pipeline — Databricks → Airflow → Domo">
+  <div style={{ display: "flex", flexWrap: "wrap", alignItems: "stretch", gap: "8px", padding: "20px" }}>
+    <div style={{ flex: "1 1 130px", border: "1px solid var(--color-graphite-80)", padding: "12px" }}>
+      <Mono variant="caption" tone="muted">Source</Mono>
+      <p style={{ margin: "6px 0 0", fontSize: "13px" }}>CMS PUF CSVs 2021–2025, multi-GB, untyped</p>
+    </div>
+    <div style={{ alignSelf: "center", color: "var(--color-graphite-60)" }}>→</div>
+    <div style={{ flex: "1 1 150px", border: "1px solid var(--color-graphite-80)", padding: "12px" }}>
+      <Mono variant="caption" tone="muted">Databricks · Delta Lake</Mono>
+      <p style={{ margin: "6px 0 0", fontSize: "13px" }}>raw (all-strings) → staging (typed, suppressed, normalized) → mart (specialty × procedure × year)</p>
+    </div>
+    <div style={{ alignSelf: "center", color: "var(--color-graphite-60)" }}>→</div>
+    <div style={{ flex: "1 1 130px", border: "1px solid var(--color-graphite-80)", padding: "12px" }}>
+      <Mono variant="caption" tone="muted">Airflow DAG</Mono>
+      <p style={{ margin: "6px 0 0", fontSize: "13px" }}>validate_inputs → ingest → staging → marts → push_to_domo → notify</p>
+    </div>
+    <div style={{ alignSelf: "center", color: "var(--color-graphite-60)" }}>→</div>
+    <div style={{ flex: "1 1 150px", border: "1px solid var(--color-graphite-80)", padding: "12px" }}>
+      <Mono variant="caption" tone="muted">Domo</Mono>
+      <p style={{ margin: "6px 0 0", fontSize: "13px" }}>DataSets → SQL DataFlows → 5-page dashboard · PDP on outputs only</p>
+    </div>
+  </div>
+</Diagram>
+
+Four PySpark notebooks implement the medallion layers on Delta Lake. Raw ingestion is deliberately all-strings — schema inference off — because CMS sentinel formatting causes silent cast failures; staging does the explicit casts, normalizes the specialty taxonomy across the 2023 CMS reclassification, and excludes suppressed rows (fewer than 11 services) per CMS de-identification rules. Marts write to a staging table, validate row counts, then swap via rename — a failed run never corrupts the served table.
+
+The Airflow DAG (Astro CLI, Databricks operators, per-task retries) runs the chain on an annual schedule matching the CMS release cadence. The data contract — column definitions, valid years, suppression rules, taxonomy mappings — lives in one Python module that both sides of the BI–Data Engineering boundary import.
+
+## Governance is the product
+
+The certification log covers five metrics — average Medicare payment, payment-to-charge ratio, the year-over-year volume and payment pair, the Reimbursement Pressure Index, and the payment-outlier flag. Each entry records the competing definitions that were considered, the rationale for the winner, the approver, and the impact if the wrong definition is used. Changes require a version bump and a log entry; there's a standing section for pending certification requests, because the realistic state of a metrics program is "mostly certified, with a queue."
+
+Row-level security is where the build takes its strongest position:
+
+<Quote attribution="PDP design doc — the anti-pattern the verification exists to prevent">
+PDP cannot be applied to DataFlow inputs — only to outputs.
+</Quote>
+
+Policies apply exclusively to the DataFlow output: thirteen users across four roles, filtered on two dimensions — specialty analysts see their vertical, regional sales managers see their states, finance and executive roles get all rows by explicit policy rather than by absence of one. A verification script checks the live policy state and fails if any policy ever appears on an input; a React governance page inside the dashboard renders the role-policy matrix so the security model is inspectable by the people it governs; and a dedicated CI job re-runs the verification on every push — against the live instance when credentials are present, in syntax-check mode when they aren't.
+
+## The dashboard
+
+Five pages, each owned by a persona: **Market Intelligence** (the Reimbursement Pressure Index by specialty — the anchor card leadership opens first), **Procedure Detail** (payment outliers and trends for specialty analysts), **Pipeline Intelligence** (deal value re-weighted by market pressure for sales leadership), **Adoption Tracking** (dashboard usage as a first-class metric — internal reporting treated like a product), and **PDP Governance** (the live role-policy matrix, plus an AI-generated plain-English summary of the security state).
+
+When the Domo trial instance sunset, the dashboard didn't die — the five pages were built as a React app against a data bridge that serves Domo DataSets inside Domo and bundled representative data anywhere else. The same build now runs [standalone](https://specialtypulse.vercel.app), with the provenance disclosed on-page. That portability wasn't luck; it's what writing the surface against a contract instead of a platform buys.
+
+## Implementation considerations
+
+Every notable decision in the technical design carries a production note — what a team with more time and headcount does differently — because knowing the boundary is part of the job:
+
+- **All-strings ingestion vs. schema inference.** Inference fails silently on sentinel formatting; explicit staged casts fail loudly. The production upgrade is an explicit StructType schema on read — safer still, and the note says so.
+- **Rename-swap vs. blue-green.** The write-validate-rename pattern leaves a brief window where the table doesn't exist; production would use `CREATE OR REPLACE` or a view-switched blue-green pair. The BI side defines what "valid" means; Data Engineering owns the swap mechanism.
+- **Single Dataset API push vs. Streams.** The mart fits a single Domo API push up to roughly a million rows; beyond that, the documented path is the Streams API with chunked uploads.
+- **Directional projections, labeled as such.** Trend projections are linear with a variance-based confidence indicator — high-variance trends render as "Directional Estimate," never "High Confidence." The `is_projected` and `projection_confidence` columns are forward-compatible: a data-science team's ARIMA or Prophet model would populate the same columns with better values, and no dashboard would change.
+
+## Relationship to GTM Healthcare Intelligence
+
+The GTM suite is the framework; this is the load-bearing implementation of its governance layer:
+
+- NorthStar's metric registry concept → the certification log plus the schema contract, enforced in code and CI
+- The adoption tracker → the dashboard's Adoption Tracking page, with usage as a charted metric
+- The maturity model → the dashboard's page progression from descriptive trend monitoring to the prescriptive Pressure Index
+- Prescriptive alerts → outlier flags and pressure tiers wired to the certified definitions
+
+The two case studies are deliberately complementary: [GTM Healthcare Intelligence](/work/gtm-healthcare) answers "what should a healthcare GTM analytics function look like," and this one answers "what does one slice of it look like built to enterprise standards."
+
+## Reflections
+
+- **Governance that isn't verified is decoration.** The PDP anti-pattern check moved from a documentation warning to a CI job, and that move is the project's center of gravity.
+- **The certification log earned its keep immediately.** Writing down the losing definitions of "average Medicare payment" — and what breaks if they win — is what makes the winning definition defensible at review.
+- **A live Salesforce join is the designed next step.** Pipeline Intelligence currently runs on representative deal data; the schema and refresh cadence for the production join are specced.
+- **The standalone republish was a one-evening port.** The dual-mode data bridge meant the Domo sunset cost a deployment, not a rebuild — the strongest argument the project makes for contracts over platforms.
+
+## Closing observation
+
+> Governance that isn't verified is decoration. Put it in CI.
+
+A dashboard is easy to demo and easy to fake. A certification log with an approver column, a row-level security model that fails the build when misapplied, and a stakeholder map with names in it — that's what executive reporting looks like when it's built to be audited, not just admired.

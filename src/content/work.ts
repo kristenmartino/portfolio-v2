@@ -1,96 +1,106 @@
 import type { FeaturedProject, Project } from "@/lib/types";
 
 export const featuredProject: FeaturedProject = {
-  slug: "gridpulse",
-  title: "GridPulse",
-  eyebrow: "Case Study / GridPulse",
+  slug: "medicare-provider-outliers",
+  title: "Medicare Provider Outliers",
+  eyebrow: "Case Study / Medicare Provider Outliers",
   summary:
-    "An integrated decision platform for power markets — unifying weather forecasts, scenario analysis, and grid telemetry across operating roles.",
+    "Provider cost and volume outlier detection across 43.7M rows of public CMS Medicare data — modeled as a dbt star schema on Snowflake, scored within 9,490 specialty-by-state peer groups, and published as a live interactive data app.",
   description:
-    "An independent build exploring decision-support design for power markets. Weather, forecasts, and scenario analysis consolidated into role-based operating views for traders and grid operators — 51 US balancing authorities (~99% of lower-48 demand), four-model ensemble with real holdout metrics, deployed on Cloud Run with scheduled scoring + training jobs.",
+    "An independent build of the full analytics path: three CMS sources (Part D prescribers, Part B physician services, the NPPES registry — calendar year 2023) loaded to Snowflake, an 11-model dbt star schema with 48 passing tests and ~982 lines of schema documentation, robust MAD + classical z-score detection with peer-group floors, and two public credential-free surfaces — an Evidence data app and the dbt docs lineage site.",
   metrics: [
-    "51 BAs · ~99% lower-48",
-    "XGBoost · Prophet · SARIMAX ensemble",
-    "Real holdout metrics",
-    "Cloud Run + scheduled jobs",
+    "43.7M rows · 3 CMS sources",
+    "dbt star schema · 48/48 tests",
+    "9,490 peer groups · MAD + z-score",
+    "Live data app + dbt docs",
   ],
-  liveHref: "https://gridpulse.kristenmartino.ai",
-  codeHref: "https://github.com/kristenmartino/gridpulse",
-  caseStudyHref: "/work/gridpulse",
-  year: "2024",
+  liveHref: "https://kristenmartino.github.io/medicare-provider-outliers/app/",
+  codeHref: "https://github.com/kristenmartino/medicare-provider-outliers",
+  caseStudyHref: "/work/medicare-provider-outliers",
+  year: "2026",
   mode: "Solo build",
+  image: "/work/medicare-outliers.png",
+  imageAlt:
+    "Medicare Provider Outliers data app — state choropleth of MAD outlier rates with a ranked state table",
   artifact: {
     problem: {
       situation:
-        "Power traders and grid operators routinely manage decisions across six or more disconnected tools — forecasting models, scheduling systems, weather services, telemetry feeds, and trading platforms.",
+        "CMS publishes provider-level Medicare utilization as open data — 43.7M rows across Part D prescribers, Part B physician services, and the NPPES registry for calendar year 2023. Payer integrity teams, policy researchers, and journalists all want the same thing from it: which providers' cost and volume sit outside normal variation for their specialty and market.",
       complication:
-        "Each function holds a different view of the same underlying data. Reconciliation depends on practitioner expertise rather than process, and by the time a unified picture emerges the trading window has typically closed.",
+        "Naive approaches fail before the statistics start. CMS embeds suppression sentinels that silently corrupt typed ingestion. The obvious peer-group key — CMS's own specialty text — lumps 116k providers under \"Internal Medicine\" and produced a 45% flag rate on the first iteration. And the classical z-score is dragged by the same right-skewed tails it is trying to detect, so it under-flags the providers most worth reviewing.",
       question:
-        "Can a single integrated operating layer serve the actual decision moment — rather than producing yet another dashboard?",
+        "Can public CMS data support a defensible outlier triage — where every flag traces to a peer group, a denominator, and a stated method a reviewer can audit?",
     },
     requirements: [
       {
-        stakeholder: "Power trader",
-        need: "Four-hour ramp-risk, congestion risk, and pricing bands at a glance — without context-switching between tools mid-decision.",
-        evidence: "Observed across pre-open trading sessions",
+        stakeholder: "Program-integrity analyst",
+        need: "A triage list, not an adjudication — per-metric flags with deviation magnitude and an auditable denominator behind every flag.",
+        evidence: "Per-metric peer-coverage counts exposed in the mart",
       },
       {
-        stakeholder: "Grid operator",
-        need: "Seven-day curtailment outlooks and reserve margin visibility, with role-appropriate alerting thresholds.",
+        stakeholder: "Methodology reviewer",
+        need: "Peer groups that compare like with like — subspecialists benchmarked against subspecialists, within the market they practice in.",
+        evidence: "Taxonomy × state peers · IM flag rate 45% → 31.8%",
       },
       {
-        stakeholder: "Forecasting team",
-        need: "Model spread and confidence intervals surfaced at the operating layer — not buried inside model views.",
-        evidence: "Confidence drives sizing, not point estimates",
+        stakeholder: "Public consumer",
+        need: "An explorable surface with no warehouse credentials, plus model-level documentation and lineage.",
+        evidence: "Evidence app + dbt docs live on GitHub Pages",
       },
       {
-        stakeholder: "Cross-role",
-        need: "On-demand scenario modeling that replaces the weekly cycle, so significant decisions don't wait for Friday.",
+        stakeholder: "Data quality",
+        need: "Suppression sentinels and CMS formatting quirks must never silently corrupt a metric; business invariants enforced as tests.",
+        evidence: "48 dbt tests · ~982 lines of schema YAML",
       },
     ],
     decisions: {
       criteria: [
-        "Decision-moment fit",
-        "Cognitive throughput",
-        "Adapts by role",
+        "Compares like with like",
+        "Robust to right-skew",
+        "Auditable denominator",
         "Build effort",
       ],
       options: [
         {
-          option: "Aggregator dashboard",
-          scores: ["partial", "partial", "unmet", "met"],
+          option: "Global thresholds, no peer groups",
+          scores: ["unmet", "unmet", "partial", "met"],
         },
         {
-          option: "Role-based operating layer",
+          option: "CMS specialty text peers + classical z-score",
+          scores: ["partial", "unmet", "partial", "met"],
+        },
+        {
+          option: "NPPES taxonomy × state peers, MAD + z-score both computed",
           chosen: true,
           scores: ["met", "met", "met", "partial"],
           rationale:
-            "Role-specific interfaces match how decisions are actually made — a trader at 6:30am cannot reasonably evaluate model selection. The 3x build cost (three IAs, three default scenarios, three alerting thresholds) is justified by the documented underperformance of generic interfaces in operations-intensive environments.",
-        },
-        {
-          option: "Configurable power-user workspace",
-          scores: ["partial", "unmet", "partial", "partial"],
+            "The peer-group key does more work than the statistic. Switching from CMS specialty text to NPPES primary taxonomy split Internal Medicine into 28 subspecialties whose median Part D cost spans $5k (Sports Medicine) to $1.1M (Hematology & Oncology) — populations that should never share a baseline — and dropped the IM flag rate from 45% to 31.8%. On honest peers, both statistics ship per metric: the MAD modified z-score is the workhorse because medians resist the mega-prescriber tail; the classical z-score is the conservative contrast — 5.23% vs 2.01% flagged. An n ≥ 30 floor means no provider is ever flagged against a thin median.",
         },
       ],
     },
     solution: {
       summary:
-        "Three planes — integrated, confident, immediate — operating on shared data with role-adapted surfaces.",
+        "A dbt star schema on Snowflake — a provider dimension, two provider-year facts, and an outlier mart — scored within 9,490 peer groups by two detection statistics, tested 48 ways, and published as two live credential-free surfaces.",
       pillars: [
         {
-          title: "Operating view",
+          title: "Load that respects the source",
           detail:
-            "Live grid state, weighted forecasts, and the open decisions appropriate to the user's role. Same data, role-adapted presentation.",
+            "DuckDB pre-filters NPPES from 11.4 GB to 647 MB before COPY INTO; every raw column lands as VARCHAR because CMS embeds suppression sentinels — staging strips and casts once, visibly, instead of letting type inference fail silently.",
         },
         {
-          title: "Models",
+          title: "Star schema with tests as contract",
           detail:
-            "Four model classes (physics, statistical, ML, ensemble) with backtests and confidence intervals exposed at the surface. Spread is surfaced when models diverge.",
+            "Staging views → intermediate peer-group stats → dim_provider, two provider-year facts, and mart_provider_outliers. 48 tests (45 schema + 3 singular business invariants), ~982 lines of schema YAML, and CI that parses the DAG offline on every push.",
         },
         {
-          title: "Scenarios",
+          title: "Peer-grouped robust detection",
           detail:
-            "On-demand modeling replaces the weekly batch. Adjust an input — temperature delta, unit outage, policy assumption — and the cascade is visible immediately.",
+            "Six metrics scored within NPPES taxonomy × state groups with an n ≥ 30 floor and per-metric coverage gates. The MAD modified z-score (3.5) is the workhorse; the classical z-score (2.0) is the conservative counterpart — both exposed per metric.",
+        },
+        {
+          title: "BI-as-code delivery",
+          detail:
+            "An Evidence data app — KPIs, a metric-parameterized ranked outlier table, provider drill-down, state choropleth, methodology — served static from committed extracts, plus the dbt docs lineage site. A five-tab Hex notebook spec documents the warehouse-native version.",
         },
       ],
     },
@@ -98,36 +108,176 @@ export const featuredProject: FeaturedProject = {
       kind: "metrics",
       items: [
         {
-          metric: "Scenario cycle",
-          before: "Weekly batch",
-          after: "On-demand",
-          note: "Cascade visible immediately",
+          metric: "Source data",
+          after: "43.7M rows",
+          note: "Part D 26.8M · Part B 9.7M · NPPES 7.2M (CY 2023)",
         },
         {
-          metric: "Operating surface",
-          before: "3+ tools",
-          after: "1 view",
-          note: "Role-adaptive",
+          metric: "Providers scored",
+          after: "7.06M",
+          note: "9,490 taxonomy × state peer groups · n ≥ 30 floor",
         },
         {
-          metric: "Model coverage",
-          after: "4 classes",
-          note: "Backtests + CIs surfaced",
+          metric: "Internal Medicine flag rate",
+          before: "45%",
+          after: "31.8%",
+          note: "CMS specialty text → NPPES taxonomy peers",
         },
         {
-          metric: "Regional reach",
-          after: "51 BAs",
-          note: "~99% of lower-48 demand · Cloud Run",
+          metric: "Detection contrast",
+          after: "MAD 5.23% vs z 2.01%",
+          note: "369,200 vs 141,766 flagged — the robust statistic is the workhorse",
+        },
+        {
+          metric: "Quality + delivery",
+          after: "48/48 tests · 2 live surfaces",
+          note: "Evidence app + dbt docs on GitHub Pages, credential-free",
         },
       ],
     },
   },
-  // Add image once a screenshot is produced: image: "/work/gridpulse.webp"
 };
 
 export const projects: Project[] = [
   {
     index: "01",
+    title: "SpecialtyPulse Pipeline",
+    category: "Healthcare Data Platform",
+    summary:
+      "Production-style healthcare BI pipeline — CMS Medicare reimbursement data through Databricks raw → staging → mart layers on Delta Lake, orchestrated by Airflow, delivered to a five-page executive dashboard behind verified row-level security and certified metric definitions.",
+    href: "/work/specialtypulse-pipeline",
+    slug: "specialtypulse-pipeline",
+    liveHref: "https://specialtypulse.vercel.app",
+    codeHref: "https://github.com/kristenmartino/specialtypulse_pipeline",
+    year: "2026",
+    status: "Shipped",
+    mode: "Solo build",
+    shape: "pipeline",
+    image: "/work/specialtypulse.png",
+    imageAlt:
+      "SpecialtyPulse dashboard — Market Intelligence page with pressure index by specialty, reimbursement compression trend, and volume-versus-compression views",
+    metrics: [
+      "CMS PUF 2021–2025 · Delta Lake",
+      "Databricks PySpark · Airflow",
+      "Domo DataFlow · 5-page dashboard",
+      "Row-level security · CI-verified",
+    ],
+    artifact: {
+      problem: {
+        situation:
+          "Specialty-healthcare GTM teams set territory and outreach priorities off Medicare reimbursement trends, and CMS publishes the data that answers the question — the Physician & Other Practitioners PUF, released annually as multi-gigabyte CSVs with no types, no benchmarks, and no access model.",
+        complication:
+          "The failure point in stacks like this is rarely the transformation — it is governance at the delivery layer. \"Average Medicare payment\" supports several defensible definitions that diverge exactly when leadership compares numbers at a QBR. And Domo's row-level security has a documented trap: PDP applied to a DataFlow input is silently stripped at execution, so the dashboard reads as governed while serving every row to every user.",
+        question:
+          "Can one pipeline land certified, role-filtered Medicare market intelligence in the executive reporting layer — with the governance verified by CI rather than asserted in a wiki?",
+      },
+      requirements: [
+        {
+          stakeholder: "RevOps leadership",
+          need: "Metrics that match board reporting and survive challenge — one certified definition per metric, with competing definitions resolved on the record.",
+          evidence: "Certification log records rationale, approver, and impact-if-wrong",
+        },
+        {
+          stakeholder: "Regional sales manager",
+          need: "Monday-morning territory signals scoped to their own states — same dashboard, different rows.",
+          evidence: "PDP regional role filters provider_state",
+        },
+        {
+          stakeholder: "Specialty analyst",
+          need: "Procedure-level depth for their vertical only, benchmarked across specialties.",
+          evidence: "PDP specialty filter · 5 specialty analysts scoped",
+        },
+        {
+          stakeholder: "Security & compliance",
+          need: "Proof the row-level policies hold on the surface users actually query — not just at setup time.",
+          evidence: "pdp_verify script + a dedicated CI governance job",
+        },
+      ],
+      decisions: {
+        criteria: [
+          "Rows filtered at render",
+          "Survives DataFlow runs",
+          "Verifiable in CI",
+          "Build effort",
+        ],
+        options: [
+          {
+            option: "PDP on the mart (the DataFlow input)",
+            scores: ["unmet", "unmet", "unmet", "met"],
+          },
+          {
+            option: "Per-role duplicate DataSets and dashboards",
+            scores: ["met", "partial", "partial", "unmet"],
+          },
+          {
+            option: "PDP on the DataFlow output — zero policies on input, anti-pattern checked in CI",
+            chosen: true,
+            scores: ["met", "met", "met", "partial"],
+            rationale:
+              "PDP-on-input is the classic enterprise Domo mistake: input policies are stripped during DataFlow execution and the output ships unfiltered — worse than no security, because it reads as governed. Here policies apply exclusively to the DataFlow output — four roles across two filter dimensions, with all-rows policies for finance and executive — and a verification script fails if any policy ever appears on the input. A React governance app renders the live role-policy matrix inside the dashboard so the security model is inspectable by the people it governs, and a dedicated CI job re-runs the verification on every push.",
+          },
+        ],
+      },
+      solution: {
+        summary:
+          "A Databricks → Airflow → Domo pipeline: PySpark raw → staging → mart layers on Delta Lake, orchestrated as an Airflow DAG with an explicit data contract, feeding a SQL DataFlow and certified metrics into a five-page executive dashboard behind verified row-level security.",
+        pillars: [
+          {
+            title: "Medallion transform with honest ingestion",
+            detail:
+              "Raw CMS CSVs land all-strings — schema inference off — because sentinel formatting causes silent cast failures; staging does explicit casts, handles the CMS taxonomy shift across release years, and honors the under-11-services suppression rule. Marts write, validate, then rename, so a failed run never corrupts the served table.",
+          },
+          {
+            title: "Orchestration with an explicit contract",
+            detail:
+              "An Airflow DAG runs the four PySpark notebooks with per-task retries; a schema contract file is the agreed boundary between the BI side and Data Engineering, and a stakeholder map records who owns, approves, and is consulted on every component.",
+          },
+          {
+            title: "Certified metrics, not just calculated ones",
+            detail:
+              "Five certified metric definitions enforced in the mart and the Domo SQL DataFlow; every certification logs the competing definitions, the rationale, the approver, and what goes wrong if the other definition wins. Changes require a version bump and a log entry.",
+          },
+          {
+            title: "Governance that proves itself",
+            detail:
+              "Row-level security on the DataFlow output across four roles and two filter dimensions; a React 18 verification app surfacing the live role-policy matrix; CI that lints, validates the DAG, builds the app, and fails on the PDP anti-pattern.",
+          },
+        ],
+      },
+      outcome: {
+        kind: "metrics",
+        items: [
+          {
+            metric: "Pipeline",
+            after: "raw → staging → mart → Domo",
+            note: "4 PySpark notebooks · Delta Lake · Airflow-orchestrated",
+          },
+          {
+            metric: "Coverage",
+            after: "CMS PUF 2021–2025",
+            note: "Provider × procedure × year grain → specialty-level mart",
+          },
+          {
+            metric: "Governance",
+            after: "4 PDP roles · 2 filter dimensions",
+            note: "Policies on output only · anti-pattern check fails CI",
+          },
+          {
+            metric: "Certified metrics",
+            after: "5 definitions",
+            note: "Competing definitions resolved on the record, with approver",
+          },
+          {
+            metric: "Delivery",
+            after: "5-page dashboard",
+            note: "Market Intelligence · Procedure Detail · Pipeline · Adoption · PDP Governance",
+          },
+        ],
+      },
+    },
+  },
+  {
+    index: "02",
     title: "Valuate",
     category: "AI Financial Agent",
     summary:
@@ -256,7 +406,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "02",
+    index: "03",
     title: "Tenancy",
     category: "AI Document Agent",
     summary:
@@ -393,7 +543,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "03",
+    index: "04",
     title: "Eval Harness",
     category: "Applied LLM Evaluation",
     summary:
@@ -540,7 +690,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "04",
+    index: "05",
     title: "Quantization Study",
     category: "Applied LLM Research",
     summary:
@@ -669,7 +819,131 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "05",
+    index: "06",
+    title: "GridPulse",
+    category: "Energy Decision Platform",
+    summary:
+      "An integrated decision platform for power markets — unifying weather forecasts, scenario analysis, and grid telemetry across operating roles.",
+    href: "/work/gridpulse",
+    slug: "gridpulse",
+    liveHref: "https://gridpulse.kristenmartino.ai",
+    codeHref: "https://github.com/kristenmartino/gridpulse",
+    year: "2024",
+    status: "Shipped",
+    mode: "Solo build",
+    shape: "data-viz",
+    metrics: [
+      "51 BAs · ~99% lower-48",
+      "XGBoost · Prophet · SARIMAX ensemble",
+      "Real holdout metrics",
+      "Cloud Run + scheduled jobs",
+    ],
+    artifact: {
+      problem: {
+        situation:
+          "Power traders and grid operators routinely manage decisions across six or more disconnected tools — forecasting models, scheduling systems, weather services, telemetry feeds, and trading platforms.",
+        complication:
+          "Each function holds a different view of the same underlying data. Reconciliation depends on practitioner expertise rather than process, and by the time a unified picture emerges the trading window has typically closed.",
+        question:
+          "Can a single integrated operating layer serve the actual decision moment — rather than producing yet another dashboard?",
+      },
+      requirements: [
+        {
+          stakeholder: "Power trader",
+          need: "Four-hour ramp-risk, congestion risk, and pricing bands at a glance — without context-switching between tools mid-decision.",
+          evidence: "Observed across pre-open trading sessions",
+        },
+        {
+          stakeholder: "Grid operator",
+          need: "Seven-day curtailment outlooks and reserve margin visibility, with role-appropriate alerting thresholds.",
+        },
+        {
+          stakeholder: "Forecasting team",
+          need: "Model spread and confidence intervals surfaced at the operating layer — not buried inside model views.",
+          evidence: "Confidence drives sizing, not point estimates",
+        },
+        {
+          stakeholder: "Cross-role",
+          need: "On-demand scenario modeling that replaces the weekly cycle, so significant decisions don't wait for Friday.",
+        },
+      ],
+      decisions: {
+        criteria: [
+          "Decision-moment fit",
+          "Cognitive throughput",
+          "Adapts by role",
+          "Build effort",
+        ],
+        options: [
+          {
+            option: "Aggregator dashboard",
+            scores: ["partial", "partial", "unmet", "met"],
+          },
+          {
+            option: "Role-based operating layer",
+            chosen: true,
+            scores: ["met", "met", "met", "partial"],
+            rationale:
+              "Role-specific interfaces match how decisions are actually made — a trader at 6:30am cannot reasonably evaluate model selection. The 3x build cost (three IAs, three default scenarios, three alerting thresholds) is justified by the documented underperformance of generic interfaces in operations-intensive environments.",
+          },
+          {
+            option: "Configurable power-user workspace",
+            scores: ["partial", "unmet", "partial", "partial"],
+          },
+        ],
+      },
+      solution: {
+        summary:
+          "Three planes — integrated, confident, immediate — operating on shared data with role-adapted surfaces.",
+        pillars: [
+          {
+            title: "Operating view",
+            detail:
+              "Live grid state, weighted forecasts, and the open decisions appropriate to the user's role. Same data, role-adapted presentation.",
+          },
+          {
+            title: "Models",
+            detail:
+              "Four model classes (physics, statistical, ML, ensemble) with backtests and confidence intervals exposed at the surface. Spread is surfaced when models diverge.",
+          },
+          {
+            title: "Scenarios",
+            detail:
+              "On-demand modeling replaces the weekly batch. Adjust an input — temperature delta, unit outage, policy assumption — and the cascade is visible immediately.",
+          },
+        ],
+      },
+      outcome: {
+        kind: "metrics",
+        items: [
+          {
+            metric: "Scenario cycle",
+            before: "Weekly batch",
+            after: "On-demand",
+            note: "Cascade visible immediately",
+          },
+          {
+            metric: "Operating surface",
+            before: "3+ tools",
+            after: "1 view",
+            note: "Role-adaptive",
+          },
+          {
+            metric: "Model coverage",
+            after: "4 classes",
+            note: "Backtests + CIs surfaced",
+          },
+          {
+            metric: "Regional reach",
+            after: "51 BAs",
+            note: "~99% of lower-48 demand · Cloud Run",
+          },
+        ],
+      },
+    },
+  },
+  {
+    index: "07",
     title: "Tarazu",
     category: "Product + AI",
     summary:
@@ -791,7 +1065,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "06",
+    index: "08",
     title: "Sift",
     category: "AI News + Civic Literacy",
     summary:
@@ -920,7 +1194,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "07",
+    index: "09",
     title: "FocusForge",
     category: "iOS Mobile App",
     summary:
@@ -1022,7 +1296,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "08",
+    index: "10",
     title: "GTM Healthcare Intelligence",
     category: "Healthcare GTM Analytics",
     summary:
@@ -1108,7 +1382,7 @@ export const projects: Project[] = [
           {
             title: "Descriptive",
             detail:
-              "PracticeFlow + SpecialtyPulse — benchmarking against MGMA/HFMA standards and trend monitoring at practice and specialty level, anchored on CMS NPPES, Medicare PUF, and Census demographics.",
+              "PracticeFlow + SpecialtyPulse — benchmarking against MGMA/HFMA standards and trend monitoring at practice and specialty level, anchored on CMS NPPES, Medicare PUF, and Census demographics. SpecialtyPulse is built to production depth in its own case study — SpecialtyPulse Pipeline.",
           },
           {
             title: "Diagnostic",
@@ -1150,7 +1424,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "09",
+    index: "11",
     title: "Platform Migration + ARR Growth",
     category: "Cross-Functional Delivery",
     summary:
@@ -1162,7 +1436,7 @@ export const projects: Project[] = [
     shape: "pipeline",
   },
   {
-    index: "10",
+    index: "12",
     title: "Revenue Recovery Audit Workflow",
     category: "Enterprise Systems",
     summary:
@@ -1174,7 +1448,7 @@ export const projects: Project[] = [
     shape: "table",
   },
   {
-    index: "11",
+    index: "13",
     title: "RMS Fare Validation System",
     category: "Decision Support",
     summary:
@@ -1186,7 +1460,7 @@ export const projects: Project[] = [
     shape: "decision",
   },
   {
-    index: "12",
+    index: "14",
     title: "Flight Disruption Recovery",
     category: "Operational Decision Support",
     summary:

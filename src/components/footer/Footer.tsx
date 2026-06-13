@@ -72,10 +72,10 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/work/gridpulse"
+                  href="/work/medicare-provider-outliers"
                   className="text-sm text-[var(--color-graphite-40)] hover:text-[var(--color-bone)] transition-colors"
                 >
-                  GridPulse case study
+                  Medicare Provider Outliers case study
                 </Link>
               </li>
             </ul>
