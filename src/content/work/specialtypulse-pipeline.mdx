@@ -67,6 +67,8 @@ Policies apply exclusively to the DataFlow output: thirteen users across four ro
 
 Five pages, each owned by a persona: **Market Intelligence** (the Reimbursement Pressure Index by specialty — the anchor card leadership opens first), **Procedure Detail** (payment outliers and trends for specialty analysts), **Pipeline Intelligence** (deal value re-weighted by market pressure for sales leadership), **Adoption Tracking** (dashboard usage as a first-class metric — internal reporting treated like a product), and **PDP Governance** (the live role-policy matrix, plus an AI-generated plain-English summary of the security state).
 
+The pages lead with the read, not the raw table. Each opens with a strip of computed callouts — highest-pressure specialty, biggest year-over-year mover, sharpest payment cut — and they aren't islands: clicking a specialty on Market Intelligence drills into its procedures on the detail page, with the callouts recomputing for that focus. Every coined metric carries an on-screen definition. Surfacing the *so what* and letting an executive follow one thread from market to procedure is the part the role actually centers on — translating the data, not just plotting it.
+
 When the Domo trial instance sunset, the dashboard didn't die — the five pages were built as a React app against a data bridge that serves Domo DataSets inside Domo and bundled representative data anywhere else. The same build now runs [standalone](https://specialtypulse.vercel.app), with the provenance disclosed on-page. That portability wasn't luck; it's what writing the surface against a contract instead of a platform buys.
 
 ## Implementation considerations
