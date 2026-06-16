@@ -290,6 +290,9 @@ export const projects: Project[] = [
     status: "Shipped",
     mode: "Solo build",
     shape: "pipeline",
+    image: "/work/valuate.png",
+    imageAlt:
+      "Valuate landing — the ticker picker, each card tagged with its valuation route (bank DDM, REIT FFO, energy NAV-DCF) before running a Monte Carlo DCF on the company's latest 10-K.",
     metrics: [
       "18 tickers, 5 industries",
       "Two-track extraction (XBRL + LLM)",
@@ -556,6 +559,9 @@ export const projects: Project[] = [
     status: "In progress",
     mode: "Solo build",
     shape: "data-viz",
+    image: "/work/eval-harness.png",
+    imageAlt:
+      "Eval Harness — the study landing framing an open-weight-versus-frontier LLM evaluation on a real production workload, with methodology, leaderboard, and executive-summary entry points.",
     metrics: [
       "9 models · 4 tasks · planned n=870 across eval sets",
       "Cross-vendor judging · Bradley-Terry MM ranking",
@@ -702,6 +708,9 @@ export const projects: Project[] = [
     status: "Shipped",
     mode: "Solo build",
     shape: "data-viz",
+    image: "/work/quantization-pareto-4x3.png",
+    imageAlt:
+      "Quantization Study — paired cost/quality plots for FP16, Q8_0, and Q4_K_M on MMLU accuracy and CoNLL NER micro-F1, with bootstrap confidence intervals.",
     metrics: [
       "3 arms × 800 examples (n=2,400)",
       "Paired bootstrap + Holm correction",
@@ -832,6 +841,9 @@ export const projects: Project[] = [
     status: "Shipped",
     mode: "Solo build",
     shape: "data-viz",
+    image: "/work/gridpulse.png",
+    imageAlt:
+      "GridPulse operating view — the Grid Operations Manager dashboard for Florida (FPL), with live demand, a seven-day forecast chart and forecast band, and XGBoost model metrics (MAPE 1.5%, R² 0.991).",
     metrics: [
       "51 BAs · ~99% lower-48",
       "XGBoost · Prophet · SARIMAX ensemble",
@@ -955,6 +967,9 @@ export const projects: Project[] = [
     status: "Shipped",
     mode: "Solo build",
     shape: "decision",
+    image: "/work/tarazu.png",
+    imageAlt:
+      "Tarazu marketing hero — the 'Weigh what to build next' headline over the balance motif, above the five-step decision lifecycle.",
     metrics: [
       "4 RICE dimensions",
       "Per-dimension AI coaching",
@@ -1078,6 +1093,9 @@ export const projects: Project[] = [
     status: "Shipped",
     mode: "Solo build",
     shape: "table",
+    image: "/work/sift.png",
+    imageAlt:
+      "Sift — its 'The news, with footnotes' headline beside a summarized story card that links to structured dossiers.",
     metrics: [
       "10 categories · ~50 outlets · AI summaries",
       "Topic search + multi-source compare",
@@ -1308,6 +1326,9 @@ export const projects: Project[] = [
     status: "Shipped",
     mode: "Solo build",
     shape: "data-viz",
+    image: "/work/gtm-healthcare.png",
+    imageAlt:
+      "GTM Healthcare Intelligence — the analytics maturity model mapping seven GTM sub-projects across governance, descriptive, diagnostic, and prescriptive layers, above the NorthStar and AskGTM project cards.",
     metrics: [
       "7 sub-projects · 4 maturity layers",
       "CMS NPPES · Medicare PUF · Census",
