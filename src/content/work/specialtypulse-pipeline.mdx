@@ -49,7 +49,7 @@ Three failure modes drive the design, and all three live at the delivery layer r
 
 Four PySpark notebooks implement the medallion layers on Delta Lake. Raw ingestion is deliberately all-strings — schema inference off — because CMS sentinel formatting causes silent cast failures; staging does the explicit casts, normalizes the specialty taxonomy across the 2023 CMS reclassification, and excludes suppressed rows (fewer than 11 services) per CMS de-identification rules. Marts write to a staging table, validate row counts, then swap via rename — a failed run never corrupts the served table.
 
-The Airflow DAG (Astro CLI, Databricks operators, per-task retries) runs the chain on an annual schedule matching the CMS release cadence. The data contract — column definitions, valid years, suppression rules, taxonomy mappings — lives in one Python module that both sides of the BI–Data Engineering boundary import.
+The Airflow DAG (Astro CLI, Databricks operators, per-task retries) runs the chain on an annual schedule matching the CMS release cadence. The data contract — column definitions, valid years, suppression rules, taxonomy mappings — lives in one Python module that both sides of the BI–Data Engineering boundary import, and it registers the valid years through CY2025 so each annual CMS release drops in without a code change.
 
 ## Governance is the product
 
