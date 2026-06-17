@@ -2,14 +2,14 @@
 
 Most prioritization frameworks fail in opposite directions. RICE — Reach, Impact, Confidence, Effort — produces a clean number, but the number is only as good as the four guesses that produced it, and most teams are guessing without scaffolding. Pure AI prioritization tools, conversely, produce an answer with no defensibility — a recommendation the team cannot interrogate or revise.
 
-Tarazu sits between the two. It runs RICE as the structural backbone, but provides AI-assisted reasoning at each input dimension, treating the framework as a thinking aid rather than a calculator.
+Tarazu sits between the two. It runs RICE as the structural backbone — each dimension a normalized 1–100 input with the score computed in real time — and layers AI in two places where it earns its keep: grounded score *suggestions* the team can accept or override, and a one-click strategy read across the whole backlog. The framework stays a thinking aid, not a calculator, and the score stays the team's.
 
 <Specs>
   <Spec label="Role" value="Strategy, design, and engineering" />
-  <Spec label="Year" value="2024" />
-  <Spec label="Domain" value="Product strategy" />
-  <Spec label="Stack" value="Next.js · TypeScript · LLM API integration" />
-  <Spec label="Status" value="Shipped" />
+  <Spec label="Year" value="2024–2026" />
+  <Spec label="Domain" value="Product strategy · prioritization" />
+  <Spec label="Stack" value="React · Next.js · Canvas 2D · Claude Opus 4.8 (analysis) + Sonnet 4.6 (scoring) · Clerk · Supabase · Vercel" />
+  <Spec label="Status" value="Shipped · live demo, guest mode or cloud sync" />
 </Specs>
 
 ## Problem framing
@@ -18,40 +18,42 @@ Three observations shape the design space:
 
 1. **The hardest part of RICE is the inputs, not the math.** Multiplying four numbers and dividing by effort is trivial. Choosing those numbers honestly — without anchoring to whatever number was used last quarter — is the actual work.
 2. **Confidence is systematically overstated.** Teams run RICE workshops where every initiative is rated 80% confidence by default. The dimension that should reduce hubris ends up reinforcing it.
-3. **Prioritization tools fail when they hide judgment.** A score that arrives without showing how it was assembled cannot be defended in a roadmap meeting and will not survive contact with engineering.
+3. **Prioritization tools fail when they hide judgment.** A score that arrives without showing how it was assembled cannot be defended in a roadmap meeting and will not survive contact with engineering. An AI that *generates* the score outright reintroduces exactly that problem.
 
-The opportunity: build a tool that walks the user through each RICE dimension with structured prompts — one that asks the questions a senior PM would ask before letting a number be entered.
+The opportunity: a tool that structures each RICE dimension, offers a defensible starting point where it can, and then shows the trade-offs across the whole backlog — without ever taking the judgment away from the team.
 
 ## Solution
 
-Three design decisions defined the build:
+Four design decisions defined the build:
 
-### Per-dimension AI coaching
+### Normalized RICE, scored in real time
 
-Each of the four RICE dimensions gets a dedicated prompting layer. For Reach, the user is asked to define the user segment in concrete terms before estimating size. For Impact, the user is asked what behavior changes — not just whether the metric moves. For Confidence, the user is asked to state the evidence and adjust downward when the evidence is thin. For Effort, the user is asked which engineer estimated it and how recently the estimate was made.
+Each of the four dimensions is a 1–100 slider, and the RICE score recomputes as you move it. Normalizing to a common scale trades RICE's native units (reach counts, person-months) for comparability — every candidate is scored on the same axes, so the matrix and the ranking are apples-to-apples.
 
-Each prompt is short, structural, and resistant to being skipped.
+### AI suggests, the team decides
 
-### Score transparency
+For each candidate, an AI pass (Claude Sonnet) proposes per-dimension scores grounded in the product context you give it. The suggestion is a starting point, never the answer — you accept, edit, or override every value, and the score belongs to the team. This is the deliberate line the build holds: AI that *generates a final score* from a pasted description was rejected, because it skips the discipline RICE exists to enforce; AI that *suggests and explains* keeps the human in the seat.
 
-The output is not a single number. The output is the four inputs, each labeled with the assumptions made, plus the resulting score. A roadmap discussion can rebuild the reasoning from the artifact alone. This eliminates the "where did this come from?" failure mode that kills most prioritization outputs.
+### The Priority Matrix
 
-### Strategy guidance, separate from scoring
+An Effort × Impact scatter, rendered on a 2D canvas, places the whole backlog into four labeled quadrants — Quick Win, Strategic, Fill-In, Avoid. The single score answers "what's first"; the matrix answers "what kind of bet is this," which is the question a roadmap conversation actually turns on.
 
-Tarazu also produces a short strategic narrative — what the score *means* in context: comparison to other items, sensitivity to the inputs that were uncertain, and recommended next discovery. The narrative is generated separately from the score so that the math remains auditable.
+### AI Strategy Advisor, separate from the score
+
+One click runs Claude Opus across the scored backlog and returns a structured read: the top priority, the quick win, a risk flag, a suggested sprint plan, and a strategic insight. It runs independently from the RICE math, so the numbers stay auditable and the narrative stays a second opinion rather than the source of truth. A demo mode returns a representative read when no live model call is made.
 
 ## Implementation considerations
 
-The design temptation was to let AI generate the inputs directly — paste in a feature description, get a RICE score. This was rejected. The point of RICE is the discipline of making the team's assumptions explicit; an AI-generated score skips the discipline and reintroduces the original problem.
+The original temptation — paste a feature description, get a finished RICE score — was rejected, and that decision still holds: an auto-generated score skips the discipline of making the team's assumptions explicit and reintroduces the very problem the tool exists to solve. What shipped instead is the narrower, defensible version of AI assistance: **suggestions, not verdicts.** Score suggestions are grounded in stated product context and are always the user's to override; the Strategy Advisor is generated separately from the math. AI sits inside the user's process as a thinking partner, not a replacement for it.
 
-The build commits instead to AI as a thinking partner inside the user's process, not a replacement for it. Every input is still the user's input. The AI provides structured questions, examples drawn from comparable products, and a check on overconfident inputs — but the score belongs to the team.
+Access follows the same "low friction, real when you need it" logic: a guest can score a backlog immediately with nothing saved server-side (localStorage), or sign in (Clerk) to persist and sync work across sessions and devices (Supabase).
 
 ## Reflections
 
-- **The coaching prompts could go deeper into evidence.** Confidence dimension would benefit from a structured "what evidence do you have, and how recent is it" workflow, not just a heuristic.
-- **A retrospective surface is missing.** A useful follow-on: feed actual outcomes back in six months later and recalibrate the team's typical Confidence ratings against reality.
-- **The output format is currently web-only.** Most roadmap discussions happen in slide decks or docs. A clean export — a one-page PDF or a copy-paste markdown table — would meaningfully increase adoption.
+- **Normalizing to 1–100 was the right call for comparability, but it has a cost.** RICE's native units carry meaning a slider hides — "three person-months" is more legible than "Effort: 60." A future pass could let a team toggle native units back on per dimension.
+- **Score suggestions need a visible confidence signal.** A suggested value the user can't distinguish from a hand-entered one re-creates the overconfidence problem RICE is meant to fight; surfacing *why* the model proposed a number is the next step.
+- **A retrospective loop is still the missing piece.** Feeding actual outcomes back in six months later — and recalibrating the team's typical Confidence ratings against reality — remains the most valuable follow-on.
 
 ## Closing observation
 
-The principle that proved most useful: **prioritization tools should make the team's reasoning legible, not replace it.** An AI that scores for you is faster than the alternative; an AI that helps you score yourself produces decisions that survive the meeting after the workshop.
+The principle that proved most useful: **prioritization tools should make the team's reasoning legible, not replace it.** An AI that scores for you is faster than the alternative; an AI that suggests a score, shows the trade-off, and leaves the call to you produces decisions that survive the meeting after the workshop.

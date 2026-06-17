@@ -959,11 +959,12 @@ export const projects: Project[] = [
     title: "Tarazu",
     category: "Product + AI",
     summary:
-      "AI-assisted prioritization platform applying the RICE framework, with interactive scoring and structured strategic guidance.",
+      "Decision-intelligence tool for product teams — normalized RICE scoring with per-candidate AI score suggestions you can override, an Effort × Impact priority matrix, and a one-click AI Strategy Advisor. AI suggests; the score stays the team's.",
     href: "/work/tarazu",
     slug: "tarazu",
     liveHref: "https://prioritize.kristenmartino.ai",
-    year: "2024",
+    codeHref: "https://github.com/kristenmartino/Tarazu",
+    year: "2024–2026",
     status: "Shipped",
     mode: "Solo build",
     shape: "decision",
@@ -971,10 +972,10 @@ export const projects: Project[] = [
     imageAlt:
       "Tarazu marketing hero — the 'Weigh what to build next' headline over the balance motif, above the five-step decision lifecycle.",
     metrics: [
-      "4 RICE dimensions",
-      "Per-dimension AI coaching",
-      "No-login web app",
-      "Solo build",
+      "Normalized RICE · 1–100 sliders",
+      "Effort × Impact priority matrix",
+      "AI Strategy Advisor · one click",
+      "Claude Opus 4.8 + Sonnet 4.6",
     ],
     artifact: {
       problem: {
@@ -1023,32 +1024,37 @@ export const projects: Project[] = [
           },
           {
             option:
-              "Per-dimension AI coaching with score transparency and separate strategy narrative",
+              "Normalized RICE with overridable AI score suggestions, an Effort × Impact priority matrix, and a separate AI Strategy Advisor",
             chosen: true,
             scores: ["met", "met", "met", "partial"],
             rationale:
-              "Each RICE dimension gets a dedicated prompting layer that asks the structural questions before letting a number be entered. The output is the four labeled inputs plus the resulting score, so a roadmap discussion rebuilds the reasoning from the artifact itself. AI sits inside the user's process as a thinking partner; the score belongs to the team. The 2–3× build cost over a vanilla calculator is justified because it eliminates the failure mode that kills most prioritization outputs.",
+              "AI proposes per-dimension scores grounded in stated product context, but every value is the user's to accept, edit, or override — the score belongs to the team. (Auto-generating a final score from a pasted description, option 2, was rejected: it skips the discipline RICE exists to enforce.) The labeled inputs plus the computed score let a roadmap discussion rebuild the reasoning from the artifact itself; the Effort × Impact matrix shows what kind of bet each item is; and a one-click AI Strategy Advisor reads the whole backlog separately from the math, so the numbers stay auditable. The added build cost over a vanilla calculator is justified because it eliminates the failure mode that kills most prioritization outputs.",
           },
         ],
       },
       solution: {
         summary:
-          "RICE as the structural backbone, with per-dimension AI coaching at each input and full transparency on the assumptions behind the score.",
+          "RICE as the structural backbone — normalized, real-time, and transparent — with AI offering overridable score suggestions, a priority matrix for trade-offs, and a separate one-click strategy read across the backlog.",
         pillars: [
           {
-            title: "Per-dimension AI coaching",
+            title: "Normalized RICE, scored in real time",
             detail:
-              "Each of the four dimensions gets dedicated prompts. Reach asks for concrete segment definition before size. Impact asks what behavior changes (not just whether the metric moves). Confidence asks for evidence and adjusts down when evidence is thin. Effort asks who estimated and how recently. Short, structural, resistant to being skipped.",
+              "Each of the four dimensions is a 1–100 slider and the score recomputes live. A common scale trades RICE's native units (reach counts, person-months) for comparability, so every candidate sits on the same axes as the matrix and the ranking.",
           },
           {
-            title: "Score transparency",
+            title: "AI suggests, the team decides",
             detail:
-              "The output is the four labeled inputs with their assumptions, plus the resulting score. A roadmap discussion rebuilds the reasoning from the artifact alone — eliminates the \"where did this come from\" failure mode that kills most prioritization outputs.",
+              "Claude Sonnet proposes per-dimension scores grounded in the product context the user supplies. The suggestion is a starting point, never the verdict — accept, edit, or override every value. Auto-generating a final score was rejected; suggesting and explaining keeps the human in the seat.",
           },
           {
-            title: "Strategy narrative, separate from scoring",
+            title: "Priority matrix for trade-offs",
             detail:
-              "A short narrative on what the score means in context — comparison to other items, sensitivity to uncertain inputs, recommended next discovery. Generated independently from the score so the math stays auditable.",
+              "An Effort × Impact scatter rendered on a 2D canvas drops the backlog into four labeled quadrants — Quick Win, Strategic, Fill-In, Avoid. The score answers \"what's first\"; the matrix answers \"what kind of bet is this.\"",
+          },
+          {
+            title: "AI Strategy Advisor, separate from the score",
+            detail:
+              "One click runs Claude Opus across the scored backlog for a structured read — top priority, quick win, risk flag, sprint plan, strategic insight — independent of the RICE math so the numbers stay auditable. A demo mode returns a representative read with no live call.",
           },
         ],
       },
@@ -1056,24 +1062,24 @@ export const projects: Project[] = [
         kind: "metrics",
         items: [
           {
-            metric: "Coaching coverage",
-            after: "4 RICE dimensions",
-            note: "Dedicated prompting layer per input",
+            metric: "Scoring",
+            after: "Normalized RICE · 1–100",
+            note: "Real-time recompute; per-dimension AI suggestions the user overrides",
           },
           {
-            metric: "Output shape",
-            after: "Inputs + assumptions + score",
-            note: "Reconstructable from the artifact alone",
+            metric: "Trade-off view",
+            after: "Effort × Impact matrix",
+            note: "Quick Win · Strategic · Fill-In · Avoid quadrants, canvas-rendered",
           },
           {
-            metric: "Strategy narrative",
-            after: "Generated separately",
-            note: "Math remains auditable",
+            metric: "AI Strategy Advisor",
+            after: "One-click backlog read",
+            note: "Top priority · quick win · risk flag · sprint plan — separate from the math",
           },
           {
             metric: "Access",
-            after: "No-login web app",
-            note: "Bookmark-and-go, no account friction",
+            after: "Guest mode or cloud sync",
+            note: "localStorage for guests; Clerk + Supabase when signed in",
           },
         ],
       },
