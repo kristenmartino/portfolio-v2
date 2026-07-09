@@ -141,6 +141,142 @@ export const featuredProject: FeaturedProject = {
 export const projects: Project[] = [
   {
     index: "01",
+    title: "Cabana",
+    category: "Ops Automation + AI",
+    summary:
+      "Member portal and operations layer for a field-service company — free-text repair requests triaged by Claude Haiku, deposits taken through webhook-authoritative Stripe, and a transactional outbox that guarantees no side effect is ever silently dropped; chaos-tested to zero lost and zero duplicated under injected failure.",
+    href: "/work/cabana",
+    slug: "cabana",
+    codeHref: "https://github.com/kristenmartino/cabana",
+    year: "2026",
+    status: "In progress",
+    mode: "Solo build",
+    shape: "pipeline",
+    image: "/work/cabana-architecture-dark.png",
+    imageAlt:
+      "Cabana system architecture — a member browser to Next.js, Supabase Postgres as the source of truth with three edge functions, and n8n fanning out to Airtable, Telegram, and email through a transactional outbox.",
+    metrics: [
+      "8 services · transactional outbox",
+      "Webhook-authoritative payments · RLS",
+      "Chaos-tested: 0 lost / 0 duplicated · 50 bookings",
+      "Next.js 15 · Supabase · Claude Haiku · n8n",
+    ],
+    artifact: {
+      problem: {
+        situation:
+          "Sailfish Pool Care — a fictional three-tech residential pool company — runs like many real ones: repair requests arrive as free text across call, text, and Messenger; the owner approves work from his truck; the office lives in a spreadsheet. Requests get lost, customer data is retyped into four places, and deposits go uncollected because asking is awkward.",
+        complication:
+          "The obvious build drops data in the places that matter most. Fire-and-forget notifications vanish when a downstream service blinks; trusting Stripe's success redirect double-books on replay; two-way sync between the app and Airtable drifts; and an AI that can promise a price or a time turns a confident misread into a commitment the company has to honor.",
+        question:
+          "Can a solo build hold an SMB ops system to a distributed-systems correctness bar — every integration with a named failure, detection, and handling path — without over-building past what three techs actually need?",
+      },
+      requirements: [
+        {
+          stakeholder: "Member",
+          need: "Describe a problem in plain words and get a real acknowledgment in seconds — no form shaped like the company's database, and no promise the business can't keep.",
+          evidence: "Free-text intake to Haiku triage; drafts only, never commits a price or time",
+        },
+        {
+          stakeholder: "Dana (owner)",
+          need: "Approve or decline work in one tap from the field, with an audit trail of who acted and how.",
+          evidence: "Telegram inline Approve · idempotent · one booking_transitions row per decision",
+        },
+        {
+          stakeholder: "Marie (office)",
+          need: "Run the week from a familiar console she can actually edit — without it becoming a second source of truth.",
+          evidence: "Airtable projection + two-field whitelisted write-back through a guarded edge function",
+        },
+        {
+          stakeholder: "The system itself",
+          need: "No status change, payment, or notification may ever be silently lost, and every failure must be detectable.",
+          evidence: "Transactional outbox + stripe_events ledger + RLS · a failure-modes table with a Detection column per integration",
+        },
+      ],
+      decisions: {
+        criteria: [
+          "No side effect silently lost",
+          "Recovers after downtime",
+          "Operator-inspectable",
+          "Build effort",
+        ],
+        options: [
+          {
+            option: "Call Airtable / Telegram / email inline from app code",
+            scores: ["unmet", "unmet", "unmet", "met"],
+          },
+          {
+            option: "Fire-and-forget: DB triggers call n8n directly",
+            scores: ["unmet", "unmet", "partial", "met"],
+          },
+          {
+            option: "Transactional outbox committed with the state change, consumed by n8n",
+            chosen: true,
+            scores: ["met", "met", "met", "partial"],
+            rationale:
+              "The event commits in the same transaction as the status change, so it exists if and only if the state change did — the failure the requirement names (a notification that silently vanishes when a downstream service blinks) becomes unrepresentable. n8n consumes at-least-once with a dedupe key, retries to a dead-letter queue, alerts, and a nightly reconciliation backstops it; a webhook nudge handles latency while a 60-second sweep handles the guarantee, so no single channel is asked to do both. Fire-and-forget triggers are the amateur default — if n8n is down at that instant, the event is gone — and inline calls also couple the member's request latency to three third-party APIs. The cost is a consumer and a queue to operate; n8n on Railway keeps that inspectable by a non-engineer.",
+          },
+        ],
+      },
+      solution: {
+        summary:
+          "A Supabase-Postgres core as the single source of truth, fronted by a Next.js member portal and three inbound webhook edge functions, with every outbound side effect delivered through a transactional outbox and n8n — retries, dead-lettering, alerting, nightly reconciliation. Claude Haiku triages intake as a bounded subsystem that can draft but never commit.",
+        pillars: [
+          {
+            title: "AI that drafts, never commits",
+            detail:
+              "Haiku classifies free-text intake against a zod schema and drafts an acknowledgment. No code path lets model output set a price, a time, or a status past awaiting_deposit / needs_review; timeout or bad output routes to a human, and the member flow can never throw on a model failure. The golden set enforces 100% prompt-injection containment in CI, deterministically at temperature 0.",
+          },
+          {
+            title: "Payment truth is the webhook",
+            detail:
+              "Hosted Stripe Checkout; payment state changes only from signature-verified events, recorded in a stripe_events idempotency ledger tolerant of replay and out-of-order delivery. The success redirect is cosmetic — the page polls until the database says paid, so a member who pays and closes the tab still lands on Scheduled.",
+          },
+          {
+            title: "The transactional outbox",
+            detail:
+              "Every status change commits its side-effect event in the same transaction; n8n consumes at-least-once with a dedupe key, retries to a dead-letter queue, alerts, and reconciles nightly. Orchestration lives where a non-engineer operator can open it and see the flow.",
+          },
+          {
+            title: "Isolation and audit in the database",
+            detail:
+              "RLS is the security boundary — enforced in Postgres, not UI filters, and probed by an adversarial test suite (cross-member reads through join paths; browsers get 42501 on writes). Every status write goes through one RPC so the actor and the write share a transaction, and the audit records who acted via which channel.",
+          },
+        ],
+      },
+      outcome: {
+        kind: "metrics",
+        items: [
+          {
+            metric: "Delivery under chaos",
+            after: "0 lost / 0 duplicated",
+            note: "50 bookings through a live pipeline while n8n was killed, Airtable auth broken, and Stripe events replayed — one committed run, demo volume",
+          },
+          {
+            metric: "Payment truth",
+            after: "Webhook-authoritative + idempotent",
+            note: "State changes only from signature-verified Stripe events, recorded once in a stripe_events ledger",
+          },
+          {
+            metric: "Member isolation",
+            after: "RLS, adversarially tested",
+            note: "18-test suite probes cross-member reads through join paths; the database is the boundary, not UI filters",
+          },
+          {
+            metric: "AI safety",
+            after: "Structural, not prompted",
+            note: "No path lets triage commit price/time/status; golden set: 100% injection containment in CI at temperature 0",
+          },
+          {
+            metric: "What chaos found",
+            after: "A real DLQ bug (#23)",
+            note: "Dead-lettering wasn't terminal — the test surfaced it; nothing lost, louder than intended; fix scoped as migration 0016",
+          },
+        ],
+      },
+    },
+  },
+  {
+    index: "02",
     title: "SpecialtyPulse Pipeline",
     category: "Healthcare Data Platform",
     summary:
@@ -277,7 +413,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "02",
+    index: "03",
     title: "Valuate",
     category: "AI Financial Agent",
     summary:
@@ -409,7 +545,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "03",
+    index: "04",
     title: "Tenancy",
     category: "AI Document Agent",
     summary:
@@ -546,7 +682,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "04",
+    index: "05",
     title: "Eval Harness",
     category: "Applied LLM Evaluation",
     summary:
@@ -696,7 +832,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "05",
+    index: "06",
     title: "Quantization Study",
     category: "Applied LLM Research",
     summary:
@@ -828,7 +964,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "06",
+    index: "07",
     title: "GridPulse",
     category: "Energy Decision Platform",
     summary:
@@ -955,7 +1091,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "07",
+    index: "08",
     title: "Tarazu",
     category: "Product + AI",
     summary:
@@ -1080,7 +1216,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "08",
+    index: "09",
     title: "Sift",
     category: "AI News + Civic Literacy",
     summary:
@@ -1212,7 +1348,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "09",
+    index: "10",
     title: "FocusForge",
     category: "iOS Mobile App",
     summary:
@@ -1314,7 +1450,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "10",
+    index: "11",
     title: "GTM Healthcare Intelligence",
     category: "Healthcare GTM Analytics",
     summary:
@@ -1445,7 +1581,7 @@ export const projects: Project[] = [
     },
   },
   {
-    index: "11",
+    index: "12",
     title: "Platform Migration + ARR Growth",
     category: "Cross-Functional Delivery",
     summary:
@@ -1457,7 +1593,7 @@ export const projects: Project[] = [
     shape: "pipeline",
   },
   {
-    index: "12",
+    index: "13",
     title: "Revenue Recovery Audit Workflow",
     category: "Enterprise Systems",
     summary:
@@ -1469,7 +1605,7 @@ export const projects: Project[] = [
     shape: "table",
   },
   {
-    index: "13",
+    index: "14",
     title: "RMS Fare Validation System",
     category: "Decision Support",
     summary:
@@ -1481,7 +1617,7 @@ export const projects: Project[] = [
     shape: "decision",
   },
   {
-    index: "14",
+    index: "15",
     title: "Flight Disruption Recovery",
     category: "Operational Decision Support",
     summary:
