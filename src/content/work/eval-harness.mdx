@@ -10,7 +10,7 @@ This harness is built to answer that question on a real production workload — 
   <Spec label="Domain" value="Applied LLM evaluation · production routing" />
   <Spec label="Stack" value="Python · Ollama · Anthropic + OpenAI APIs · Bradley-Terry MM · Next.js (site)" />
   <Spec label="Hardware" value="NVIDIA DGX Spark · 128 GB unified memory · Ollama local inference" />
-  <Spec label="Status" value="Methodology shipped · Phase 1 execution in progress" />
+  <Spec label="Status" value="Methodology shipped · Phase 1 execution in progress · v0.3 trajectory-eval harness built (165 tests)" />
 </Specs>
 
 ## Problem framing
@@ -39,9 +39,9 @@ The credibility of a leaderboard sits in its methodology, not its numbers. Five 
 
 1. **Cross-vendor judging architecture.** Sonnet 4.6 judges the 21 of 36 model pairs that don't include an Anthropic candidate; GPT-4o judges the 15 of 36 pairs that do. A 50-pair overlap subset is judged by both, with inter-judge Cohen's κ reported (caveat triggered if κ &lt; 0.6). Eliminates the case where Sonnet's outputs are judged by Sonnet — which would otherwise make Sonnet's score unfalsifiable.
 2. **Bradley-Terry MM ranking across all 36 pairs**, not pairwise-vs-reference. Asymmetric pairwise (everyone-vs-Haiku) makes Haiku unrankable as a candidate. The BT MM algorithm ([Hunter 2004](https://www.jstor.org/stable/3448513)) fits a global strength ranking from the full pairwise matrix and lets every model be evaluated against every other.
-3. **Hardware-amortized cost methodology**, reported alongside published API rates. Local compute cost = DGX Spark capex amortized over a 3-year useful life + measured wall-clock × FL residential kWh rate. All assumptions pinned and stated; a dual view (individual-developer vs production-scale) is deferred to v0.3 for the procurement audience.
+3. **Hardware-amortized cost methodology**, reported alongside published API rates. Local compute cost = DGX Spark capex amortized over a 3-year useful life + measured wall-clock × FL residential kWh rate. All assumptions pinned and stated; a dual view (individual-developer vs production-scale) is deferred to a later benchmark pass for the procurement audience.
 4. **Per-task split between schema-adherence and extraction quality.** Task C reports two metrics, not one: JSON validity rate (capability A) and entity F1 conditional on validity (capability B). Splitting prevents conflating "weak at JSON" with "weak at extraction" — which the leaderboard would otherwise do silently, because invalid JSON gates everything else.
-5. **A v0.2 spec critique round before any code was written.** Eleven methodology items surfaced in a structured peer-review pass — judge contamination, pairwise design ambiguity, the 70B-on-Task-A throughput problem, scoring conflation, sample-size power, contamination acknowledgement, and others. Nine applied directly to the spec; three deferred to v0.3 as post-data-collection decisions. The spec critique is the artifact most worth pointing senior reviewers at; it shows the methodology bend-tested before any number was computed.
+5. **A v0.2 spec critique round before any code was written.** Eleven methodology items surfaced in a structured peer-review pass — judge contamination, pairwise design ambiguity, the 70B-on-Task-A throughput problem, scoring conflation, sample-size power, contamination acknowledgement, and others. Nine applied directly to the spec; three deferred as post-data-collection decisions. The spec critique is the artifact most worth pointing senior reviewers at; it shows the methodology bend-tested before any number was computed.
 
 ## Pre-flight and the held-out lock
 
@@ -59,6 +59,21 @@ Pre-flight scripts (five, stdlib-only) close the rest of the loop before Phase 1
 ## What the routing-decision framework will answer
 
 The leaderboard alone is a snapshot — a model-by-model table at a single point in time. The artifact worth shipping is a *routing-decision framework* that the leaderboard feeds: for each pipeline stage, the framework will name the model to route to, the conditions under which to do it, the escalation rule when the model's confidence drops, and the failure mode that disqualifies a model regardless of its headline score. Those specific calls — which model, what threshold, what escalation, what kill condition — get committed only after Phase 1 runs and the held-out numbers come back. Until then, the methodology is what's defensible; the decisions live downstream of the data.
+
+## v0.3 — Agentic trajectory evaluation (Phase 2)
+
+v0.2 answers *which model do we ship*. The next question a production team asks once an agent is in the loop is different in kind: *is the agent reliable enough to deploy, and will we catch it when it regresses?* That is agent evaluation plus observability — the LangSmith / Braintrust / Phoenix category — and it grades a **path**, not a string. v0.3 is a distinct track that reuses v0.2's substrate (the adapter Protocol, the JSONL run-unit, the held-out lock, the cross-vendor judge) to evaluate a single-model, multi-role agent over the same Sift corpus.
+
+It began the way v0.2 did — with a critique pass. Every "reuse" claim in the v0.3 spec was ground-truthed against the actual code before a line was written: the ones that held (adapter Protocol, held-out lock, the score-downstream invariant) were kept; the ones that overstated — a Cohen's κ that lived in the prose but not the code, a pairwise judge repurposed for a pointwise task, a stale test count — were corrected and shipped as a tracked diff. Each design choice is anchored to current practice rather than invented: `pass^k` reliability from [τ-bench](https://arxiv.org/abs/2406.12045), nugget-recall answer-correctness from RAGAS and the TREC RAG track, the two-axis injection eval from [AgentDojo](https://arxiv.org/abs/2406.13352) and InjecAgent, and dev/test-split contamination discipline from SWE-bench Pro and the reusable-holdout literature.
+
+What is built and tested today — **165 tests, zero runtime dependencies, entirely key-free**:
+
+- **A four-role agent loop** — router, planner, executor, critic — over a `ToolRegistry` seam that mirrors the model-adapter Protocol, so a deterministic mock tool store swaps for a real vector store without touching the loop or the scorers. The loop never crashes on a tool fault: it retries, falls back to synthesis, and records faithfully what happened.
+- **Six trajectory scorers on two axes.** *Process:* layered tool-selection (legality as a hard gate, then coverage, a partial-order precedence check, and state-legality), arg-schema-validity, report-only step-efficiency, and error-recovery. *Outcome:* answer-correctness (vital-weighted nugget recall plus precision) and citation-faithfulness, both pointwise-judged, plus a free deterministic check that the answer's citations cover the gold article IDs. A green outcome never launders a bad path — the two axes are reported separately.
+- **An adversarial guardrail suite.** Injection rides in on a retrieved document, and the verdict is a *conjunction* over the OWASP-LLM01 channels — no injected-arg tool call, no canary disclosure, no data-exfil two-step, no output-steering — so a run that refuses out loud but still leaks the secret is correctly scored compromised. A fixed per-scenario canary makes disclosure a deterministic substring scan, and attack-success rate is reported separately from utility. A broad, partly-unanticipated stdlib fault set exercises recovery.
+- **A two-tier CI regression gate.** The per-PR Tier-A gate replays recorded trajectories with no API keys and gates per-dimension — a conjunction of committed thresholds, never a blended average. Because each recorded response is keyed by a hash of the assembled request, a prompt or tool-schema edit trips a replay miss and fails the build until it is deliberately re-recorded — a prompt regression cannot land silently. The judged dimensions, which need a live model, run in a keyed Tier-B nightly.
+
+The honest scope line matches v0.2's: the machinery is built, tested, and CI-gated; the **live run over the real corpus is corpus-gated** — it needs the Sift pull, a real vector store behind the tool seam, and the authored question set, the same operator inputs the Phase-1 leaderboard is waiting on. A step-7 runbook lays out that turnkey path, and no v0.3 numbers are claimed until the data lands.
 
 ## Reflections
 

@@ -550,7 +550,7 @@ export const projects: Project[] = [
     title: "Eval Harness",
     category: "Applied LLM Evaluation",
     summary:
-      "Defensible cost/quality eval comparing 9 LLMs (5 open-weight on DGX Spark via Ollama, 4 closed-weight via API) across 4 real production tasks from Sift. Cross-vendor judging, hardware-amortized cost, verifiable held-out lock. Routing-decision framework, not a benchmark.",
+      "Defensible cost/quality eval comparing 9 LLMs (5 open-weight on DGX Spark via Ollama, 4 closed-weight via API) across 4 real production tasks from Sift. Cross-vendor judging, hardware-amortized cost, verifiable held-out lock. Routing-decision framework, not a benchmark. A v0.3 track extends the same substrate to agentic trajectory evaluation — grading an agent's tool-use path, not just a model's answer — with an adversarial guardrail suite and a two-tier CI regression gate, built and tested key-free (165 tests).",
     href: "/work/eval-harness",
     slug: "eval-harness",
     liveHref: "https://evals.kristenmartino.ai",
@@ -567,6 +567,7 @@ export const projects: Project[] = [
       "Cross-vendor judging · Bradley-Terry MM ranking",
       "Verifiable held-out lock (SHA-256 + git)",
       "Hardware-amortized cost on DGX Spark",
+      "v0.3: agentic trajectory eval — agent loop + 6 scorers + adversarial guardrails + 2-tier CI gate (165 tests)",
     ],
     artifact: {
       problem: {
@@ -600,7 +601,7 @@ export const projects: Project[] = [
           stakeholder: "Procurement / cost-side reader",
           need: "Hardware-amortized cost methodology comparable to published API rates — not a hand-wave.",
           evidence:
-            "DGX Spark capex / 3-year useful life + measured wall-clock × FL kWh rate. All assumptions stated; dual production-scale view scoped for v0.3.",
+            "DGX Spark capex / 3-year useful life + measured wall-clock × FL kWh rate. All assumptions stated; a dual production-scale view is scoped for a later benchmark pass.",
         },
       ],
       decisions: {
@@ -627,7 +628,7 @@ export const projects: Project[] = [
             chosen: true,
             scores: ["met", "met", "met", "met"],
             rationale:
-              "The methodology IS the deliverable; the leaderboard is the worked example. Cross-vendor judging eliminates self-preference bias on the pairwise summarization task — the single most common LLM-eval methodology failure. Bradley-Terry MM (Hunter 2004) over all 36 model pairs yields a global strength ranking rather than the asymmetric everyone-vs-Haiku design, which would leave Haiku itself unrankable. Hardware-amortized cost lets local compute be compared to API token pricing on a single axis. The held-out lock — enforced in the runner, which refuses held-out access without an explicit flag and verifies the set against a committed SHA-256 manifest — moves 'I held out 20%' from a vibes claim to a verifiable one. The v0.2 critique round caught nine real methodology issues (judge contamination, scoring conflation on JSON, sample-size power, 70B-on-Task-A throughput infeasibility) before any number was computed, applied them as a tracked diff, and deferred three to v0.3 as post-data-collection decisions.",
+              "The methodology IS the deliverable; the leaderboard is the worked example. Cross-vendor judging eliminates self-preference bias on the pairwise summarization task — the single most common LLM-eval methodology failure. Bradley-Terry MM (Hunter 2004) over all 36 model pairs yields a global strength ranking rather than the asymmetric everyone-vs-Haiku design, which would leave Haiku itself unrankable. Hardware-amortized cost lets local compute be compared to API token pricing on a single axis. The held-out lock — enforced in the runner, which refuses held-out access without an explicit flag and verifies the set against a committed SHA-256 manifest — moves 'I held out 20%' from a vibes claim to a verifiable one. The v0.2 critique round caught nine real methodology issues (judge contamination, scoring conflation on JSON, sample-size power, 70B-on-Task-A throughput infeasibility) before any number was computed, applied them as a tracked diff, and deferred three as post-data-collection decisions.",
           },
         ],
       },
@@ -655,6 +656,11 @@ export const projects: Project[] = [
             detail:
               "ModelAdapter is a Protocol with one method (complete(prompt, params) → Completion). Tasks are self-contained modules exporting a prompt template, a parser, and a scorer. Swapping the tasks/ directory and pointing at a new dataset is what makes the harness reusable for GridPulse, Tarazu, or any other ML product without re-engineering the runner.",
           },
+          {
+            title: "Agentic trajectory evaluation (v0.3, Phase 2)",
+            detail:
+              "A distinct track extends the same substrate from 'which model do we ship' to 'is the agent reliable enough to deploy, and will we catch it when it regresses' — agent evaluation plus observability, not a benchmark. It grades a whole run (plan → tool call → observe → critic → retry → answer): a four-role agent loop (router / planner / executor / critic) over a ToolRegistry seam that mirrors the adapter Protocol, six trajectory scorers (deterministic tool-selection, arg-schema-validity, error-recovery, and citations-cover-gold-id, plus judged answer-correctness and citation-faithfulness), an adversarial guardrail suite (a conjunctive OWASP-LLM01 injection verdict with a planted canary for deterministic disclosure detection, plus a broad stdlib fault-injection set), and a two-tier CI regression gate — a per-PR Tier-A gate that replays recorded trajectories key-free (a prompt edit trips a replay miss, so a regression can't land silently) and a judged Tier-B nightly. Built and tested (165 tests, zero runtime deps); the scorer and statistics choices are grounded in current agent-eval practice (τ-bench pass^k, RAGAS, AgentDojo, SWE-bench Pro). The live run over the real corpus is corpus-gated, same as the Phase-1 leaderboard numbers.",
+          },
         ],
       },
       outcome: {
@@ -668,7 +674,7 @@ export const projects: Project[] = [
           },
           {
             metric: "Harness infrastructure",
-            after: "End-to-end with 47 tests passing",
+            after: "End-to-end, 78 tests passing (v0.2 substrate)",
             note: "Adapter Protocol (Ollama + Anthropic + OpenAI + Mock) · task modules (categorization + summarization) · runner with JSONL reproducibility headers + resumability + enforced held-out gate + CLI · Bradley-Terry MM",
           },
           {
@@ -679,7 +685,17 @@ export const projects: Project[] = [
           {
             metric: "v0.2 spec critique",
             after: "9 of 11 items applied",
-            note: "Cross-judge calibration overlap, JSON-validity vs F1 split, 70B tier split, held-out lock mechanism, sample-size power statement; 3 items deferred to v0.3 as post-Task-A decisions",
+            note: "Cross-judge calibration overlap, JSON-validity vs F1 split, 70B tier split, held-out lock mechanism, sample-size power statement; 3 items deferred as post-Task-A decisions",
+          },
+          {
+            metric: "v0.3 trajectory-eval harness",
+            after: "Built + CI-gated, 165 tests passing",
+            note: "Agent loop (router / planner / executor / critic over a ToolRegistry) · 6 trajectory scorers · adversarial guardrail suite (conjunctive injection channels + planted canary + broad stdlib fault injection) · Tier-A cassette-replay regression gate (a prompt edit trips a replay miss) + Tier-B judged nightly · zero runtime deps",
+          },
+          {
+            metric: "v0.3 spec review + remediation",
+            after: "Grounded critique shipped",
+            note: "Every reuse claim ground-truthed against the code, overstatements corrected, each fix sourced to real agent-eval practice (τ-bench, RAGAS/TREC, AgentDojo/InjecAgent, SWE-bench Pro); shipped as spec-v0.3-diff.md plus a step-7 runbook for the corpus-gated live run",
           },
           {
             metric: "Projected v0.2 API spend",
