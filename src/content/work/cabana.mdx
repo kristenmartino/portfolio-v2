@@ -1,0 +1,186 @@
+## Overview
+
+Cabana is a member portal and operations layer for Sailfish Pool Care — a fictional three-tech residential pool company. It's a real system for an invented client: the client is fabricated so the hard parts could be exercised in the open — injecting failures, killing infrastructure mid-run, publishing a secret-rotation runbook — with no customer's live pipeline on the line.
+
+The spine is one sentence: a member describes a problem in their own words → Claude Haiku triages it (confidence-gated, structurally unable to promise a price or a time) → qualified repairs collect a $75 deposit through webhook-authoritative Stripe Checkout → the owner approves with one tap from Telegram → the office runs the week from an Airtable projection → a transactional outbox and n8n guarantee that no side effect is ever silently dropped.
+
+<Quote>
+The complexity budget is spent in exactly three places — payment truth, delivery guarantees, and member-data isolation — and the design is aggressively boring everywhere else.
+</Quote>
+
+That allocation is the point. A pool company doesn't need a route optimizer or a billing migration; it needs intake that never loses a customer, money that's never wrong, and a system where the app, the owner's phone, the office board, and the member's portal can't disagree about what's true.
+
+<Specs>
+  <Spec label="Role" value="Solo build — discovery, architecture, invariants, implementation, and review (paired with Claude Code)" />
+  <Spec label="Year" value="2026" />
+  <Spec label="Domain" value="Field-service operations · fictional client, real system" />
+  <Spec label="Stack" value="Next.js 15 (Vercel) · Supabase (Postgres · RLS · Edge Functions) · Stripe Checkout · n8n · Airtable · Telegram · Claude Haiku · Resend" />
+  <Spec label="Status" value="Gates 1–3a (spine, money path, chaos) closed · v1.0 ship-out (Loom, tag) pending" />
+</Specs>
+
+## The system
+
+<Diagram title="System architecture — the spine and its three complexity zones">
+  {/* Inline SVG — theme-reactive via design tokens. Raster fallback in /public/work: cabana-architecture-dark.png (dark) + cabana-architecture-light.png (light). */}
+  <svg viewBox="0 0 960 560" role="img" aria-labelledby="cab-ttl cab-dsc" fontFamily="var(--font-sans, system-ui, sans-serif)" className="w-full h-auto">
+    <title id="cab-ttl">Cabana system architecture</title>
+    <desc id="cab-dsc">Member portal and ops automation for Sailfish Pool Care: member browser to Next.js on Vercel, Supabase Postgres as source of truth with three edge functions, and external services Claude Haiku, Stripe, n8n, Airtable, Telegram and Email.</desc>
+    <defs>
+      <marker id="ah" viewBox="0 0 8 8" refX="6.6" refY="4" markerWidth="7" markerHeight="7" orient="auto" markerUnits="userSpaceOnUse">
+        <path d="M0.5,1 L6.8,4 L0.5,7 Z" fill="var(--color-graphite-60)"/>
+      </marker>
+      <marker id="aha" viewBox="0 0 8 8" refX="6.6" refY="4" markerWidth="8" markerHeight="8" orient="auto" markerUnits="userSpaceOnUse">
+        <path d="M0.5,1 L6.8,4 L0.5,7 Z" fill="var(--color-signal-blue)"/>
+      </marker>
+    </defs>
+    <g>
+      <rect fill="none" stroke="var(--color-graphite-80)" strokeWidth="1" strokeDasharray="4 4" x="22" y="150" width="144" height="86" rx="12"/>
+      <text fill="var(--color-graphite-60)" letterSpacing="0.09em" fontWeight="600" x="36" y="167" fontSize="10">MEMBER</text>
+      <rect fill="none" stroke="var(--color-graphite-80)" strokeWidth="1" strokeDasharray="4 4" x="172" y="150" width="172" height="96" rx="12"/>
+      <text fill="var(--color-graphite-60)" letterSpacing="0.09em" fontWeight="600" x="184" y="167" fontSize="10">VERCEL</text>
+      <rect fill="none" stroke="var(--color-graphite-80)" strokeWidth="1" strokeDasharray="4 4" x="350" y="100" width="316" height="314" rx="14"/>
+      <text fill="var(--color-graphite-60)" letterSpacing="0.09em" fontWeight="600" x="362" y="119" fontSize="10">SUPABASE</text>
+    </g>
+    <g>
+      <path stroke="var(--color-graphite-60)" strokeWidth="1.2" fill="none" d="M152,203 L182,205" markerEnd="url(#ah)"/>
+      <path stroke="var(--color-graphite-60)" strokeWidth="1.2" fill="none" d="M250,176 L250,100" markerEnd="url(#ah)"/>
+      <path stroke="var(--color-graphite-60)" strokeWidth="1.2" fill="none" d="M274,99 L274,173" markerEnd="url(#ah)"/>
+      <text fill="var(--color-graphite-40)" paintOrder="stroke" stroke="var(--color-soot)" strokeWidth="3.2" strokeLinejoin="round" x="262" y="137" fontSize="10" textAnchor="middle">server action</text>
+      <path stroke="var(--color-graphite-60)" strokeWidth="1.2" fill="none" d="M334,208 L360,233" markerEnd="url(#ah)"/>
+      <path stroke="var(--color-graphite-60)" strokeWidth="1.2" fill="none" d="M260,238 L260,297" markerEnd="url(#ah)"/>
+      <text fill="var(--color-graphite-40)" paintOrder="stroke" stroke="var(--color-soot)" strokeWidth="3.2" strokeLinejoin="round" x="268" y="273" fontSize="10" textAnchor="start">create session</text>
+      <path stroke="var(--color-graphite-60)" strokeWidth="1.2" fill="none" d="M334,338 L545,381" markerEnd="url(#ah)"/>
+      <text fill="var(--color-graphite-40)" paintOrder="stroke" stroke="var(--color-soot)" strokeWidth="3.2" strokeLinejoin="round" x="430" y="349" fontSize="10" textAnchor="middle">signed webhook</text>
+      <path stroke="var(--color-graphite-60)" strokeWidth="1.2" fill="none" d="M588,356 L513,321" markerEnd="url(#ah)"/>
+      <path stroke="var(--color-graphite-60)" strokeWidth="1.2" fill="none" d="M548,274 L512,274" markerEnd="url(#ah)"/>
+      <path stroke="var(--color-graphite-60)" strokeWidth="1.2" fill="none" d="M556,190 L513,227" markerEnd="url(#ah)"/>
+      <path stroke="var(--color-signal-blue)" strokeWidth="1.9" fill="none" d="M435,213 L435,88 L901,88 L901,236" markerEnd="url(#aha)"/>
+      <text fill="var(--color-signal-blue)" paintOrder="stroke" stroke="var(--color-soot)" strokeWidth="3.2" strokeLinejoin="round" fontWeight="600" x="650" y="80" fontSize="10" textAnchor="middle">outbox: trigger + sweep</text>
+      <path stroke="var(--color-graphite-60)" strokeWidth="1.2" fill="none" d="M846,264 L830,180" markerEnd="url(#ah)"/>
+      <path stroke="var(--color-graphite-60)" strokeWidth="1.2" fill="none" d="M846,280 L830,274" markerEnd="url(#ah)"/>
+      <path stroke="var(--color-graphite-60)" strokeWidth="1.2" fill="none" d="M846,296 L830,368" markerEnd="url(#ah)"/>
+      <path stroke="var(--color-graphite-60)" strokeWidth="1.2" fill="none" d="M700,178 L659,170" markerEnd="url(#ah)"/>
+      <text fill="var(--color-graphite-40)" paintOrder="stroke" stroke="var(--color-soot)" strokeWidth="3.2" strokeLinejoin="round" x="678" y="147" fontSize="10" textAnchor="middle">whitelisted automation</text>
+      <path stroke="var(--color-graphite-60)" strokeWidth="1.2" fill="none" d="M700,274 L659,274" markerEnd="url(#ah)"/>
+      <text fill="var(--color-graphite-40)" paintOrder="stroke" stroke="var(--color-soot)" strokeWidth="3.2" strokeLinejoin="round" x="672" y="238" fontSize="10" textAnchor="middle">commands / buttons</text>
+    </g>
+    <g>
+      <rect fill="var(--color-soot)" stroke="var(--color-graphite-80)" strokeWidth="1.2" x="36" y="176" width="116" height="52" rx="9"/>
+      <text fill="var(--color-bone)" fontWeight="600" x="94" y="199" fontSize="12.5" textAnchor="middle">Member</text>
+      <text fill="var(--color-graphite-40)" x="94" y="215" fontSize="10" textAnchor="middle">phone / browser</text>
+    </g>
+    <g>
+      <rect fill="var(--color-soot)" stroke="var(--color-graphite-80)" strokeWidth="1.2" x="186" y="40" width="150" height="56" rx="9"/>
+      <text fill="var(--color-bone)" fontWeight="600" x="261" y="65" fontSize="12.5" textAnchor="middle">Claude Haiku</text>
+      <text fill="var(--color-graphite-40)" x="261" y="82" fontSize="10" textAnchor="middle">intake triage</text>
+    </g>
+    <g>
+      <rect fill="var(--color-soot)" stroke="var(--color-graphite-80)" strokeWidth="1.2" x="186" y="176" width="148" height="62" rx="9"/>
+      <text fill="var(--color-bone)" fontWeight="600" x="260" y="196" fontSize="12.5" textAnchor="middle">Next.js App Router</text>
+      <text fill="var(--color-graphite-40)" x="260" y="211" fontSize="9.5" textAnchor="middle">portal UI +</text>
+      <text fill="var(--color-graphite-40)" x="260" y="224" fontSize="9.5" textAnchor="middle">server actions</text>
+    </g>
+    <g>
+      <rect fill="var(--color-soot)" stroke="var(--color-graphite-80)" strokeWidth="1.2" x="186" y="300" width="148" height="52" rx="9"/>
+      <text fill="var(--color-bone)" fontWeight="600" x="260" y="323" fontSize="12.5" textAnchor="middle">Stripe Checkout</text>
+      <text fill="var(--color-graphite-40)" x="260" y="339" fontSize="10" textAnchor="middle">payment session</text>
+    </g>
+    <g>
+      <path fill="var(--color-soot)" stroke="var(--color-signal-blue)" strokeWidth="1.4" d="M361,226 L361,320 A74,13 0 0 0 509,320 L509,226 A74,13 0 0 1 361,226 Z"/>
+      <ellipse fill="var(--color-soot)" stroke="var(--color-signal-blue)" strokeWidth="1.4" cx="435" cy="226" rx="74" ry="13"/>
+      <text fill="var(--color-signal-blue)" fontWeight="600" x="435" y="257" fontSize="12.5" textAnchor="middle">Postgres</text>
+      <text fill="var(--color-graphite-40)" x="435" y="275" fontSize="9.5" textAnchor="middle">RLS · source of truth</text>
+      <text fill="var(--color-graphite-40)" x="435" y="291" fontSize="9.5" textAnchor="middle">outbox · audit</text>
+    </g>
+    <g>
+      <rect fill="var(--color-soot)" stroke="var(--color-signal-blue)" strokeWidth="1.1" x="548" y="150" width="108" height="40" rx="8"/>
+      <text fill="var(--color-bone)" fontWeight="600" x="602" y="174" fontSize="11" textAnchor="middle">airtable-writeback</text>
+      <rect fill="var(--color-soot)" stroke="var(--color-signal-blue)" strokeWidth="1.1" x="548" y="254" width="108" height="40" rx="8"/>
+      <text fill="var(--color-bone)" fontWeight="600" x="602" y="278" fontSize="11" textAnchor="middle">telegram-webhook</text>
+      <rect fill="var(--color-soot)" stroke="var(--color-signal-blue)" strokeWidth="1.1" x="548" y="356" width="108" height="40" rx="8"/>
+      <text fill="var(--color-bone)" fontWeight="600" x="602" y="380" fontSize="11" textAnchor="middle">stripe-webhook</text>
+    </g>
+    <g>
+      <rect fill="var(--color-soot)" stroke="var(--color-graphite-80)" strokeWidth="1.2" x="846" y="240" width="110" height="80" rx="9"/>
+      <text fill="var(--color-bone)" fontWeight="600" x="901" y="272" fontSize="12.5" textAnchor="middle">n8n</text>
+      <text fill="var(--color-graphite-40)" x="901" y="288" fontSize="9.5" textAnchor="middle">orchestration</text>
+      <text fill="var(--color-graphite-40)" x="901" y="302" fontSize="9.5" textAnchor="middle">retries · DLQ</text>
+    </g>
+    <g>
+      <rect fill="var(--color-soot)" stroke="var(--color-graphite-80)" strokeWidth="1.2" x="700" y="150" width="128" height="56" rx="9"/>
+      <text fill="var(--color-bone)" fontWeight="600" x="764" y="176" fontSize="12.5" textAnchor="middle">Airtable</text>
+      <text fill="var(--color-graphite-40)" x="764" y="192" fontSize="10" textAnchor="middle">owner console</text>
+      <rect fill="var(--color-soot)" stroke="var(--color-graphite-80)" strokeWidth="1.2" x="700" y="246" width="128" height="56" rx="9"/>
+      <text fill="var(--color-bone)" fontWeight="600" x="764" y="272" fontSize="12.5" textAnchor="middle">Telegram</text>
+      <text fill="var(--color-graphite-40)" x="764" y="288" fontSize="10" textAnchor="middle">owner bot</text>
+      <rect fill="var(--color-soot)" stroke="var(--color-graphite-80)" strokeWidth="1.2" x="700" y="340" width="128" height="56" rx="9"/>
+      <text fill="var(--color-bone)" fontWeight="600" x="764" y="366" fontSize="12.5" textAnchor="middle">Email</text>
+      <text fill="var(--color-graphite-40)" x="764" y="382" fontSize="10" textAnchor="middle">member notifications</text>
+    </g>
+    <g>
+      <rect fill="var(--color-graphite-90)" stroke="var(--color-graphite-80)" strokeWidth="1" x="24" y="430" width="316" height="104" rx="10"/>
+      <text fill="var(--color-graphite-60)" letterSpacing="0.1em" fontWeight="600" x="40" y="452" fontSize="10">COMPLEXITY ZONES</text>
+      <rect fill="none" stroke="var(--color-graphite-40)" strokeWidth="1.1" strokeDasharray="2.4 2" x="40" y="461" width="14" height="11" rx="2"/>
+      <text x="64" y="471" fontSize="10"><tspan fill="var(--color-bone)" fontWeight="600">payment truth</tspan><tspan fill="var(--color-graphite-40)"> — verified webhook → DB, idempotent</tspan></text>
+      <line stroke="var(--color-signal-blue)" strokeWidth="1.9" fill="none" x1="40" y1="488" x2="52" y2="488" markerEnd="url(#aha)"/>
+      <text x="64" y="492" fontSize="10"><tspan fill="var(--color-bone)" fontWeight="600">delivery guarantee</tspan><tspan fill="var(--color-graphite-40)"> — outbox → n8n, retries + DLQ</tspan></text>
+      <g fill="none" stroke="var(--color-signal-blue)" strokeWidth="1.1">
+        <ellipse cx="47" cy="505" rx="7" ry="2.4"/>
+        <path d="M40,505 L40,512 A7,2.4 0 0 0 54,512 L54,505"/>
+      </g>
+      <text x="64" y="513" fontSize="10"><tspan fill="var(--color-bone)" fontWeight="600">member isolation</tspan><tspan fill="var(--color-graphite-40)"> — RLS on Postgres, per-account</tspan></text>
+    </g>
+  </svg>
+</Diagram>
+
+Supabase Postgres is the single source of truth; RLS enforces member isolation at the database, not in UI filters. Next.js on Vercel is the member portal — server actions perform every write, so no service key ever reaches the browser. Three edge functions are the only inbound webhook surfaces (Stripe, Telegram, Airtable write-back): they validate authenticity, translate to a state change plus an outbox row, and exit. All outbound side effects — Airtable, Telegram pings, email — are delivered by n8n from the outbox, where a non-engineer operator can open the flow and see it. Claude Haiku is a bounded subsystem: schema-validated, confidence-gated, allowed to draft but never to commit.
+
+## Problem framing
+
+Three observations shaped the build, and none of them are about features:
+
+1. **The obvious build drops data in the places that matter most.** Fire-and-forget notifications vanish the moment a downstream service blinks. A status change that emits its side effect *after* the transaction commits can succeed while the notification silently fails — and nobody knows a request was lost.
+2. **The success redirect is not payment truth.** Trusting Stripe's redirect double-books on replay and lies when a member closes the tab. Payment state has to derive from signature-verified events, recorded once, idempotently.
+3. **A helpful AI is a liability if it can promise anything.** The owner's own framing was the spec: a confident wrong answer is worse than a slow one. An intake model that can quote a price or a time turns a misread into a commitment the company has to honor.
+
+## AI that drafts but cannot commit
+
+Claude Haiku classifies free-text intake against a zod schema and drafts a warm, specific acknowledgment. The guarantee is structural, not a prompt asking nicely: **no code path exists** by which model output sets a price, promises a time, or advances a booking past `awaiting_deposit` / `needs_review`. A timeout, malformed output, or low confidence routes to a human queue with a holding reply — and the member flow can never throw because a model call failed. The golden set in CI, including prompt-injection cases, enforces 100% containment deterministically (temperature pinned to 0, after a flaky-green run was root-caused to an unset temperature defaulting to 1.0). The system's floor is the pre-existing normal: a person looks at it.
+
+## Payment truth is the webhook, not the redirect
+
+Deposits run through hosted Stripe Checkout — chosen over the embedded Payment Element because a $75 deposit doesn't justify the PCI-adjacent surface area. Two invariants hold regardless of the UI: payment state transitions originate *only* from signature-verified webhook events, and every event ID is persisted in a `stripe_events` ledger so duplicates and out-of-order deliveries are no-ops. The success page renders "confirming…" and polls until the database says paid; a member who pays and closes the tab still lands on Scheduled, because the webhook — not the redirect — is the authority.
+
+## The transactional outbox
+
+This is the load-bearing decision. Every status change commits its side-effect event in the *same* transaction, so the event exists if and only if the state change did. n8n consumes at-least-once with a dedupe key (idempotent consumers make that safe), retries to a dead-letter queue, alerts on the dead-letter, and a nightly reconciliation is the backstop. Latency and durability are handled by different mechanisms — a webhook nudge for speed, a 60-second sweep for the guarantee — instead of asking one channel to do both. The alternative, database triggers calling n8n directly, is the amateur default: if n8n is down at that instant, the event is gone.
+
+## Reliability — and what chaos day found
+
+The failure-modes table is the artifact a reviewer should read first, because **detection is the column amateur builds leave blank** — every integration names how its failure is noticed (a `stripe_events` PK conflict, an outbox-depth health probe, a per-row `last_error`, nightly reconciliation).
+
+Then it was tested for real. One committed chaos run pushed 50 bookings through the *live* cloud pipeline while the n8n consumer was killed for 90 seconds, Airtable auth was broken, and Stripe events were replayed: **0 lost, 0 duplicated** — exactly-once delivery verified from both directions, with payment idempotency ledger-checked.
+
+<Quote>
+A single reproducible chaos run at demo volume — not sustained production. The guarantee under test is delivery correctness under injected failure, not throughput.
+</Quote>
+
+And the run earned its keep: it surfaced a genuine bug (**#23**) — dead-lettering wasn't terminal, so the sweep re-retried dead-lettered rows and piled up duplicate alerts. Nothing was lost (if anything it was *louder* than intended), but the semantics are wrong; the fix is scoped as migration `0016`. That's what chaos day is for. The submit-to-delivered p95 for that run reads ~41 minutes — a **durability** datapoint, not a latency one, because it folds in the 90-second kill and a ~25-minute injected auth outage.
+
+## Honest notes
+
+- **Fictional client, fabricated data.** Every member, address, and number is invented; there is **no client or third-party PII** in the repo (the author's own name and alert-routing address appear by design). gitleaks scans full history in CI.
+- **Solo, pairing with Claude Code — stated as a strength.** I owned the discovery, the architecture, the invariants (a "never-cut list"), and every review; the AI accelerated the typing. The value shows in what review caught — a `redirect()` in a `try/catch` that swallowed `NEXT_REDIRECT`; a discarded `payments.insert` error that would have sent a member to Stripe with nothing for the webhook to flip; an AI acknowledgment that rendered only on the review path, hiding it on the entire happy path — each documented in the build log.
+- **A pre-agreed cut, honored.** The member-email leg was cut deliberately rather than slipping a gate, and the chaos log states the adapted assertion instead of pretending. The Telegram bot refuses and logs unauthorized chats but doesn't yet rate-limit them (a named v1.5 item).
+- **Real incidents.** Two secrets were rotated for real during the build; a Railway↔Telegram network flake is tracked and mitigated with an email fallback; chaos day found #23. All in the log, not swept under it.
+- **No public demo, by design.** The portal is member-gated (R1) — a stranger sees only the sign-in gate, because RLS is the real boundary. The demo is a short Loom plus a local run, not an open URL.
+
+## Reflections
+
+- **The outbox was the decision that mattered.** Everything downstream — retries, dead-lettering, reconciliation, the "silence means healthy" invariant — follows from committing the event with the state change. Get that wrong and no amount of alerting saves you.
+- **Chaos day is worth more than a green badge.** It found a real distributed-systems bug that unit tests couldn't, precisely because it broke the live system on purpose.
+- **Honesty is a design constraint, not a disclaimer.** Naming the cuts, the deferrals, and the one bug the chaos run exposed is the same discipline as filling in the Detection column — it's what makes the rest of the claims trustworthy.
+
+## Closing observation
+
+> Silence never means loss. A dropped notification, a replayed payment, a model that guessed wrong — each one is either impossible by construction or loud by design. That guarantee is the product; the pool company is just where it's proven.
