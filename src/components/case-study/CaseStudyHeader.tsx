@@ -11,6 +11,7 @@ type CaseStudyHeaderProps = {
   summary: string;
   metrics: string[];
   liveHref?: string;
+  liveLabel?: string;
   codeHref?: string;
   viewTransitionName?: string;
 };
@@ -21,6 +22,7 @@ export function CaseStudyHeader({
   summary,
   metrics,
   liveHref,
+  liveLabel,
   codeHref,
   viewTransitionName,
 }: CaseStudyHeaderProps) {
@@ -85,7 +87,7 @@ export function CaseStudyHeader({
               rel="noreferrer"
               className="text-sm font-medium text-[var(--color-signal-blue-soft)] hover:text-[var(--color-bone)] transition-colors"
             >
-              Open ↗
+              {liveLabel ?? "Open"} ↗
             </a>
           )}
           {codeHref && (

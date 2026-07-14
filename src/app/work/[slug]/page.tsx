@@ -75,6 +75,7 @@ export default async function CaseStudyPage({
         summary={study.summary}
         metrics={[...study.metrics]}
         liveHref={study.liveHref}
+        liveLabel={study.liveLabel}
         codeHref={study.codeHref}
         viewTransitionName={`${slug}-card`}
       />

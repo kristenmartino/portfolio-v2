@@ -152,9 +152,11 @@ export const projects: Project[] = [
       "Member portal and operations layer for a field-service company — free-text repair requests triaged by Claude Haiku, deposits taken through webhook-authoritative Stripe, and a transactional outbox that guarantees no side effect is ever silently dropped; chaos-tested to zero lost and zero duplicated under injected failure.",
     href: "/work/cabana",
     slug: "cabana",
+    liveHref: "https://cabana-kristenmartinos-projects.vercel.app",
+    liveLabel: "Try the demo",
     codeHref: "https://github.com/kristenmartino/cabana",
     year: "2026",
-    status: "In progress",
+    status: "Shipped",
     mode: "Solo build",
     shape: "pipeline",
     image: "/work/cabana-architecture-dark.png",
@@ -1657,6 +1659,7 @@ export type Study = {
   summary: string;
   metrics: string[];
   liveHref?: string;
+  liveLabel?: string;
   codeHref?: string;
   artifact?: Artifact;
   year?: string;
@@ -1686,6 +1689,7 @@ const studies: Record<string, Study> = {
           summary: p.summary,
           metrics: [...(p.metrics ?? [])],
           liveHref: p.liveHref,
+          liveLabel: p.liveLabel,
           codeHref: p.codeHref,
           artifact: p.artifact,
           year: p.year,

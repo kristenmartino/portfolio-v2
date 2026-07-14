@@ -65,6 +65,7 @@ export type Project = {
   imageAlt?: string;
   slug?: string;
   liveHref?: string;
+  liveLabel?: string;
   codeHref?: string;
   metrics?: readonly string[];
   artifact?: Artifact;
