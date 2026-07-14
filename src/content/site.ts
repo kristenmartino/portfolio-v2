@@ -12,7 +12,7 @@ export const site = {
   tagline: "Strategy. Analytics. Applied AI.",
   currentFocus:
     "Forecasting and applied AI for operations-heavy environments.",
-  builtWith: ["Next.js 16", "IBM Plex", "Framer Motion", "Vercel"],
+  builtWith: ["Next.js 16", "IBM Plex + Archivo", "Framer Motion + Lenis", "Vercel"],
 } as const;
 
 export const navItems: NavItem[] = [
@@ -35,5 +35,4 @@ export const contactLinks: ContactLink[] = [
   { label: "Email", href: "mailto:kristen@kristenmartino.ai", primary: true },
   { label: "LinkedIn", href: "https://linkedin.com/in/kristenmartino" },
   { label: "GitHub", href: "https://github.com/kristenmartino" },
-  { label: "Resume", href: "/resume" },
 ];

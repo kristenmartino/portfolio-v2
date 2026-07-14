@@ -45,7 +45,7 @@ export function FeaturedProject() {
             {featuredProject.eyebrow}
           </Mono>
           <h3
-            className="mt-5 font-semibold text-[var(--color-bone)]"
+            className="mt-5 type-display text-[var(--color-bone)]"
             style={{
               fontSize: "var(--text-h1)",
               lineHeight: "var(--leading-tight)",

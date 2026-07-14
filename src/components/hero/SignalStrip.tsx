@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Mono } from "@/components/typography/Mono";
-import { EASE, DUR } from "@/lib/motion";
+import { EASE, DUR, HERO_T } from "@/lib/motion";
 
 const signals = [
   {
@@ -28,7 +28,7 @@ export function SignalStrip() {
       className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-px"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: DUR.slow, delay: 0.7, ease: EASE.outExpo }}
+      transition={{ duration: DUR.slow, delay: HERO_T.strip, ease: EASE.outExpo }}
     >
       {signals.map((item) => (
         <div

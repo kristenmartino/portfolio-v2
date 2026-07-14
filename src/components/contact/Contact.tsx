@@ -1,14 +1,16 @@
 "use client";
 
 import { Section } from "@/components/section/Section";
+import { MagneticButton } from "@/components/primitives/MagneticButton";
+import { RevealHeading } from "@/components/typography/RevealHeading";
 import { contactLinks } from "@/content/site";
 
 export function Contact() {
   return (
     <Section id="contact" index="05" label="Contact" variant="ink">
       <div className="max-w-3xl">
-        <h2
-          className="font-semibold text-[var(--color-bone)]"
+        <RevealHeading
+          className="text-[var(--color-bone)]"
           style={{
             fontSize: "var(--text-h2)",
             letterSpacing: "var(--tracking-tight)",
@@ -16,7 +18,7 @@ export function Contact() {
           }}
         >
           Open to roles, partnerships, and select consulting.
-        </h2>
+        </RevealHeading>
         <p className="mt-5 text-base md:text-lg leading-relaxed max-w-2xl text-[var(--color-graphite-40)]">
           Currently exploring senior product roles and consulting work where
           systems thinking, analytics, and applied AI intersect — especially
@@ -28,7 +30,7 @@ export function Contact() {
           {contactLinks.map((link) => {
             const isExternal = link.href.startsWith("http");
             return (
-              <a
+              <MagneticButton
                 key={link.label}
                 href={link.href}
                 target={isExternal ? "_blank" : undefined}
@@ -40,7 +42,7 @@ export function Contact() {
                 }
               >
                 {link.label}
-              </a>
+              </MagneticButton>
             );
           })}
         </div>

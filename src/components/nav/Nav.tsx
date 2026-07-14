@@ -1,13 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { ScrollProgress } from "./ScrollProgress";
 import { ActiveSectionIndicator } from "./ActiveSectionIndicator";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { DUR, EASE, HERO_T } from "@/lib/motion";
 import { navItems, site } from "@/content/site";
 
 export function Nav() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const reduced = useReducedMotion();
 
   // Close on Escape.
   useEffect(() => {
@@ -19,12 +24,33 @@ export function Nav() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
+  // Sharpen the bar once content scrolls beneath it.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header
+    <motion.header
       className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md"
       style={{
-        backgroundColor: "rgba(10,10,10,0.78)",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        backgroundColor: scrolled
+          ? "rgba(10,10,10,0.92)"
+          : "rgba(10,10,10,0.78)",
+        borderBottom: scrolled
+          ? "1px solid rgba(255,255,255,0.1)"
+          : "1px solid rgba(255,255,255,0.06)",
+        transition:
+          "background-color 400ms var(--ease-out-quart), border-color 400ms var(--ease-out-quart)",
+      }}
+      initial={reduced ? { opacity: 0 } : { opacity: 0, y: -8 }}
+      animate={reduced ? { opacity: 1 } : { opacity: 1, y: 0 }}
+      transition={{
+        duration: DUR.slow,
+        delay: reduced ? 0 : HERO_T.structure,
+        ease: EASE.outExpo,
       }}
     >
       <div className="relative max-w-[1440px] mx-auto px-6 md:px-12 lg:px-16 py-4 md:py-5 flex items-center justify-between gap-4">
@@ -97,6 +123,6 @@ export function Nav() {
           ))}
         </nav>
       </div>
-    </header>
+    </motion.header>
   );
 }

@@ -47,11 +47,11 @@ export function CaseStudyHeader({
             {eyebrow}
           </Mono>
           <h1
-            className="mt-5 font-semibold text-[var(--color-bone)] max-w-3xl"
+            className="mt-5 type-display text-[var(--color-bone)] max-w-4xl"
             style={{
-              fontSize: "var(--text-display)",
+              fontSize: "var(--text-title)",
               letterSpacing: "var(--tracking-display)",
-              lineHeight: "var(--leading-display)",
+              lineHeight: "1",
             }}
           >
             {title}

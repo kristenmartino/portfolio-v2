@@ -1,5 +1,6 @@
 import { Section } from "@/components/section/Section";
 import { Mono } from "@/components/typography/Mono";
+import { RevealHeading } from "@/components/typography/RevealHeading";
 import { Tag } from "@/components/primitives/Tag";
 import { about, pillars } from "@/content/about";
 
@@ -14,8 +15,8 @@ export function About() {
     <Section id="about" index="04" label="About" variant="soot">
       <div className="grid lg:grid-cols-2 gap-12 md:gap-20">
         <div>
-          <h2
-            className="font-semibold text-[var(--color-bone)] max-w-xl"
+          <RevealHeading
+            className="text-[var(--color-bone)] max-w-xl"
             style={{
               fontSize: "var(--text-h2)",
               letterSpacing: "var(--tracking-tight)",
@@ -23,7 +24,7 @@ export function About() {
             }}
           >
             {about.heading}
-          </h2>
+          </RevealHeading>
           <p className="mt-6 text-base md:text-lg leading-relaxed max-w-lg text-[var(--color-graphite-40)]">
             {about.bio}
           </p>

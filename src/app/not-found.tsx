@@ -11,7 +11,7 @@ export default function NotFound() {
         404 / Page Not Found
       </Mono>
       <h1
-        className="mt-6 font-semibold text-[var(--color-bone)]"
+        className="mt-6 type-display text-[var(--color-bone)]"
         style={{
           fontSize: "var(--text-h1)",
           letterSpacing: "var(--tracking-display)",

@@ -1,5 +1,6 @@
 import { Section } from "@/components/section/Section";
 import { Mono } from "@/components/typography/Mono";
+import { RevealHeading } from "@/components/typography/RevealHeading";
 import { Divider } from "@/components/primitives/Divider";
 import { expertise } from "@/content/expertise";
 
@@ -8,8 +9,8 @@ export function Expertise() {
     <Section id="expertise" index="03" label="Capabilities" variant="paper">
       <div className="grid lg:grid-cols-[0.42fr_0.58fr] gap-10 md:gap-20">
         <div>
-          <h2
-            className="font-semibold text-[var(--color-ink)]"
+          <RevealHeading
+            className="text-[var(--color-ink)]"
             style={{
               fontSize: "var(--text-h2)",
               letterSpacing: "var(--tracking-tight)",
@@ -17,7 +18,7 @@ export function Expertise() {
             }}
           >
             Capabilities.
-          </h2>
+          </RevealHeading>
           <p className="mt-4 text-base md:text-lg leading-relaxed text-[var(--color-graphite-60)] max-w-md">
             Where strategy, analytics, and AI meet — under operational
             pressure.

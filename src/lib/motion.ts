@@ -8,6 +8,24 @@ export const DUR = {
   fast: 0.18,
   base: 0.4,
   slow: 0.7,
+  slower: 0.9,
+} as const;
+
+/** Page-load choreography for the hero (seconds). */
+export const HERO_T = {
+  structure: 0.1,
+  label: 0.18,
+  line: 0.28,
+  lineStagger: 0.08,
+  lede: 0.62,
+  cta: 0.74,
+  strip: 0.88,
+} as const;
+
+export const SPRING_MAGNETIC = {
+  stiffness: 300,
+  damping: 20,
+  mass: 0.5,
 } as const;
 
 export const reveal = {

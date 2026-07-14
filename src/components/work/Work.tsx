@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Section } from "@/components/section/Section";
 import { Mono } from "@/components/typography/Mono";
+import { RevealHeading } from "@/components/typography/RevealHeading";
 import { FeaturedProject } from "./FeaturedProject";
 import { ProjectRow } from "./ProjectRow";
 import { ProjectPreview } from "./ProjectPreview";
@@ -16,8 +17,8 @@ export function Work() {
     <Section id="work" index="02" label="Selected Work" variant="paper">
       <div className="flex items-end justify-between gap-8 mb-10 md:mb-14">
         <div className="max-w-2xl">
-          <h2
-            className="font-semibold text-[var(--color-ink)]"
+          <RevealHeading
+            className="text-[var(--color-ink)]"
             style={{
               fontSize: "var(--text-h2)",
               letterSpacing: "var(--tracking-tight)",
@@ -25,7 +26,7 @@ export function Work() {
             }}
           >
             Selected projects.
-          </h2>
+          </RevealHeading>
           <p className="mt-4 text-base md:text-lg leading-relaxed text-[var(--color-graphite-60)] max-w-xl">
             Independent builds in strategy, analytics, and applied AI for
             enterprise and operational contexts.
@@ -33,7 +34,10 @@ export function Work() {
         </div>
       </div>
 
-      <FeaturedProject />
+      {/* deliberate frame break: the dark card bleeds to the viewport edge on lg+ */}
+      <div className="lg:-mr-16 min-[1440px]:mr-[calc((1440px-100vw)/2-4rem)]">
+        <FeaturedProject />
+      </div>
 
       <div className="mt-16 md:mt-24 grid lg:grid-cols-[1fr_minmax(280px,420px)] gap-12 lg:gap-16">
         <div>
