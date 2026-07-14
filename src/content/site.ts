@@ -35,5 +35,4 @@ export const contactLinks: ContactLink[] = [
   { label: "Email", href: "mailto:kristen@kristenmartino.ai", primary: true },
   { label: "LinkedIn", href: "https://linkedin.com/in/kristenmartino" },
   { label: "GitHub", href: "https://github.com/kristenmartino" },
-  { label: "Resume", href: "/resume" },
 ];

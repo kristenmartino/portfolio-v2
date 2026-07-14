@@ -79,6 +79,15 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+h1,
+h2 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
 /* ── focus ring (a11y floor) ── */
 :focus {
   outline: none;
@@ -93,6 +102,12 @@ body {
 /* ── selection ── */
 ::selection {
   background-color: var(--color-signal-blue);
+  color: var(--color-bone);
+}
+
+/* light (paper) surfaces select in ink for stronger figure/ground */
+[data-surface="paper"] ::selection {
+  background-color: var(--color-ink);
   color: var(--color-bone);
 }
 

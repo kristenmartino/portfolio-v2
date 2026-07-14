@@ -28,7 +28,7 @@ export function ProjectRow({
       onMouseLeave={onDeactivate}
       onFocus={() => onActivate(project)}
       onBlur={onDeactivate}
-      className="group relative grid grid-cols-subgrid col-span-3 md:col-span-4 items-baseline py-5 md:py-7 border-b transition-colors"
+      className="group relative grid grid-cols-subgrid col-span-3 md:col-span-4 items-baseline py-5 md:py-7 border-b transition-colors hover:bg-[rgba(15,98,254,0.04)]"
       style={{
         borderColor: active
           ? "var(--color-graphite-20)"
@@ -39,7 +39,11 @@ export function ProjectRow({
         aria-hidden
         className="absolute left-0 top-1/2 -translate-y-1/2 w-px h-0 bg-[var(--color-signal-blue)] transition-all duration-300 group-hover:h-[calc(100%-1.5rem)]"
       />
-      <Mono variant="index" tone="graphite">
+      <Mono
+        variant="index"
+        tone="graphite"
+        className="transition-colors duration-300 group-hover:!text-[var(--color-signal-blue)]"
+      >
         {project.index}
       </Mono>
       <span className="flex items-baseline gap-3 min-w-0">
@@ -56,7 +60,7 @@ export function ProjectRow({
         </Mono>
         <span
           aria-hidden
-          className="hidden md:inline-block text-[var(--color-graphite-60)] transition-transform duration-300 group-hover:translate-x-1"
+          className="hidden md:inline-block text-[var(--color-graphite-60)] transition-transform duration-[400ms] ease-[var(--ease-out-expo)] group-hover:translate-x-1"
         >
           →
         </span>

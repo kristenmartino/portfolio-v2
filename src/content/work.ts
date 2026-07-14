@@ -1,4 +1,9 @@
-import type { FeaturedProject, Project } from "@/lib/types";
+import type {
+  Artifact,
+  FeaturedProject,
+  Project,
+  ProjectMode,
+} from "@/lib/types";
 
 export const featuredProject: FeaturedProject = {
   slug: "medicare-provider-outliers",
@@ -1645,3 +1650,53 @@ export const projects: Project[] = [
     shape: "decision",
   },
 ];
+
+export type Study = {
+  eyebrow: string;
+  title: string;
+  summary: string;
+  metrics: string[];
+  liveHref?: string;
+  codeHref?: string;
+  artifact?: Artifact;
+  year?: string;
+  mode?: ProjectMode;
+};
+
+const studies: Record<string, Study> = {
+  [featuredProject.slug]: {
+    eyebrow: featuredProject.eyebrow,
+    title: featuredProject.title,
+    summary: featuredProject.summary,
+    metrics: [...featuredProject.metrics],
+    liveHref: featuredProject.liveHref,
+    codeHref: featuredProject.codeHref,
+    artifact: featuredProject.artifact,
+    year: featuredProject.year,
+    mode: featuredProject.mode,
+  },
+  ...Object.fromEntries(
+    projects
+      .filter((p): p is typeof p & { slug: string } => Boolean(p.slug))
+      .map((p) => [
+        p.slug,
+        {
+          eyebrow: `Case Study / ${p.title}`,
+          title: p.title,
+          summary: p.summary,
+          metrics: [...(p.metrics ?? [])],
+          liveHref: p.liveHref,
+          codeHref: p.codeHref,
+          artifact: p.artifact,
+          year: p.year,
+          mode: p.mode,
+        },
+      ]),
+  ),
+};
+
+export const studySlugs = Object.keys(studies);
+
+export function getStudy(slug: string): Study | undefined {
+  return studies[slug];
+}

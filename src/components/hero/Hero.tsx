@@ -3,6 +3,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { Mono } from "@/components/typography/Mono";
+import { SchematicResolve } from "./SchematicResolve";
 import { SignalStrip } from "./SignalStrip";
 import { EASE, DUR } from "@/lib/motion";
 
@@ -109,6 +110,8 @@ export function Hero() {
 
         <SignalStrip />
       </motion.div>
+
+      <SchematicResolve />
     </section>
   );
 }

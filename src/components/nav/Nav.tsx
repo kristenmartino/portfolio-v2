@@ -1,13 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { ScrollProgress } from "./ScrollProgress";
 import { ActiveSectionIndicator } from "./ActiveSectionIndicator";
 import { navItems, site } from "@/content/site";
 
+function subscribeToScroll(callback: () => void): () => void {
+  window.addEventListener("scroll", callback, { passive: true });
+  return () => window.removeEventListener("scroll", callback);
+}
+
+function getScrolled(): boolean {
+  return window.scrollY > 24;
+}
+
+function getScrolledServer(): boolean {
+  return false;
+}
+
 export function Nav() {
   const [open, setOpen] = useState(false);
+  const scrolled = useSyncExternalStore(
+    subscribeToScroll,
+    getScrolled,
+    getScrolledServer,
+  );
 
   // Close on Escape.
   useEffect(() => {
@@ -23,8 +41,14 @@ export function Nav() {
     <header
       className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md"
       style={{
-        backgroundColor: "rgba(10,10,10,0.78)",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        backgroundColor: scrolled
+          ? "rgba(10,10,10,0.92)"
+          : "rgba(10,10,10,0.78)",
+        borderBottom: scrolled
+          ? "1px solid rgba(255,255,255,0.1)"
+          : "1px solid rgba(255,255,255,0.06)",
+        transition:
+          "background-color 400ms var(--ease-out-quart), border-color 400ms var(--ease-out-quart)",
       }}
     >
       <div className="relative max-w-[1440px] mx-auto px-6 md:px-12 lg:px-16 py-4 md:py-5 flex items-center justify-between gap-4">
