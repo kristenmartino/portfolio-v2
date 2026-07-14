@@ -15,7 +15,7 @@ That allocation is the point. A pool company doesn't need a route optimizer or a
   <Spec label="Year" value="2026" />
   <Spec label="Domain" value="Field-service operations · fictional client, real system" />
   <Spec label="Stack" value="Next.js 15 (Vercel) · Supabase (Postgres · RLS · Edge Functions) · Stripe Checkout · n8n · Airtable · Telegram · Claude Haiku · Resend" />
-  <Spec label="Status" value="Gates 1–3a (spine, money path, chaos) closed · v1.0 ship-out (Loom, tag) pending" />
+  <Spec label="Status" value="v1.0 — tagged · gates 1–3a (chaos) closed · live one-click public demo (fictional data · Stripe test mode)" />
 </Specs>
 
 ## The system
@@ -173,7 +173,7 @@ And the run earned its keep: it surfaced a genuine bug (**#23**) — dead-letter
 - **Solo, pairing with Claude Code — stated as a strength.** I owned the discovery, the architecture, the invariants (a "never-cut list"), and every review; the AI accelerated the typing. The value shows in what review caught — a `redirect()` in a `try/catch` that swallowed `NEXT_REDIRECT`; a discarded `payments.insert` error that would have sent a member to Stripe with nothing for the webhook to flip; an AI acknowledgment that rendered only on the review path, hiding it on the entire happy path — each documented in the build log.
 - **A pre-agreed cut, honored.** The member-email leg was cut deliberately rather than slipping a gate, and the chaos log states the adapted assertion instead of pretending. The Telegram bot refuses and logs unauthorized chats but doesn't yet rate-limit them (a named v1.5 item).
 - **Real incidents.** Two secrets were rotated for real during the build; a Railway↔Telegram network flake is tracked and mitigated with an email fallback; chaos day found #23. All in the log, not swept under it.
-- **No public demo, by design.** The portal is member-gated (R1) — a stranger sees only the sign-in gate, because RLS is the real boundary. The demo is a short Loom plus a local run, not an open URL.
+- **A public demo that still enforces isolation.** Anyone can click *Enter the demo* and drive the app as a seeded member — fictional data, Stripe in test mode. It's a real authenticated session, not a bypass: RLS scopes every visitor to that one member exactly as it does a paying customer. The member-gate is still the boundary; the demo just walks a fabricated member through it.
 
 ## Reflections
 
