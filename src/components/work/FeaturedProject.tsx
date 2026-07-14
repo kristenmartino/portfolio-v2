@@ -32,9 +32,17 @@ export function FeaturedProject() {
   return (
     <article
       ref={cardRef}
-      className="grid lg:grid-cols-2 gap-0 overflow-hidden bg-[var(--color-soot)]"
+      className="group relative grid lg:grid-cols-2 gap-0 overflow-hidden bg-[var(--color-soot)]"
       style={{ viewTransitionName: `${featuredProject.slug}-card` }}
     >
+      {/* whole-card click target, mirroring the project rows; the explicit
+          action links below sit at z-10, above this overlay */}
+      <a
+        href={featuredProject.caseStudyHref}
+        className="absolute inset-0 z-[5]"
+        aria-label={`Read the case study: ${featuredProject.title}`}
+      />
+
       {/* left: text */}
       <div
         className="p-8 md:p-12 flex flex-col justify-between"
@@ -45,7 +53,7 @@ export function FeaturedProject() {
             {featuredProject.eyebrow}
           </Mono>
           <h3
-            className="mt-5 font-semibold text-[var(--color-bone)]"
+            className="mt-5 font-semibold text-[var(--color-bone)] transition-colors duration-300 group-hover:text-[var(--color-signal-blue-soft)]"
             style={{
               fontSize: "var(--text-h1)",
               lineHeight: "var(--leading-tight)",
@@ -101,6 +109,16 @@ export function FeaturedProject() {
             <FeaturedMockup />
           )}
         </motion.div>
+
+        {/* scrim: keeps the action links legible over light screenshots */}
+        <div
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 h-32 z-[6] pointer-events-none"
+          style={{
+            background:
+              "linear-gradient(to top, var(--color-soot) 20%, rgba(22,22,22,0.75) 55%, transparent)",
+          }}
+        />
 
         <div className="relative z-10 flex gap-6 mt-auto pt-6 text-sm">
           <a
