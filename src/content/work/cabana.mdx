@@ -165,7 +165,7 @@ Then it was tested for real. One committed chaos run pushed 50 bookings through 
 A single reproducible chaos run at demo volume — not sustained production. The guarantee under test is delivery correctness under injected failure, not throughput.
 </Quote>
 
-And the run earned its keep: it surfaced a genuine bug (**#23**) — dead-lettering wasn't terminal, so the sweep re-retried dead-lettered rows and piled up duplicate alerts. Nothing was lost (if anything it was *louder* than intended), but the semantics are wrong; the fix is scoped as migration `0016`. That's what chaos day is for. The submit-to-delivered p95 for that run reads ~41 minutes — a **durability** datapoint, not a latency one, because it folds in the 90-second kill and a ~25-minute injected auth outage.
+And the run earned its keep: it surfaced a genuine bug (**#23**) — dead-lettering wasn't terminal, so the sweep re-retried dead-lettered rows and piled up duplicate alerts. Nothing was lost (if anything it was *louder* than intended), but the semantics were wrong — since **fixed in migration `0018`**: dead-lettering is now terminal (a `dead_lettered_at` column the sweep skips), so the row stops re-retrying. That's what chaos day is for: it finds the flaw, and the flaw gets fixed. The submit-to-delivered p95 for that run reads ~41 minutes — a **durability** datapoint, not a latency one, because it folds in the 90-second kill and a ~25-minute injected auth outage.
 
 ## Honest notes
 
