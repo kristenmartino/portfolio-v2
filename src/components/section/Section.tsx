@@ -34,7 +34,11 @@ export function Section({
   const isLight = variant === "paper";
 
   return (
-    <section id={id} className={`relative ${surfaceClasses[variant]}`}>
+    <section
+      id={id}
+      data-surface={variant}
+      className={`relative ${surfaceClasses[variant]}`}
+    >
       {withSeam && (
         <div className="relative">
           <div

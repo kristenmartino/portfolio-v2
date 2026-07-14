@@ -1,62 +1,48 @@
 import type { ComponentType } from "react";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CaseStudyHeader } from "@/components/case-study/CaseStudyHeader";
 import { DeepDiveDivider } from "@/components/case-study/DeepDiveDivider";
 import { ReadingProgress } from "@/components/case-study/ReadingProgress";
 import { TranslationArtifact } from "@/components/case-study/TranslationArtifact";
 import { Footer } from "@/components/footer/Footer";
-import { featuredProject, projects } from "@/content/work";
-import type { Artifact, ProjectMode } from "@/lib/types";
-
-type Study = {
-  eyebrow: string;
-  title: string;
-  summary: string;
-  metrics: string[];
-  liveHref?: string;
-  codeHref?: string;
-  artifact?: Artifact;
-  year?: string;
-  mode?: ProjectMode;
-};
-
-const studies: Record<string, Study> = {
-  [featuredProject.slug]: {
-    eyebrow: featuredProject.eyebrow,
-    title: featuredProject.title,
-    summary: featuredProject.summary,
-    metrics: featuredProject.metrics,
-    liveHref: featuredProject.liveHref,
-    codeHref: featuredProject.codeHref,
-    artifact: featuredProject.artifact,
-    year: featuredProject.year,
-    mode: featuredProject.mode,
-  },
-  ...Object.fromEntries(
-    projects
-      .filter((p): p is typeof p & { slug: string } => Boolean(p.slug))
-      .map((p) => [
-        p.slug,
-        {
-          eyebrow: `Case Study / ${p.title}`,
-          title: p.title,
-          summary: p.summary,
-          metrics: [...(p.metrics ?? [])],
-          liveHref: p.liveHref,
-          codeHref: p.codeHref,
-          artifact: p.artifact,
-          year: p.year,
-          mode: p.mode,
-        },
-      ]),
-  ),
-};
+import { getStudy, studySlugs } from "@/content/work";
 
 export function generateStaticParams() {
-  return Object.keys(studies).map((slug) => ({ slug }));
+  return studySlugs.map((slug) => ({ slug }));
 }
 
 export const dynamicParams = false;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const study = getStudy(slug);
+  if (!study) return {};
+
+  const description =
+    study.summary.length > 160
+      ? `${study.summary.slice(0, 157).trimEnd()}…`
+      : study.summary;
+
+  return {
+    title: `${study.title} — Kristen Martino`,
+    description,
+    openGraph: {
+      title: `${study.title} — Kristen Martino`,
+      description,
+      type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${study.title} — Kristen Martino`,
+      description,
+    },
+  };
+}
 
 async function loadBody(
   slug: string,
@@ -75,7 +61,7 @@ export default async function CaseStudyPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const study = studies[slug];
+  const study = getStudy(slug);
   if (!study) notFound();
 
   const Body = await loadBody(slug);
