@@ -42,3 +42,7 @@ next-env.d.ts
 
 # claude code local config
 .claude/
+
+# local working docs — freelance workstream, kept out of the public repo
+/insights-drafts/
+/contra/
