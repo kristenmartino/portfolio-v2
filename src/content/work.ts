@@ -1605,6 +1605,18 @@ export const projects: Project[] = [
   },
   {
     index: "12",
+    title: "Orrery",
+    category: "Decision Support + AI",
+    summary:
+      "Decision-timing product that runs on astrology: a deterministic Skyfield ephemeris engine computes every astronomical condition and scored window, and the LLM render layer is gated per sentence by a runtime faithfulness check that fails closed — no claim ships without a computed condition behind it. Live at orrery.day with Stripe payments and a concierge offer.",
+    href: "https://orrery.day",
+    year: "2026",
+    status: "Shipped",
+    mode: "Solo build",
+    shape: "decision",
+  },
+  {
+    index: "13",
     title: "Platform Migration + ARR Growth",
     category: "Cross-Functional Delivery",
     summary:
@@ -1616,7 +1628,7 @@ export const projects: Project[] = [
     shape: "pipeline",
   },
   {
-    index: "13",
+    index: "14",
     title: "Revenue Recovery Audit Workflow",
     category: "Enterprise Systems",
     summary:
@@ -1628,7 +1640,7 @@ export const projects: Project[] = [
     shape: "table",
   },
   {
-    index: "14",
+    index: "15",
     title: "RMS Fare Validation System",
     category: "Decision Support",
     summary:
@@ -1640,7 +1652,7 @@ export const projects: Project[] = [
     shape: "decision",
   },
   {
-    index: "15",
+    index: "16",
     title: "Flight Disruption Recovery",
     category: "Operational Decision Support",
     summary:
