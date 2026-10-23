@@ -1484,7 +1484,7 @@ export const projects: Project[] = [
     title: "GTM Healthcare Intelligence",
     category: "Healthcare GTM Analytics",
     summary:
-      "Specialty-EHR go-to-market analytics architecture organized across four maturity layers — governance, descriptive, diagnostic, prescriptive — so Sales, Marketing, and Finance can share a source of truth without sharing a surface.",
+      "A collection of seven analytics projects for specialty healthcare sales and marketing, using synthetic and public data. Includes sales-funnel analysis, market comparisons, practice benchmarks, shared metric definitions, and AI tools for asking questions about the data.",
     href: "/work/gtm-healthcare",
     slug: "gtm-healthcare",
     liveHref: "https://gtm.kristenmartino.ai",
