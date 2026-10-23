@@ -1636,10 +1636,10 @@ export const projects: Project[] = [
   },
   {
     index: "14",
-    title: "Revenue Recovery Audit Workflow",
+    title: "Billing Recovery and Reconciliation",
     category: "Enterprise Systems",
     summary:
-      "Billing validation workflow for mismatch detection, finance reconciliation, and recovered revenue.",
+      "Led five workstreams to resolve billing discrepancies, defining reconciliation requirements and coordinating fixes across Finance, Revenue Operations, Engineering, and Data. The program recovered approximately $1M and reduced rejected billing records by at least 85%, validated by Finance.",
     href: "#contact",
     year: "2023",
     status: "Shipped",
