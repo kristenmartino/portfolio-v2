@@ -1624,10 +1624,10 @@ export const projects: Project[] = [
   },
   {
     index: "13",
-    title: "Platform Migration + ARR Growth",
+    title: "Enterprise Billing Migration",
     category: "Cross-Functional Delivery",
     summary:
-      "Cross-functional migration and revenue expansion program spanning payments, systems, operations, and growth execution.",
+      "Managed billing cutover and validation for a SaaS migration spanning 750+ property management companies and approximately 100,000 properties. Coordinated rollout sequencing, readiness checks, and updates to customers and leadership.",
     href: "#contact",
     year: "2023",
     status: "Shipped",
