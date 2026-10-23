@@ -563,7 +563,7 @@ export const projects: Project[] = [
     title: "Tenancy",
     category: "AI Document Agent",
     summary:
-      "Lease abstraction agent for multifamily operators — extracts nine structured sections from residential lease PDFs with per-field source citations, click-to-highlight overlays anchored to OCR coordinates, a human-review exception queue, and grounded Q&A. The same agent is exposed as an MCP server.",
+      "An AI-assisted tool that extracts key details from residential leases and shows the source pages. Reviewers can approve, correct, or reject flagged fields and ask questions about the extracted data.",
     href: "/work/tenancy",
     slug: "tenancy",
     liveHref: "https://tenancy.kristenmartino.ai",
