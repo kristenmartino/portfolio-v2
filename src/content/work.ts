@@ -431,7 +431,7 @@ export const projects: Project[] = [
     title: "Valuate",
     category: "AI Financial Agent",
     summary:
-      "AI-augmented DCF agent — extracts financial line items from SEC 10-Ks via XBRL and Claude, then runs a Monte Carlo valuation with cell-level source attribution.",
+      "An AI-assisted valuation tool that extracts figures from SEC filings and shows their sources. Users can review and correct values, adjust assumptions, and see how those changes affect the valuation.",
     href: "/work/valuate",
     slug: "valuate",
     liveHref: "https://valuate.kristenmartino.ai",
