@@ -1250,7 +1250,7 @@ export const projects: Project[] = [
     title: "Sift",
     category: "AI News + Civic Literacy",
     summary:
-      "A news aggregator with civic footnotes. Reads ~50 outlets across the political spectrum, AI-summarizes today's stories across 10 categories — and on top, every politician, organization, bill, and political term in an article links to a structured dossier sourced from public records.",
+      "A news app with AI summaries and side-by-side coverage comparisons. Readers can open the original reporting, read background explainers and term definitions, and explore sourced reference pages about people, organizations, and legislation mentioned in stories.",
     href: "/work/sift",
     slug: "sift",
     liveHref: "https://siftnews.kristenmartino.ai",
