@@ -4,7 +4,6 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { Mono } from "@/components/typography/Mono";
 import { SchematicResolve } from "./SchematicResolve";
-import { SignalStrip } from "./SignalStrip";
 import { EASE, DUR } from "@/lib/motion";
 
 export function Hero() {
@@ -73,7 +72,7 @@ export function Hero() {
         >
           I build{" "}
           <span className="text-[var(--color-signal-blue-soft)]">
-            clarity into complex systems.
+            tools for complex business workflows.
           </span>
         </motion.h1>
 
@@ -87,10 +86,9 @@ export function Hero() {
             className="text-base md:text-lg leading-relaxed"
             style={{ color: "var(--color-graphite-40)" }}
           >
-            Independent product builds — AI in the loop, operator judgment
-            in the seat. Informed by a decade across enterprise systems,
-            from actuarial analytics to billing, pricing, fare logic, and
-            platform migrations.
+            My background spans actuarial analytics, billing, pricing, and
+            platform migrations. My independent projects apply that experience
+            to document review, forecasting, and product prioritization.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <a
@@ -107,8 +105,6 @@ export function Hero() {
             </a>
           </div>
         </motion.div>
-
-        <SignalStrip />
       </motion.div>
 
       <SchematicResolve />
