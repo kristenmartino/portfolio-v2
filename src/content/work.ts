@@ -294,7 +294,7 @@ export const projects: Project[] = [
     title: "SpecialtyPulse Pipeline",
     category: "Healthcare Data Platform",
     summary:
-      "Production-style healthcare BI pipeline — CMS Medicare reimbursement data through Databricks raw → staging → mart layers on Delta Lake, orchestrated by Airflow, delivered to a five-page executive dashboard behind verified row-level security and certified metric definitions.",
+      "A healthcare analytics project that uses Databricks and Airflow to turn Medicare data into reimbursement and procedure reports. Includes documented metric definitions and role-based access checks. The public dashboard uses representative data.",
     href: "/work/specialtypulse-pipeline",
     slug: "specialtypulse-pipeline",
     liveHref: "https://specialtypulse.vercel.app",
