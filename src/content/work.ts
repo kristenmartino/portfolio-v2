@@ -1659,13 +1659,12 @@ export const projects: Project[] = [
   },
   {
     index: "16",
-    title: "Flight Disruption Recovery",
-    category: "Operational Decision Support",
+    title: "Salesforce CPQ Catalog Simplification",
+    category: "Business Systems",
     summary:
-      "Decision-support concept combining predictive signals, real-time data, and recovery visibility for irregular operations.",
+      "Reduced the Salesforce CPQ product catalog by more than 50% using product-usage analysis and input from Sales Operations and Billing. Defined requirements for configurable products and validated quotes, contracts, and invoices.",
     href: "#contact",
-    year: "2022",
-    status: "Concept",
+    status: "Shipped",
     mode: "Cross-functional",
     shape: "decision",
   },
