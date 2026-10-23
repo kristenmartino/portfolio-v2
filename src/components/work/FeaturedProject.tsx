@@ -6,7 +6,7 @@ import { useRef, useEffect } from "react";
 import { useMousePosition } from "@/hooks/useMousePosition";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { Mono } from "@/components/typography/Mono";
-import { featuredProject } from "@/content/work";
+import { featuredProject, featuredProjectCardCopy } from "@/content/work";
 
 export function FeaturedProject() {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -65,12 +65,12 @@ export function FeaturedProject() {
           <p
             className="mt-6 text-base md:text-lg leading-relaxed max-w-md text-[var(--color-graphite-40)]"
           >
-            {featuredProject.summary}
+            {featuredProjectCardCopy.summary}
           </p>
           <p
             className="mt-4 text-sm leading-relaxed max-w-md text-[var(--color-graphite-60)]"
           >
-            {featuredProject.description}
+            {featuredProjectCardCopy.description}
           </p>
         </div>
         <div className="mt-10 flex flex-wrap gap-2">

@@ -5,6 +5,13 @@ import type {
   ProjectMode,
 } from "@/lib/types";
 
+export const featuredProjectCardCopy = {
+  summary:
+    "A data app that flags Medicare providers with unusually high costs or service volumes relative to peers in the same specialty and state.",
+  description:
+    "Built with public CMS data, Snowflake, and dbt. Includes provider drill-downs, source documentation, and the outlier-detection methodology.",
+} as const;
+
 export const featuredProject: FeaturedProject = {
   slug: "medicare-provider-outliers",
   title: "Medicare Provider Outliers",
