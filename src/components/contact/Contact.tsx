@@ -18,10 +18,9 @@ export function Contact() {
           Open to roles, partnerships, and select consulting.
         </h2>
         <p className="mt-5 text-base md:text-lg leading-relaxed max-w-2xl text-[var(--color-graphite-40)]">
-          Currently exploring senior product roles and consulting work where
-          systems thinking, analytics, and applied AI intersect — especially
-          in operations-heavy contexts where decisions have to survive
-          contact with the floor.
+          I’m exploring senior product roles and consulting projects involving
+          business systems, analytics, or applied AI. Email me about an
+          opportunity or potential collaboration.
         </p>
 
         <div className="mt-10 flex flex-wrap gap-3">
