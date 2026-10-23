@@ -700,7 +700,7 @@ export const projects: Project[] = [
     title: "Eval Harness",
     category: "Applied LLM Evaluation",
     summary:
-      "Defensible cost/quality eval comparing 9 LLMs (5 open-weight on DGX Spark via Ollama, 4 closed-weight via API) across 4 real production tasks from Sift. Cross-vendor judging, hardware-amortized cost, verifiable held-out lock. Routing-decision framework, not a benchmark. A v0.3 track extends the same substrate to agentic trajectory evaluation — grading an agent's tool-use path, not just a model's answer — with an adversarial guardrail suite and a two-tier CI regression gate, built and tested key-free (165 tests).",
+      "A framework for comparing language models on Sift’s news-processing tasks, covering output quality, cost, and response time. Includes tests for agent tool use and failure handling. Benchmark results are still pending.",
     href: "/work/eval-harness",
     slug: "eval-harness",
     liveHref: "https://evals.kristenmartino.ai",
