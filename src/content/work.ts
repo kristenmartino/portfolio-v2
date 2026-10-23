@@ -1615,7 +1615,7 @@ export const projects: Project[] = [
     title: "Orrery",
     category: "Decision Support + AI",
     summary:
-      "Decision-timing product that runs on astrology: a deterministic Skyfield ephemeris engine computes every astronomical condition and scored window, and the LLM render layer is gated per sentence by a runtime faithfulness check that fails closed — no claim ships without a computed condition behind it. Live at orrery.day with Stripe payments and a concierge offer.",
+      "An astrology-based planning tool for comparing dates and times for launches, pitches, and other events. Calculates celestial positions, applies published astrological rules, and uses AI to explain its timing scores.",
     href: "https://orrery.day",
     year: "2026",
     status: "Shipped",
