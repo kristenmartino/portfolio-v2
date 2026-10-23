@@ -866,7 +866,7 @@ export const projects: Project[] = [
     title: "Quantization Study",
     category: "Applied LLM Research",
     summary:
-      "Controlled experiment on Llama 3.1 8B at FP16 / Q8_0 / Q4_K_M — paired design across MMLU and CoNLL-2003 NER (n=2,400). Decision framework, not a leaderboard.",
+      "A study comparing 16-bit, 8-bit, and 4-bit versions of Llama 3.1 8B for output quality, processing speed, and memory use. Tests cover knowledge questions and extracting names, organizations, and locations from text.",
     href: "/work/llm-quantization-study",
     slug: "llm-quantization-study",
     codeHref: "https://github.com/kristenmartino/llm-quantization-study",
