@@ -156,7 +156,7 @@ export const projects: Project[] = [
     title: "Cabana",
     category: "Ops Automation + AI",
     summary:
-      "Member portal and operations layer for a field-service company — free-text repair requests triaged by Claude Haiku, deposits taken through webhook-authoritative Stripe, and a transactional outbox that guarantees no side effect is ever silently dropped; chaos-tested to zero lost and zero duplicated under injected failure.",
+      "A demo portal for a fictional pool-service company. Customers report problems, track repairs, and pay test deposits. AI classifies requests and drafts responses; staff control pricing and scheduling.",
     href: "/work/cabana",
     slug: "cabana",
     liveHref: "https://cabana-kristenmartinos-projects.vercel.app",
