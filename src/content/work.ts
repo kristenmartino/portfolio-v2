@@ -998,7 +998,7 @@ export const projects: Project[] = [
     title: "GridPulse",
     category: "Energy Decision Platform",
     summary:
-      "An integrated decision platform for power markets — unifying weather forecasts, scenario analysis, and grid telemetry across operating roles.",
+      "GridPulse forecasts U.S. electricity demand using public grid and weather data. Users can compare forecasts and model performance, review weather alerts, and explore temperature, wind, and solar scenarios.",
     href: "/work/gridpulse",
     slug: "gridpulse",
     liveHref: "https://gridpulse.kristenmartino.ai",
