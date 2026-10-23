@@ -1382,7 +1382,7 @@ export const projects: Project[] = [
     title: "FocusForge",
     category: "iOS Mobile App",
     summary:
-      "Character-driven Pomodoro for iOS that translates focus sessions into RPG-style character progression. Template-based on-device AI coach for intent framing, post-session reflection, and streak rescue. Built in SwiftUI; feature-complete and entering beta.",
+      "An iOS focus timer that turns completed sessions into character progression and cosmetic rewards. Its on-device coach selects written prompts for setting session goals, reflecting afterward, and maintaining a streak.",
     href: "/work/focusforge",
     slug: "focusforge",
     codeHref: "https://github.com/kristenmartino/focusforge",
