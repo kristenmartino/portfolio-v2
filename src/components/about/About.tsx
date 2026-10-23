@@ -1,18 +1,12 @@
 import { Section } from "@/components/section/Section";
 import { Mono } from "@/components/typography/Mono";
 import { Tag } from "@/components/primitives/Tag";
-import { about, pillars } from "@/content/about";
-
-const pillarAccents = [
-  "var(--color-signal-blue)",
-  "var(--color-signal-teal)",
-  "var(--color-signal-magenta)",
-];
+import { about } from "@/content/about";
 
 export function About() {
   return (
     <Section id="about" index="04" label="About" variant="soot">
-      <div className="grid lg:grid-cols-2 gap-12 md:gap-20">
+      <div className="max-w-3xl">
         <div>
           <h2
             className="font-semibold text-[var(--color-bone)] max-w-xl"
@@ -24,7 +18,7 @@ export function About() {
           >
             {about.heading}
           </h2>
-          <p className="mt-6 text-base md:text-lg leading-relaxed max-w-lg text-[var(--color-graphite-40)]">
+          <p className="mt-6 whitespace-pre-line text-base md:text-lg leading-relaxed max-w-lg text-[var(--color-graphite-40)]">
             {about.bio}
           </p>
 
@@ -50,26 +44,6 @@ export function About() {
               </Tag>
             ))}
           </div>
-        </div>
-
-        <div className="flex flex-col gap-px">
-          {pillars.map((item, i) => (
-            <div
-              key={item.title}
-              className="p-6 md:p-8 border-l-2 bg-[var(--color-graphite-90)]"
-              style={{ borderLeftColor: pillarAccents[i] }}
-            >
-              <Mono variant="label" tone="muted">
-                {String(i + 1).padStart(2, "0")}
-              </Mono>
-              <h3 className="mt-3 text-lg md:text-xl font-semibold text-[var(--color-bone)] tracking-[-0.01em]">
-                {item.title}
-              </h3>
-              <p className="mt-2 text-sm md:text-base leading-relaxed text-[var(--color-graphite-40)]">
-                {item.text}
-              </p>
-            </div>
-          ))}
         </div>
       </div>
     </Section>
