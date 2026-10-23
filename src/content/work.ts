@@ -1125,7 +1125,7 @@ export const projects: Project[] = [
     title: "Tarazu",
     category: "Product + AI",
     summary:
-      "AI-assisted prioritization platform applying the RICE framework, with interactive scoring and structured strategic guidance.",
+      "An AI-assisted tool for ranking product ideas by reach, impact, confidence, and effort. Users can review and adjust suggested scores, compare options, and record the reasons for their decisions.",
     href: "/work/tarazu",
     slug: "tarazu",
     liveHref: "https://prioritize.kristenmartino.ai",
