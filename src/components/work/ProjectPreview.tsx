@@ -74,7 +74,9 @@ export function ProjectPreview({ project }: ProjectPreviewProps) {
                 {project.category}
               </Mono>
               <Mono variant="caption" tone="graphite">
-                {project.year ?? ""} · {project.status?.toUpperCase() ?? ""}
+                {[project.year, project.status?.toUpperCase()]
+                  .filter(Boolean)
+                  .join(" · ")}
               </Mono>
             </motion.div>
           )}

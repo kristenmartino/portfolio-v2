@@ -1648,12 +1648,11 @@ export const projects: Project[] = [
   },
   {
     index: "15",
-    title: "RMS Fare Validation System",
+    title: "Revenue Management System Testing",
     category: "Decision Support",
     summary:
-      "Logic-driven pricing validation model addressing complex fare rules and downstream revenue decisions.",
+      "Defined requirements and designed 2,000+ test cases for a revenue-management system. Led user acceptance testing with eight analysts and worked with the vendor to resolve data-mapping and forecasting issues before launch.",
     href: "#contact",
-    year: "2022",
     status: "Shipped",
     mode: "Cross-functional",
     shape: "decision",
