@@ -18,10 +18,6 @@ export function Expertise() {
           >
             Capabilities.
           </h2>
-          <p className="mt-4 text-base md:text-lg leading-relaxed text-[var(--color-graphite-60)] max-w-md">
-            Where strategy, analytics, and AI meet — under operational
-            pressure.
-          </p>
         </div>
 
         <div>

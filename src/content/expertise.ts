@@ -4,16 +4,16 @@ export const expertise: Expertise[] = [
   {
     number: "01",
     title: "Product Strategy",
-    text: "Product direction when the problem isn't framed yet — finding the actual question, then writing the spec.",
+    text: "Define the problem, compare options against business goals, and set priorities before committing to a build.",
   },
   {
     number: "02",
     title: "Business Analysis",
-    text: "A decade analyzing enterprise systems — actuarial pricing and risk modeling first, then billing, fare logic, and platform migrations. Always toward accuracy, auditability, and operational efficiency for operators.",
+    text: "Map workflows, document requirements and business rules, and identify gaps in billing, pricing, and platform migrations.",
   },
   {
     number: "03",
     title: "Applied AI + Data",
-    text: "Forecasting layers, retrieval pipelines, and LLM-assisted decision tools. Independent builds where the AI sits inside the user's reasoning — designed for inputs you can audit and outputs you can defend.",
+    text: "Build and test tools for forecasting, document extraction, and prioritization, with source references and ways to review or correct AI output.",
   },
 ];
