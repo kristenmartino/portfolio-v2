@@ -5,6 +5,7 @@ import { useRef } from "react";
 import { Mono } from "@/components/typography/Mono";
 import { SchematicResolve } from "./SchematicResolve";
 import { EASE, DUR } from "@/lib/motion";
+import { site } from "@/content/site";
 
 export function Hero() {
   const ref = useRef<HTMLDivElement>(null);
@@ -70,9 +71,9 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: DUR.slow, delay: 0.3, ease: EASE.outExpo }}
         >
-          I build{" "}
+          {site.hero.lead}{" "}
           <span className="text-[var(--color-signal-blue-soft)]">
-            tools for complex business workflows.
+            {site.hero.focus}
           </span>
         </motion.h1>
 

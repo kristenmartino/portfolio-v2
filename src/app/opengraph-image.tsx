@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { site } from "@/content/site";
 
-export const alt = site.metadata.title;
+export const alt = `Kristen Martino — ${site.hero.lead} ${site.hero.focus}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -89,11 +89,8 @@ export default async function OpengraphImage() {
               color: "#ffffff",
             }}
           >
-            <div style={{ display: "flex" }}>
-              I build&nbsp;
-              <span style={{ color: "#a6c8ff" }}>clarity</span>
-            </div>
-            <div>into complex systems.</div>
+            <div>{site.hero.lead}</div>
+            <div style={{ color: "#a6c8ff" }}>{site.hero.focus}</div>
           </div>
         </div>
       </div>

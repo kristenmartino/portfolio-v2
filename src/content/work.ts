@@ -41,6 +41,8 @@ export const projects: Project[] = [
     index: "01",
     title: "Cabana",
     category: "Ops Automation + AI",
+    shareDescription:
+      "Fictional pool-service demo with Stripe test payments. AI can open a $75 test deposit before staff approval; staff assign visit times.",
     summary:
       "A pool-service demo for reporting problems and tracking repairs. AI can route a repair to a fixed $75 test deposit step before staff approval; staff approve work and assign visit times.",
     href: "/work/cabana",
@@ -66,6 +68,8 @@ export const projects: Project[] = [
     index: "02",
     title: "SpecialtyPulse Pipeline",
     category: "Healthcare Data Platform",
+    shareDescription:
+      "Independent prototype using synthetic records and generated comparison scenarios. User evaluation and business outcomes remain unmeasured.",
     summary:
       "A specialty review prototype for preparing payment comparisons and follow-up questions for a sales or operations lead.",
     href: "/work/specialtypulse-pipeline",
@@ -139,6 +143,8 @@ export const projects: Project[] = [
     index: "05",
     title: "Eval Harness",
     category: "Applied LLM Evaluation",
+    shareDescription:
+      "Development baseline: 79.8% agreement with model-assigned labels on 400 articles. Human review and final held-out comparison are pending.",
     summary:
       "A model-evaluation framework with a first categorization development result on 400 Sift articles. Reports agreement with stored model labels; human label review and the final held-out comparison remain pending.",
     href: "/work/eval-harness",
@@ -390,6 +396,7 @@ export type Study = {
   eyebrow: string;
   title: string;
   summary: string;
+  shareDescription?: string;
   metrics: string[];
   liveHref?: string;
   liveLabel?: string;
@@ -420,6 +427,7 @@ const studies: Record<string, Study> = {
           eyebrow: `Case Study / ${p.title}`,
           title: p.title,
           summary: p.summary,
+          shareDescription: p.shareDescription,
           metrics: [...(p.metrics ?? [])],
           liveHref: p.liveHref,
           liveLabel: p.liveLabel,

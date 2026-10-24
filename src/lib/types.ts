@@ -55,6 +55,8 @@ export type Project = {
   title: string;
   category: string;
   summary: string;
+  /** Standalone metadata/preview copy that keeps essential scope qualifiers. */
+  shareDescription?: string;
   description?: string;
   href: string;
   year?: string;
