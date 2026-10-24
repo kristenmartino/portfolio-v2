@@ -1,46 +1,97 @@
-## What I tested
+## Overview
 
-I compared FP16, Q8_0 and Q4_K_M versions of Llama 3.1 8B Instruct on two tasks: MMLU multiple-choice questions and entity extraction from CoNLL-2003 sentences. The study records task quality, local throughput and model size reported by Ollama. It does not measure peak runtime memory or deployment cost.
+This study compares FP16, Q8_0 and Q4_K_M versions of Llama 3.1 8B Instruct on knowledge questions and named-entity extraction.
+
+Each version receives the same test items and prompts. The analysis compares output quality, token-generation speed and model footprint across the two tasks. These measurements do not capture end-to-end response time or peak memory use.
 
 <Specs>
-  <Spec label="Role" value="Experiment design, Python development and statistical analysis" />
+  <Spec label="Role" value="Strategy, experimental design, statistical analysis, writing" />
   <Spec label="Year" value="2026" />
-  <Spec label="Stack" value="Python · Ollama · llama.cpp Metal · NumPy · SciPy" />
-  <Spec label="Hardware" value="Apple M4 Max · 36 GB unified memory" />
-  <Spec label="Scope" value="One model · three quantization settings · two tasks" />
+  <Spec label="Domain" value="Applied LLM evaluation" />
+  <Spec label="Stack" value="Python · Ollama · llama.cpp Metal backend · NumPy · SciPy · HuggingFace datasets" />
+  <Spec label="Hardware" value="MacBook Pro · Apple M4 Max · 36 GB unified memory" />
+  <Spec label="Status" value="Completed study" />
 </Specs>
 
-## Experiment setup
+## Design
 
-Each quantization setting received the same items and prompts, with temperature zero and a fixed seed. The sample contained 500 MMLU questions across ten subjects and 300 CoNLL-2003 sentences. The paired MMLU comparison used 499 aligned items per setting.
+**Three arms.** FP16 (control), Q8_0, Q4_K_M. All pulled from Ollama: `llama3.1:8b-instruct-{fp16|q8_0|q4_K_M}`.
 
-The runner warmed up the models and interleaved settings per example. This reduces exposure to time-dependent changes in machine load compared with running each setting in a separate long block. A committed experiment manifest identifies model artifacts, software versions and host details. Distinct artifact hashes do not prove identical base-weight or training provenance. Dataset identifiers and splits are recorded, but their upstream revisions are not pinned.
+**Two tasks chosen for contrast.**
 
-MMLU uses answer accuracy. The entity scorer compares sets of lowercased, trimmed entity text and type. Repeated identical entities collapse to one set member, and token positions are not scored. This custom measure is not the official CoNLL span evaluation.
+- **MMLU** — four-option knowledge questions sampled across 10 subjects. Each model processes 500 sampled rows; the analysis uses 499 paired question IDs after collapsing one repeated ID. The scorer reads the first A–D character in each response and compares it with the recorded answer.
+- **CoNLL-2003 NER** — entity extraction on 300 sentences from the test split. The model returns entity text and types in a JSON array. The scorer lowercases entity text and compares unique text/type pairs, collapsing repeated identical mentions within each sentence.
 
-I report corpus micro-F1 from pooled counts alongside mean per-sentence F1. They weight examples differently; both use that custom scorer.
+  Results include corpus micro-F1, calculated from pooled match counts, and sentence-average F1. This custom scoring method does not preserve mention positions, so its scores should not be presented as standard CoNLL benchmark results.
 
-## Recorded results
+**Paired runs and timing.** Each example is processed by all three model versions before moving to the next. Models are warmed up before timing begins. Alternating between versions is intended to limit timing differences caused by hardware temperature and background system activity.
 
-<Diagram title="Quality and throughput on the tested tasks">
-  <img src="/work/quantization-pareto.png" alt="Recorded throughput against MMLU accuracy and custom entity-text/type-set micro-F1 for FP16, Q8_0 and Q4_K_M, with 95% intervals" className="w-full" />
+**Run settings.** Runs use temperature 0 and a fixed seed of 42. Prompts and system messages are identical across all three model versions, with output-token limits set per task.
+
+## Results
+
+<Diagram title="Quality and generation speed" fullSizeHref="/work/quantization-pareto.png" fullSizeLabel="View full-size chart ↗">
+  <img src="/work/quantization-pareto.png" alt="Two plots compare token-generation speed with MMLU accuracy and custom extraction micro-F1. Q8_0 and FP16 have similar scores; Q4_K_M generates tokens fastest and has the lowest extraction score. Error bars show confidence intervals." className="w-full" />
 </Diagram>
-<Caption>Recorded results on one M4 Max. The entity metric uses normalized text/type sets; throughput is not an inference-cost measurement. <a href="/work/quantization-pareto.png" target="_blank" rel="noreferrer">Open full-size figure</a> · <a href="https://github.com/kristenmartino/llm-quantization-study/blob/ed03b5df717e9e2266bb9316e6fab67f1b744a86/results/summary.json">Source results</a>.</Caption>
 
-Q8_0 met an exploratory ±1 percentage-point equivalence criterion on MMLU accuracy and per-sentence entity F1. The margin was selected during reanalysis, not preregistered before collection. The reported micro-F1 interval also lay within that margin. Recorded throughput was about 1.8 times FP16, with roughly half its reported model size; runtime memory also needs space for cache and activations.
+**Q8_0 met the study’s ±1 percentage-point equivalence criterion on both tested tasks.** The reported TOST p-values were 0.019 for MMLU accuracy and 0.002 for sentence-average extraction F1. For the custom extraction micro-F1 score, the 95% confidence interval for FP16 minus Q8_0 was −0.9 to +0.2 percentage points, also within that margin.
 
-Q4_K_M had a 3.2 percentage-point lower corpus micro-F1 than FP16 on NER, with a reported 95% confidence interval of 0.7 to 5.7 points and Holm-adjusted p-value of 0.032. Its per-sentence F1 was 5.0 points lower. The recorded MMLU difference was not statistically significant, leaving Q4's equivalence to FP16 unresolved.
+Q8_0 generated tokens about 1.8× faster than FP16 and had roughly half the model footprint on this setup.
 
-## Inspecting the NER errors
+**Q4_K_M scored lower than FP16 on both extraction measures.** The custom corpus micro-F1 dropped by 3.2 percentage points (95% CI: 0.7–5.7; Holm-adjusted p = 0.032). Sentence-average F1 dropped by 5.0 percentage points (95% CI: 2.1–8.1; Holm-adjusted p = 0.003).
 
-The Q4 output added more incorrect entities, particularly on sentences whose reference answer contained no entities. Of the 72 entity-free sentences, Q4 returned an empty array for 37.5%, compared with about 60% for FP16 and Q8_0.
+Q4_K_M generated tokens about 40% faster than Q8_0. Its model footprint was about 4.9 GB, compared with FP16’s 16 GB. MMLU accuracy was 1.6 percentage points below FP16; that difference was not statistically significant.
 
-Q4 also had a 99.7% JSON parse rate. In this sample, correctly formatted output could still contain incorrect entities. A schema check would not detect those content errors.
+## The failure mode
 
-## Analysis and limits
+**Q4_K_M’s extraction errors were mainly extra entity predictions.** Compared with FP16, corpus precision fell by 4.1 percentage points and recall fell by 0.9 percentage points. The larger precision drop is consistent with over-extraction in this sample.
 
-The analysis uses paired comparisons, bootstrap confidence intervals, McNemar tests for binary outcomes and exploratory equivalence testing. Holm correction is applied across the three pairwise comparisons within each task/metric family. Subject-level MMLU differences did not survive their multiple-comparison correction.
+**Most of the sentence-average F1 decline comes from sentences without annotated entities.** There are 72 such sentences in the sample. FP16 and Q8_0 each correctly produce no entities for 41 of them (56.9%); Q4_K_M does so for 27 (37.5%).
 
-The repository includes the raw outputs and a check that reproduces the summary from them. That checks the recorded calculations; it is not an independent replication. These findings apply to the compared artifacts, prompts, samples, scorer and local setup. Other workloads need their own evaluation.
+Q4_K_M therefore fails on 14 more of these sentences than FP16. Under the study’s scoring rule, those additional failures account for 4.67 percentage points of the overall 5.04-point sentence-average F1 drop.
 
-For a similar deployment, I would use these results to choose candidates for a workload-specific test. Q8_0 is a candidate when reduced memory and higher throughput matter; Q4 requires particular attention to entity-extraction errors. The final choice still needs quality thresholds and measurements from the intended application.
+**Successful parsing did not establish extraction accuracy.** The study’s parser accepted 299 of Q4_K_M’s 300 outputs (99.7%), the highest rate among the three versions. Q4_K_M nevertheless scored lower than FP16 on both extraction measures. A successful parse does not verify that predicted entities match the annotations.
+
+In this run, Q4_K_M’s extraction scores declined significantly relative to FP16, while the MMLU accuracy difference was not statistically significant. The tasks differ in content, output format and scoring, so these results do not establish a general distinction between reasoning and pattern extraction.
+
+## Statistical methodology
+
+Uncertainty estimates and comparisons use the following methods:
+
+- **Per-arm confidence intervals.** MMLU accuracy uses Wilson 95% intervals. The custom extraction micro-F1 score uses bootstrap intervals: sentences are resampled, their match counts are pooled, and F1 is recalculated. Sentence-average F1 is reported separately.
+- **Pairwise differences.** Each bootstrap draw keeps the model versions paired on the same test items. Accuracy and sentence-average F1 differences use paired scores. For corpus micro-F1, each version’s counts are pooled within the draw, F1 is recalculated, and the difference is taken.
+- **p-values.** MMLU comparisons use McNemar’s test: exact binomial testing for 25 or fewer discordant pairs and a continuity-corrected chi-square approximation otherwise. Discordant pairs are questions where the two versions differ in whether they answer correctly. Extraction comparisons use paired bootstrap distributions centered on a zero difference.
+- **Equivalence testing.** The analysis uses two one-sided tests (TOST) with a ±1 percentage-point margin for accuracy and sentence-average F1. Equivalence is declared when the paired 90% confidence interval lies entirely inside that margin. The margin was selected for the equivalence reanalysis.
+- **Multiple-comparison correction.** Holm’s method adjusts p-values separately for MMLU accuracy, extraction corpus micro-F1 and sentence-average F1. Each group contains the three pairwise comparisons among FP16, Q8_0 and Q4_K_M.
+- **Subject-level bootstrap.** For MMLU pairwise confidence intervals and equivalence tests, the bootstrap resamples subject groups with replacement and includes all paired examples from each selected group. Per-model accuracy intervals use Wilson’s method.
+- **Provenance.** The saved `experiment_manifest.json` records each version’s weight-file hash and model configuration, plus the Ollama version and host. These records identify the model artifacts and environment. They do not prove that the versions share identical base weights and tokenizers or differ only in quantization.
+
+**Approximate sensitivity.** For FP16 versus Q4_K_M, a post-hoc normal approximation estimates 80% power to detect differences of about 3.8 percentage points in MMLU accuracy (499 paired questions) and 4.3 points in sentence-average extraction F1 (300 paired sentences), at a 5% significance threshold.
+
+These estimates use the observed paired-score variability. They do not incorporate subject-level resampling or multiple-comparison correction.
+
+## MMLU results by subject
+
+The largest observed Q4_K_M accuracy decreases relative to FP16 were 6 percentage points in `miscellaneous` and `professional_medicine`. Accuracy fell 4 points in `moral_scenarios`, `abstract_algebra` and `machine_learning`. It rose 4 points in `professional_law` and 2 points in `college_computer_science` and `high_school_us_history`. Each listed subject has 50 paired questions.
+
+**None of the subject-level pairwise differences was statistically significant after Holm correction across the three comparisons within each subject.** These small groups do not establish which subjects are more sensitive to quantization. A follow-up study would need a sample-size calculation for a specified subject-level effect.
+
+## Using these results
+
+**Q8_0 performed similarly to FP16 in this experiment.**
+
+On the tested knowledge questions and entity-extraction sentences, Q8_0 met the study’s ±1 percentage-point equivalence criterion while generating tokens about 1.8× faster than FP16 on the M4 Max.
+
+These results make Q8_0 a candidate to evaluate for similar workloads. Choosing it for another application requires testing representative inputs and defining an acceptable quality difference.
+
+**Q4_K_M traded extraction quality for faster generation in this experiment.**
+
+Q4_K_M generated tokens about 40% faster than Q8_0 and had a model footprint of about 4.9 GB. Its extraction scores were lower than FP16 by 3.2 percentage points on corpus F1 and 5.0 points on sentence-average F1.
+
+The errors included extra entity predictions in otherwise valid JSON. For an application using structured extraction, evaluate these errors on representative inputs before deciding whether the speed and memory savings justify the quality loss.
+
+**FP16 served as the reference for this comparison.**
+
+The study did not establish a quality advantage for FP16 over Q8_0 on the two tested tasks. It also did not evaluate regulated or safety-critical applications.
+
+For another application, compare the candidate versions against independently verified answers and the application’s quality requirements.

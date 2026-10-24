@@ -1,5 +1,5 @@
 export type ProjectMode = "Solo build" | "Cross-functional" | "Concept";
-export type ProjectStatus = "Shipped" | "In progress" | "Concept";
+export type ProjectStatus = "Shipped" | "Completed study" | "In progress" | "Concept";
 
 export type ArtifactDecisionScore = "met" | "partial" | "unmet";
 

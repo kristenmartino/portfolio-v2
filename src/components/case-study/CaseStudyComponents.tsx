@@ -60,11 +60,13 @@ export function Diagram({
   children,
   scrollOnMobile = false,
   fullSizeHref,
+  fullSizeLabel = "Open full-size diagram ↗",
 }: {
   title?: string;
   children: ReactNode;
   scrollOnMobile?: boolean;
   fullSizeHref?: string;
+  fullSizeLabel?: string;
 }) {
   return (
     <figure className="my-12 min-w-0 max-w-full border border-[var(--color-graphite-90)] bg-[var(--color-soot)]">
@@ -98,7 +100,7 @@ export function Diagram({
             rel="noreferrer"
             className="mt-3 inline-flex min-h-11 items-center text-sm font-medium text-[var(--color-signal-blue-soft)] underline underline-offset-4"
           >
-            Open full-size diagram ↗
+            {fullSizeLabel}
           </a>
         )}
       </div>
