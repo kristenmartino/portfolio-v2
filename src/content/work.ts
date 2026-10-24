@@ -883,7 +883,7 @@ export const projects: Project[] = [
   {
     index: "07",
     title: "GridPulse",
-    category: "Energy Decision Platform",
+    category: "Electricity Demand Forecasting",
     summary:
       "GridPulse forecasts U.S. electricity demand using public grid and weather data. Users can compare forecasts and model performance, review weather alerts, and explore temperature, wind, and solar scenarios.",
     href: "/work/gridpulse",
@@ -896,116 +896,13 @@ export const projects: Project[] = [
     shape: "data-viz",
     image: "/work/gridpulse.png",
     imageAlt:
-      "GridPulse operating view — the Grid Operations Manager dashboard for Florida (FPL), with live demand, a seven-day forecast chart and forecast band, and XGBoost model metrics (MAPE 1.5%, R² 0.991).",
+      "GridPulse dashboard for Florida (FPL), showing reported electricity demand, forecasts, and model evaluation metrics.",
     metrics: [
-      "51 BAs · ~99% lower-48",
-      "XGBoost · Prophet · SARIMAX ensemble",
-      "Real holdout metrics",
+      "51 balancing authorities",
+      "3 models + weighted ensemble",
+      "Holdout and live error tracking",
       "Cloud Run + scheduled jobs",
     ],
-    artifact: {
-      problem: {
-        situation:
-          "Power traders and grid operators routinely manage decisions across six or more disconnected tools — forecasting models, scheduling systems, weather services, telemetry feeds, and trading platforms.",
-        complication:
-          "Each function holds a different view of the same underlying data. Reconciliation depends on practitioner expertise rather than process, and by the time a unified picture emerges the trading window has typically closed.",
-        question:
-          "Can a single integrated operating layer serve the actual decision moment — rather than producing yet another dashboard?",
-      },
-      requirements: [
-        {
-          stakeholder: "Power trader",
-          need: "Four-hour ramp-risk, congestion risk, and pricing bands at a glance — without context-switching between tools mid-decision.",
-          evidence: "Observed across pre-open trading sessions",
-        },
-        {
-          stakeholder: "Grid operator",
-          need: "Seven-day curtailment outlooks and reserve margin visibility, with role-appropriate alerting thresholds.",
-        },
-        {
-          stakeholder: "Forecasting team",
-          need: "Model spread and confidence intervals surfaced at the operating layer — not buried inside model views.",
-          evidence: "Confidence drives sizing, not point estimates",
-        },
-        {
-          stakeholder: "Cross-role",
-          need: "On-demand scenario modeling that replaces the weekly cycle, so significant decisions don't wait for Friday.",
-        },
-      ],
-      decisions: {
-        criteria: [
-          "Decision-moment fit",
-          "Cognitive throughput",
-          "Adapts by role",
-          "Build effort",
-        ],
-        options: [
-          {
-            option: "Aggregator dashboard",
-            scores: ["partial", "partial", "unmet", "met"],
-          },
-          {
-            option: "Role-based operating layer",
-            chosen: true,
-            scores: ["met", "met", "met", "partial"],
-            rationale:
-              "Role-specific interfaces match how decisions are actually made — a trader at 6:30am cannot reasonably evaluate model selection. The 3x build cost (three IAs, three default scenarios, three alerting thresholds) is justified by the documented underperformance of generic interfaces in operations-intensive environments.",
-          },
-          {
-            option: "Configurable power-user workspace",
-            scores: ["partial", "unmet", "partial", "partial"],
-          },
-        ],
-      },
-      solution: {
-        summary:
-          "Three planes — integrated, confident, immediate — operating on shared data with role-adapted surfaces.",
-        pillars: [
-          {
-            title: "Operating view",
-            detail:
-              "Live grid state, weighted forecasts, and the open decisions appropriate to the user's role. Same data, role-adapted presentation.",
-          },
-          {
-            title: "Models",
-            detail:
-              "Four model classes (physics, statistical, ML, ensemble) with backtests and confidence intervals exposed at the surface. Spread is surfaced when models diverge.",
-          },
-          {
-            title: "Scenarios",
-            detail:
-              "On-demand modeling replaces the weekly batch. Adjust an input — temperature delta, unit outage, policy assumption — and the cascade is visible immediately.",
-          },
-        ],
-      },
-      outcome: {
-        kind: "metrics",
-        items: [
-          {
-            metric: "Scenario cycle",
-            before: "Weekly batch",
-            after: "On-demand",
-            note: "Cascade visible immediately",
-          },
-          {
-            metric: "Operating surface",
-            before: "3+ tools",
-            after: "1 view",
-            note: "Role-adaptive",
-          },
-          {
-            metric: "Model coverage",
-            after: "4 classes",
-            note: "Backtests + CIs surfaced",
-          },
-          {
-            metric: "Regional reach",
-            after: "51 BAs",
-            note: "~99% of lower-48 demand · Cloud Run",
-          },
-        ],
-      },
-    },
   },
   {
     index: "08",
