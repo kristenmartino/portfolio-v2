@@ -1,6 +1,6 @@
 ## What I tested
 
-I compared FP16, Q8_0 and Q4_K_M versions of Llama 3.1 8B Instruct on two tasks: MMLU multiple-choice questions and CoNLL-2003 named-entity recognition. The study measures quality, throughput and memory use on one local machine.
+I compared FP16, Q8_0 and Q4_K_M versions of Llama 3.1 8B Instruct on two tasks: MMLU multiple-choice questions and entity extraction from CoNLL-2003 sentences. The study records task quality, local throughput and model size reported by Ollama. It does not measure peak runtime memory or deployment cost.
 
 <Specs>
   <Spec label="Role" value="Experiment design, Python development and statistical analysis" />
@@ -14,17 +14,20 @@ I compared FP16, Q8_0 and Q4_K_M versions of Llama 3.1 8B Instruct on two tasks:
 
 Each quantization setting received the same items and prompts, with temperature zero and a fixed seed. The sample contained 500 MMLU questions across ten subjects and 300 CoNLL-2003 sentences. The paired MMLU comparison used 499 aligned items per setting.
 
-The runner warmed up the models and interleaved settings per example. This reduces exposure to time-dependent changes in machine load compared with running each setting in a separate long block. A committed experiment manifest records model artifacts, software versions and host details.
+The runner warmed up the models and interleaved settings per example. This reduces exposure to time-dependent changes in machine load compared with running each setting in a separate long block. A committed experiment manifest identifies model artifacts, software versions and host details. Distinct artifact hashes do not prove identical base-weight or training provenance. Dataset identifiers and splits are recorded, but their upstream revisions are not pinned.
 
-MMLU uses answer accuracy. Named-entity recognition requires matching both the entity span and its type. I report corpus micro-F1, calculated from pooled counts, alongside the mean per-sentence F1. They weight examples differently and should not be treated as interchangeable.
+MMLU uses answer accuracy. The entity scorer compares sets of lowercased, trimmed entity text and type. Repeated identical entities collapse to one set member, and token positions are not scored. This custom measure is not the official CoNLL span evaluation.
+
+I report corpus micro-F1 from pooled counts alongside mean per-sentence F1. They weight examples differently; both use that custom scorer.
 
 ## Recorded results
 
 <Diagram title="Quality and throughput on the tested tasks">
-  <img src="/work/quantization-pareto.png" alt="Recorded quality and throughput for FP16, Q8_0 and Q4_K_M on MMLU and CoNLL-2003 named-entity recognition" className="w-full" />
+  <img src="/work/quantization-pareto.png" alt="Recorded throughput against MMLU accuracy and custom entity-text/type-set micro-F1 for FP16, Q8_0 and Q4_K_M, with 95% intervals" className="w-full" />
 </Diagram>
+<Caption>Recorded results on one M4 Max. The entity metric uses normalized text/type sets; throughput is not an inference-cost measurement. <a href="/work/quantization-pareto.png" target="_blank" rel="noreferrer">Open full-size figure</a> · <a href="https://github.com/kristenmartino/llm-quantization-study/blob/ed03b5df717e9e2266bb9316e6fab67f1b744a86/results/summary.json">Source results</a>.</Caption>
 
-Q8_0 met the study's ±1 percentage-point equivalence criterion on MMLU accuracy and per-sentence NER F1. The reported NER micro-F1 confidence interval was also within that margin. Recorded throughput was about 1.8 times FP16, with roughly half its memory footprint.
+Q8_0 met an exploratory ±1 percentage-point equivalence criterion on MMLU accuracy and per-sentence entity F1. The margin was selected during reanalysis, not preregistered before collection. The reported micro-F1 interval also lay within that margin. Recorded throughput was about 1.8 times FP16, with roughly half its reported model size; runtime memory also needs space for cache and activations.
 
 Q4_K_M had a 3.2 percentage-point lower corpus micro-F1 than FP16 on NER, with a reported 95% confidence interval of 0.7 to 5.7 points and Holm-adjusted p-value of 0.032. Its per-sentence F1 was 5.0 points lower. The recorded MMLU difference was not statistically significant, leaving Q4's equivalence to FP16 unresolved.
 
@@ -36,8 +39,8 @@ Q4 also had a 99.7% JSON parse rate. In this sample, correctly formatted output 
 
 ## Analysis and limits
 
-The analysis uses paired comparisons, bootstrap confidence intervals, McNemar tests for binary outcomes and equivalence testing against the stated margin. Holm correction is applied across the three pairwise comparisons within each task. Subject-level MMLU differences did not survive their multiple-comparison correction.
+The analysis uses paired comparisons, bootstrap confidence intervals, McNemar tests for binary outcomes and exploratory equivalence testing. Holm correction is applied across the three pairwise comparisons within each task/metric family. Subject-level MMLU differences did not survive their multiple-comparison correction.
 
-These findings apply to this model, these prompts, the sampled tasks and the recorded local setup. Other models, hardware and production workflows need their own evaluation.
+The repository includes the raw outputs and a check that reproduces the summary from them. That checks the recorded calculations; it is not an independent replication. These findings apply to the compared artifacts, prompts, samples, scorer and local setup. Other workloads need their own evaluation.
 
 For a similar deployment, I would use these results to choose candidates for a workload-specific test. Q8_0 is a candidate when reduced memory and higher throughput matter; Q4 requires particular attention to entity-extraction errors. The final choice still needs quality thresholds and measurements from the intended application.
