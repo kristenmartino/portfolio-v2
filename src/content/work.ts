@@ -194,12 +194,12 @@ export const projects: Project[] = [
     liveHref: "https://gridpulse.kristenmartino.ai",
     codeHref: "https://github.com/kristenmartino/gridpulse",
     year: "2024",
-    status: "Shipped",
+    status: "Live application",
     mode: "Solo build",
     shape: "data-viz",
-    image: "/work/gridpulse.png",
+    image: "/work/gridpulse-overview-4x3.png",
     imageAlt:
-      "GridPulse live demo captured October 24, 2026 for Florida (FPL), showing reported demand, a dated forecast, and the displayed snapshot's model metrics.",
+      "GridPulse dashboard for Florida (FPL), showing reported electricity demand, forecasts, and model evaluation metrics.",
     metrics: [
       "51 balancing authorities",
       "3 models + weighted ensemble",

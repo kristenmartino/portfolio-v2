@@ -1,15 +1,17 @@
+import Image from "next/image";
+
 ## Overview
 
 GridPulse forecasts hourly U.S. electricity demand using public grid and weather data. It brings reported demand, forecasts, model error, weather alerts, and weather scenarios into one dashboard.
 
-This is an independent forecasting project developed with AI assistance. The work focuses on making forecasts inspectable: where the data came from, when it was updated, how the models performed, and when the results need caution.
+The dashboard shows data sources, update times, model performance and warnings about stale forecasts or provisional readings.
 
 <Specs>
-  <Spec label="Role" value="Product direction and AI-assisted development" />
+  <Spec label="Role" value="Product direction and development" />
   <Spec label="Year" value="2024" />
   <Spec label="Industry" value="Energy / Power markets" />
   <Spec label="Stack" value="Dash · Cloud Run + Memorystore Redis + GCS · XGBoost · Prophet · SARIMAX" />
-  <Spec label="Status" value="Deployed demonstration" />
+  <Spec label="Status" value="Live application" />
 </Specs>
 
 ## Product scope
@@ -24,6 +26,26 @@ The dashboard answers three questions:
 
 The Overview shows current demand, seven-day statistics, and a chart joining reported demand to the next 24 hours of the ensemble forecast. Its summary leads with the forecast peak and time, followed by current demand and model error. Historical observations are available in an expandable section.
 
+<figure className="my-10">
+  <Image
+    src="/work/gridpulse-overview-2026-10-24.png"
+    alt="GridPulse Overview for Florida (FPL), with reported electricity demand, a 24-hour forecast, model metrics and an operating summary."
+    width={1440}
+    height={1200}
+    sizes="(max-width: 768px) 100vw, 768px"
+    className="h-auto w-full border border-[var(--color-graphite-80)]"
+  />
+  <Caption>GridPulse Overview for Florida (FPL), showing reported demand, the next 24-hour forecast and model-error measures. Captured October 24, 2026.</Caption>
+  <a
+    href="/work/gridpulse-overview-2026-10-24.png"
+    target="_blank"
+    rel="noreferrer"
+    className="mt-3 inline-flex min-h-11 items-center text-sm font-medium text-[var(--color-signal-blue-soft)] underline underline-offset-4"
+  >
+    View full-size screenshot ↗
+  </a>
+</figure>
+
 Four role selections change the default tab and the historical observations included in the summary. They share the same demand data, KPIs, and forecasts.
 
 The US Grid view compares balancing authorities using reported demand, interchange, and capacity context. The demand-to-nameplate-capacity ratio is a comparison metric. Available reserves and shortage risk need separate assessment.
@@ -32,13 +54,13 @@ The US Grid view compares balancing authorities using reported demand, interchan
 
 GridPulse runs XGBoost, Prophet, and SARIMAX, plus a weighted ensemble. The Models view exposes per-model holdout metrics and live error tracking. A separate benchmark compares GridPulse with operator day-ahead forecasts on matched observations.
 
-Training holdout error and live forecast error answer different questions. The interface labels their sources rather than presenting either as the expected accuracy of the next forecast. The published results include authorities where the ensemble underperforms a single model.
+The interface distinguishes error on held-out historical data from error on live forecasts. Both describe past performance. Published results include balancing authorities where a single model outperforms the ensemble.
 
-Forecast bands also need context. The chart identifies whether a band comes from empirical residuals or an indicative range; an indicative range is not a calibrated prediction interval.
+The chart identifies whether a band comes from empirical residuals or an indicative range; an indicative range is not a calibrated prediction interval.
 
 ## Weather scenarios
 
-The Forecast view provides temperature, wind, and solar adjustments and named presets. Results show how the model responds to those weather assumptions, with the calculation method disclosed alongside them.
+The Forecast view lets users adjust temperature, wind and solar assumptions or choose a preset. It shows the resulting demand forecast and explains how the scenario is calculated.
 
 ## Delivery and reliability
 
