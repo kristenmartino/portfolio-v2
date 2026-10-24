@@ -12,7 +12,7 @@ A valuation can calculate correctly while relying on the wrong input. SEC filers
 
 ## 1. Keep partial extraction results
 
-The first extraction stage queries SEC XBRL company facts using a concept map. It returns the values it finds and leaves missing fields for Claude to extract from the filing's financial-statements section. Required fields still missing after the fallback and supported calculations produce an explicit error.
+The first extraction stage queries SEC XBRL company facts using a concept map. Berkshire also needs dimensioned facts from the filing itself: a deterministic inline-XBRL reader selects annual equivalent shares for the requested class, insurance premiums, and cash across its two reported business groups. It returns the values it finds and leaves missing fields for Claude to extract from the filing's financial-statements section. Required fields still missing after the fallback and supported calculations produce an explicit error.
 
 This matters because failing on the first missing XBRL field would prevent the fallback from running. In the original ten-company sample, three needed AI extraction or a calculated fallback. Those figures describe the ten-company sample only.
 
@@ -59,6 +59,8 @@ The filer's industry classification selects one of five simplified approaches:
 </tbody></table></div>
 
 The REIT model approximates FFO as net income plus D&A. Its supplementary AFFO estimate subtracts positive reported capital expenditures, or uses 80% of approximate FFO when those expenditures are unavailable. Both calculations are labeled as estimates in the workspace.
+
+Berkshire's Class A and B workspaces use the simplified justified-price-to-book formula with consolidated GAAP earnings and Berkshire shareholders' equity. This is not a sum-of-the-parts valuation. Investment gains can distort ROE, and per-share amounts use reported annual average equivalent shares rather than year-end shares. The workspace names the share basis and exposes the selected XBRL contexts. This targeted filing regression is separate from the historical extraction baseline below.
 
 The workspace pairs the estimate with its assumptions. Monte Carlo output shows the distribution produced by sampled inputs; its middle 80% is a simulation range, not a calibrated forecast of the stock price. Standard and energy models also show a sensitivity grid.
 
