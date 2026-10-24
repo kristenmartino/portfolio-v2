@@ -1640,12 +1640,14 @@ export const projects: Project[] = [
     title: "Billing Recovery and Reconciliation",
     category: "Enterprise Systems",
     summary:
-      "Led five workstreams to resolve billing discrepancies, defining reconciliation requirements and coordinating fixes across Finance, Revenue Operations, Engineering, and Data. The program recovered approximately $1M and reduced rejected billing records by at least 85%, validated by Finance.",
-    href: "#contact",
+      "Led billing recovery and reconciliation work, defining requirements for corrections and coordinating fixes across Finance, Revenue Operations, Engineering and Data.",
+    href: "/work/billing-recovery-and-reconciliation",
+    slug: "billing-recovery-and-reconciliation",
     year: "2023",
     status: "Shipped",
     mode: "Cross-functional",
     shape: "table",
+    metrics: ["Billing reconciliation", "Recover · correct · prevent", "Finance validation"],
   },
   {
     index: "15",
