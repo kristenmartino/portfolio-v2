@@ -316,9 +316,9 @@ export const projects: Project[] = [
   {
     index: "03",
     title: "Valuate",
-    category: "AI Financial Agent",
+    category: "Financial Analysis",
     summary:
-      "An AI-assisted valuation tool that extracts figures from SEC filings and shows their sources. Users can review and correct values, adjust assumptions, and see how those changes affect the valuation.",
+      "Explore company valuations from SEC 10-K filings. Review extracted figures and source details, correct flagged values, and compare estimates under different assumptions.",
     href: "/work/valuate",
     slug: "valuate",
     liveHref: "https://valuate.kristenmartino.ai",
@@ -329,121 +329,13 @@ export const projects: Project[] = [
     shape: "pipeline",
     image: "/work/valuate.png",
     imageAlt:
-      "Valuate landing — the ticker picker, each card tagged with its valuation route (bank DDM, REIT FFO, energy NAV-DCF) before running a Monte Carlo DCF on the company's latest 10-K.",
+      "Valuate company picker with sample tickers and model labels for banks, insurers, REITs, and energy companies.",
     metrics: [
-      "18 tickers, 5 industries",
-      "Two-track extraction (XBRL + LLM)",
-      "97.7% extraction-eval baseline",
-      "Source quotes + HITL review",
+      "18 sample tickers · 5 model categories",
+      "SEC XBRL + AI fallback",
+      "42/43 evaluated fields · May 2026",
+      "Source details + flagged-value corrections",
     ],
-    artifact: {
-      problem: {
-        situation:
-          "Automated valuation systems claim to read 10-Ks and produce DCF models. The math is trivial — fifty lines of code — but reliable line-item extraction from filings written for human readers is the actual bottleneck.",
-        complication:
-          "Most automated-valuation demos work on clean industrial mid-caps without saying so. Filer inconsistency in XBRL tagging is the rule, not the exception — Apple uses one revenue concept, Caterpillar another; some filers don't tag operating income at all. Black-box extraction at this scale produces fair-value estimates a finance reviewer cannot verify against the underlying document.",
-        question:
-          "Can an extraction agent acknowledge its scope and surface its uncertainty — rather than hiding both?",
-      },
-      requirements: [
-        {
-          stakeholder: "Finance reviewer",
-          need: "Per-cell source attribution back to the filing — verbatim quotes for each Claude-extracted line item, no bare numbers.",
-          evidence: "HITL review surface verifies in one click",
-        },
-        {
-          stakeholder: "Coverage breadth",
-          need: "Handle the ~30% of clean-reporting S&P 500 filers with at least one untagged or non-canonical line item — without failing the request.",
-          evidence: "3 of 10 hand-picked tickers needed Track B or derivation",
-        },
-        {
-          stakeholder: "Audit trail",
-          need: "Persist user overrides as first-class data with source=USER_OVERRIDE so a corrected valuation traces back to who corrected what.",
-        },
-        {
-          stakeholder: "Modeling latency",
-          need: "Sliders adjusting growth, margin, terminal growth, WACC must recompute Monte Carlo + sensitivity grid faster than human reaction time.",
-          evidence: "Full recompute in under 200 ms",
-        },
-      ],
-      decisions: {
-        criteria: [
-          "Coverage on clean filers",
-          "Verifiability per cell",
-          "Failure transparency",
-          "Build effort",
-        ],
-        options: [
-          {
-            option: "XBRL-only extraction (canonical concepts, fail on missing)",
-            scores: ["partial", "met", "unmet", "met"],
-          },
-          {
-            option: "LLM-only over the full 10-K HTML",
-            scores: ["partial", "met", "partial", "met"],
-          },
-          {
-            option:
-              "Two-track extraction with deterministic derivation backstop and HITL review surface",
-            chosen: true,
-            scores: ["met", "met", "met", "partial"],
-            rationale:
-              "XBRL queries first (Track A), Claude over the 10-K HTML where Track A leaves gaps (Track B), accounting-identity derivation as the fallback (operating income from income_before_tax + interest_expense; total liabilities from total_assets − shareholders_equity). Every value carries provenance — XBRL concept, verbatim quote, or formula — and the HITL surface makes verification one click instead of a manual hunt. The 3× build cost is justified by the demand: a fair-value estimate without provenance is not actionable for the finance reviewer who has to defend the number.",
-          },
-        ],
-      },
-      solution: {
-        summary:
-          "An extraction agent that runs XBRL first, Claude over the 10-K HTML for gaps, and accounting-identity derivation as the backstop — with cell-level source attribution and a one-click HITL verification surface.",
-        pillars: [
-          {
-            title: "Track A — XBRL company facts",
-            detail:
-              "SEC pre-tagged JSON queried for canonical us-gaap concepts. Restatements deduplicated by period-end date (the gotcha: filing-fiscal-year groups three years of comparatives into one slot). Returns whatever it can find and hands the gaps to Track B.",
-          },
-          {
-            title: "Track B — Claude over 10-K HTML",
-            detail:
-              "Item 8 (Financial Statements) sliced by anchor pattern, sent with a confidence-calibrated prompt, parsed into the same LineItem schema. Every value carries a verbatim 5–30 word source quote. Static prefix marked for prompt caching.",
-          },
-          {
-            title: "Derivation backstop",
-            detail:
-              "Accounting identities for fields neither track tagged (operating income for filers like JNJ/NKE; total liabilities for filers like NKE/KO). source=DERIVED carries a synthetic quote describing the formula — provenance survives the inference.",
-          },
-          {
-            title: "HITL review + override persistence",
-            detail:
-              "Low-confidence items (<0.80) and balance-sheet identity violations (>50bps) flagged in the surface. Overrides persist as first-class LineItem entries with source=USER_OVERRIDE and re-trigger validation on each write.",
-          },
-        ],
-      },
-      outcome: {
-        kind: "metrics",
-        items: [
-          {
-            metric: "Universe",
-            after: "10 S&P 500 tickers",
-            note: "Clean industrial filers; banks/insurers/E&P intentionally V2",
-          },
-          {
-            metric: "Track-B + derivation",
-            after: "3 of 10 needed",
-            note: "Even hand-picked filers leave gaps Track A can't fill",
-          },
-          {
-            metric: "Recompute",
-            after: "<200 ms",
-            note: "10K Monte Carlo + 7×7 sensitivity grid",
-          },
-          {
-            metric: "Provenance",
-            after: "Per-cell, every value",
-            note: "XBRL concept, verbatim quote, or formula",
-          },
-        ],
-      },
-    },
   },
   {
     index: "04",

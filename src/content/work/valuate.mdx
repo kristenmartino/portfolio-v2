@@ -1,79 +1,105 @@
 ## Overview
 
-Most "AI reads financial statements" demos quietly limit themselves to clean industrial mid-caps with standard reporting — without saying so. The hard part of automated valuation is not the math, it's getting reliable structured data out of filings written for human readers. Valuate makes that scope choice explicit and builds verification into the agent flow rather than hiding extraction errors.
+Valuate is a portfolio prototype for exploring company valuations from SEC 10-K filings. It combines structured XBRL data with AI extraction for missing figures. Users can inspect source details, correct flagged values, and change assumptions to see how the estimate responds.
 
-The product extracts line items from a company's most recent 10-K, lets the user adjust forward-looking assumptions, and produces a Monte Carlo DCF valuation with cell-level source attribution back to the filing.
+The company picker includes 18 sample tickers across five model categories. A free-text ticker entry supports exploring other 10-K filers, with limited extraction and model coverage.
 
 <Specs>
-  <Spec label="Role" value="Strategy, design, and engineering (frontend + backend)" />
+  <Spec label="Role" value="Product framing, financial requirements, and validation; AI-assisted implementation" />
   <Spec label="Year" value="2026" />
-  <Spec label="Domain" value="AI-assisted financial analysis" />
-  <Spec label="Stack" value="Next.js · FastAPI · LangGraph · Claude (claude-sonnet-4-6) · SEC EDGAR" />
-  <Spec label="Status" value="Shipped" />
+  <Spec label="Domain" value="Financial analysis" />
+  <Spec label="Stack" value="Next.js · FastAPI · LangGraph · Claude · SEC EDGAR" />
+  <Spec label="Scope" value="Portfolio prototype" />
 </Specs>
 
-## Problem framing
+## The problem
 
-Three observations shape the design:
+A valuation can calculate correctly while relying on the wrong input. SEC filers use different XBRL concepts for similar figures, and some required values are available only in filing text. The product needs to expose those extraction choices so a reviewer can examine the inputs before relying on the estimate.
 
-1. **The extraction problem is the bottleneck, not the modeling.** A textbook DCF takes ~50 lines of code. Producing it from a real 10-K requires reliably mapping each filer's idiosyncratic XBRL tags or HTML structure to a canonical schema — and that's where most automated-valuation systems quietly fail.
-2. **Black-box extraction is unverifiable.** A fair-value estimate that arrives without source attribution is not actionable. Whether the number is reasonable depends on whether each line item it rests on came from where the user expected.
-3. **The universe of edge cases is the universe.** Banks, insurers, REITs, and energy E&P companies all break the standard mid-cap-industrial template — sometimes by reporting on fundamentally different line items (banks have interest-spread P&Ls, REITs have real-estate-at-cost balance sheets), sometimes by needing a different valuation entirely (E&P reserves deplete, so a Gordon-growth terminal is conceptually wrong even though the line items match). Pretending one extraction-and-valuation pipeline works for all of them is the standard demo's failure mode.
+Three decisions shaped the workflow.
 
-## Solution
+## 1. Keep partial extraction results
 
-The agent extracts each line item through one of two tracks, with confidence calibration and a deterministic derivation step for fields that neither track can fill. At ingest time the filer's SIC code routes the rest of the pipeline through one of five industry paths — industrials/tech, banks, insurers, REITs, and energy E&P — each with its own valuation flavor and (for the first four) its own Pydantic schema variant on the wire. Industrials and tech share the canonical schema and a 5-year FCFF DCF; the other four are described below.
+The first extraction stage queries SEC XBRL company facts using a concept map. It returns the values it finds and leaves missing fields for Claude to extract from the filing's financial-statements section. Required fields still missing after the fallback and supported calculations produce an explicit error.
 
-### Track A — XBRL company facts
+This matters because failing on the first missing XBRL field would prevent the fallback from running. In the original ten-company sample, three needed AI extraction or a calculated fallback. That observation describes this sample; it does not establish a market-wide coverage rate.
 
-SEC filers tag financial statements with us-gaap concepts (`Revenues`, `OperatingIncomeLoss`, `NetIncomeLoss`, ...). Track A queries SEC's pre-tagged company-facts JSON, deduplicates restatements by matching on period-end date, and returns whatever it can find. Filer inconsistency is the rule, not the exception — Apple uses `RevenueFromContractWithCustomerExcludingAssessedTax`, Caterpillar uses `ProfitLoss` for net income, Google reports only `Depreciation` rather than a combined D&A tag. The canonical-concept map carries multiple alternates per logical line item, and per-industry maps cover the divergent vocabulary (banks use `InterestIncomeExpenseNet` and the post-CECL `FinancingReceivableExcludingAccruedInterestAfterAllowanceForCreditLoss` instead of revenue / total loans).
+## 2. Show how each value was obtained
 
-### Track B — Claude over the 10-K HTML
+Each line item identifies its source: SEC XBRL, AI extraction, calculation, or user correction. Source details show an XBRL concept, an extracted excerpt, or a calculation explanation where available. These details support manual review; an excerpt alone does not establish that a value is correct.
 
-Where Track A leaves a field unfilled, Track B runs. The 10-K's Item 8 (Financial Statements) section is sliced out by anchor pattern, sent to Claude with a confidence-calibrated extraction prompt, and parsed into the same `LineItem` schema. Every value Claude returns carries a verbatim 5–30 word source quote from the filing — visible in the human-in-the-loop review surface for one-click verification. The static system prompt is marked for prompt caching so subsequent extractions amortize the prefix cost.
+Automated checks flag extraction scores below 0.80 and balance-sheet discrepancies above 0.5%. The scores are heuristics: XBRL scores reflect tag priority, while AI scores are model-reported. They are not calibrated probabilities of correctness, and an absence of flags does not mean a person verified the data.
 
-### Derivation backstop
+A reviewer can replace a flagged value and optionally supply a supporting excerpt. Validation then runs again. The stored company record retains the current correction and its source label; it does not provide reviewer identity or a chronological edit history. Storage depends on deployment configuration: Postgres when configured, otherwise a process-local cache.
 
-A small set of accounting-identity fallbacks runs between Track B and composition. Some filers don't tag a field at all — JNJ and NKE don't report a separate operating income line; NKE and KO don't expose a total-liabilities tag. Rather than fail the request, derive: operating income from `income_before_tax + interest_expense`; total liabilities from `total_assets − shareholders_equity`. Both write `source=DERIVED` with a synthetic source quote describing the formula, so provenance survives the inference and the HITL surface can flag them for review.
+## 3. Make the model choice explicit
 
-### Composition and validation
+The filer's industry classification selects one of five simplified approaches:
 
-The `Company` is composed at the end, after both tracks plus derivation have run. Required fields that even derivation can't reach raise an explicit error. Validation flags low-confidence items (less than 0.80) and balance-sheet identity violations (over 50bps). Overrides are persisted as `LineItem` entries with `source=USER_OVERRIDE` and re-trigger validation on each write.
+<div className="my-6 overflow-x-auto">
+<table className="w-full text-left text-sm leading-relaxed text-[var(--color-graphite-20)]">
+<caption className="mb-3 text-left font-mono text-xs uppercase tracking-wide text-[var(--color-graphite-40)]">Five valuation models</caption>
+<thead><tr className="border-b border-[var(--color-graphite-80)]">
+<th scope="col" className="px-3 py-3 font-medium text-[var(--color-bone)]">Category</th>
+<th scope="col" className="px-3 py-3 font-medium text-[var(--color-bone)]">Model</th>
+</tr></thead>
+<tbody>
+<tr className="border-b border-[var(--color-graphite-90)]">
+<th scope="row" className="px-3 py-3 font-medium">Industrials and technology</th>
+<td className="px-3 py-3">Five-year free-cash-flow DCF with terminal growth</td>
+</tr>
+<tr className="border-b border-[var(--color-graphite-90)]">
+<th scope="row" className="px-3 py-3 font-medium">Banks</th>
+<td className="px-3 py-3">Dividend discount model</td>
+</tr>
+<tr className="border-b border-[var(--color-graphite-90)]">
+<th scope="row" className="px-3 py-3 font-medium">Insurers</th>
+<td className="px-3 py-3">Justified price-to-book</td>
+</tr>
+<tr className="border-b border-[var(--color-graphite-90)]">
+<th scope="row" className="px-3 py-3 font-medium">REITs</th>
+<td className="px-3 py-3">FFO-based Gordon growth</td>
+</tr>
+<tr className="border-b border-[var(--color-graphite-90)]">
+<th scope="row" className="px-3 py-3 font-medium">Energy</th>
+<td className="px-3 py-3">Ten-year free-cash-flow projection without terminal value</td>
+</tr>
+</tbody></table></div>
 
-### Modeling and Monte Carlo
+The workspace pairs the estimate with its assumptions. Monte Carlo output shows the distribution produced by sampled inputs; its middle 80% is a simulation range, not a calibrated forecast of the stock price. Standard and energy models also show a sensitivity grid.
 
-Once the line items are in place, the user adjusts assumptions on sliders — revenue growth, operating margin, terminal growth, WACC — and a 5-year three-statement projection, 10,000 Monte Carlo iterations, and a 7×7 sensitivity grid recompute under 200 ms. The Monte Carlo distribution and sensitivity heatmap are surfaced as Recharts visualizations alongside the per-share fair value. That FCFF flow fits industrials and tech.
+## Evaluation and limits
 
-### Industry-specific valuation flavors
+The [backend's recorded extraction baseline](https://github.com/kristenmartino/valuate-api#extraction-eval-baseline) was last refreshed on **May 30, 2026**. Values were compared with pinned reference figures using a ±0.5% tolerance.
 
-The other four industries each get their own valuation, dispatched on `period.industry` in `compute_projection`. The same `Assumptions` shape is reused across all of them — the frontend relabels the sliders to match the formula's variables, so users see "Cost of equity" instead of "WACC" on the bank workspace, etc.
+<div className="my-6 overflow-x-auto">
+<table className="w-full text-left text-sm leading-relaxed text-[var(--color-graphite-20)]">
+<caption className="mb-3 text-left font-mono text-xs uppercase tracking-wide text-[var(--color-graphite-40)]">Recorded extraction baseline · May 30, 2026</caption>
+<thead><tr className="border-b border-[var(--color-graphite-80)]">
+<th scope="col" className="px-3 py-3 font-medium text-[var(--color-bone)]">Extraction path</th>
+<th scope="col" className="px-3 py-3 font-medium text-[var(--color-bone)]">Fields within tolerance</th>
+<th scope="col" className="px-3 py-3 font-medium text-[var(--color-bone)]">Sample</th>
+</tr></thead>
+<tbody>
+<tr className="border-b border-[var(--color-graphite-90)]">
+<th scope="row" className="px-3 py-3 font-medium">SEC XBRL</th>
+<td className="px-3 py-3">39 of 39</td>
+<td className="px-3 py-3">11 filers</td>
+</tr>
+<tr className="border-b border-[var(--color-graphite-90)]">
+<th scope="row" className="px-3 py-3 font-medium">Claude fallback</th>
+<td className="px-3 py-3">3 of 4</td>
+<td className="px-3 py-3">3 filers</td>
+</tr>
+<tr className="border-b border-[var(--color-graphite-90)]">
+<th scope="row" className="px-3 py-3 font-medium">Combined</th>
+<td className="px-3 py-3">42 of 43</td>
+<td className="px-3 py-3">11 filers across five categories</td>
+</tr>
+</tbody></table></div>
 
-- **Banks** — Gordon dividend-discount model, `P = D₀(1 + g) / (r − g)`. Banks have no "operating margin" in the industrial sense; the economic story is interest spread net of credit costs. The cost-of-equity and dividend-growth sliders replace WACC and terminal growth.
-- **Insurers** — justified price-to-book, `fair_value/share = book_value/share × (ROE − g) / (r − g)`. Reserves and the general-account investment portfolio dominate the balance sheet, so book value is the economic anchor.
-- **REITs** — FFO-multiple Gordon, `fair_value/share = FFO/share × (1 + g) / (r − g)`, where `FFO = net income + D&A`. GAAP depreciation overstates economic depreciation for well-maintained real estate, so FFO, not GAAP net income, is the conventional REIT earnings measure.
-- **Energy E&P** — 10-year reserve-life-capped FCFF with **no terminal value**. Reserves deplete; Gordon-growth-to-infinity is conceptually wrong for an asset that will run out. The revenue-growth slider is relabeled "production growth/decline."
+The Claude miss was an omitted pre-tax-income value. The small AI sample is a material limitation; the combined result should not be interpreted as general AI extraction accuracy. This is a historical baseline, not a new evaluation run.
 
-The first three each carry a schema variant on the wire — banks tag net interest income and loans/deposits, insurers tag premiums and reserves, REITs tag a real-estate-at-cost / accumulated-depreciation / real-estate-net trio. **E&P is the exception.** Revenue, operating income, capex, and D&A are all standard us-gaap concepts even for an E&P filer — the line-item set isn't different, the *valuation* is — so the architecture supports a "dispatch-only" variant: no schema split, all the variant logic lives in `dcf.py` and a slider-relabel on the frontend. Sensitivity is hidden client-side for banks / insurers / REITs because their formulas don't read the rev-growth × op-margin axes; for E&P the heatmap stays on, since the FCFF math still uses both.
+The code includes deterministic valuation tests and correction tests across statement variants. One network-gated integration test exercises a real Apple filing. These checks cover specific behaviors, rather than every supported filer or financial model assumption.
 
-## Implementation considerations
-
-**The hardest design problem was making Track A non-fatal.** The first version raised an exception whenever any one required field was missing, which meant Track B never got a chance for filers that didn't tag operating income (NKE, JNJ) or didn't tag total liabilities (NKE, KO). The architectural fix was to refactor Track A to return a partial dict and let Track B fill required gaps too. Composition happens at the end, not at Track A's exit.
-
-**XBRL restatement handling has a gotcha.** Each XBRL data point carries an `fy` field for the *filing's* fiscal year — but a 10-K filed for FY2025 reports comparative income statements for FY2024 and FY2023, all tagged `fy=2025`. Grouping by `fy` collides three years of data into one slot. Grouping by `end` date instead is the correct key. This bug would have produced subtly wrong numbers without any visible error, which is the worst kind.
-
-**Source attribution is the design move that makes this credible.** Every Claude-extracted value carries a verbatim quote from the filing. This makes the HITL review one click, not a manual hunt — and turns the system from a black box into something a finance reviewer can verify against the underlying document.
-
-## Reflections
-
-- **Schema-variant industries and dispatch-only ones live in different places in the codebase — and the second category turned out to matter.** Banks, insurers, and REITs each carry their own discriminated union per statement (`kind = "bank"`, `"insurer"`, `"reit"`) plus a per-industry XBRL concept map, because the line items they tag are structurally different (no "operating margin" on a bank's P&L; a REIT's balance sheet is dominated by real-estate-at-cost less accumulated depreciation; an insurer's largest line is policy reserves). Energy E&P, by contrast, reports on standard us-gaap — revenue, op income, capex, and D&A all map to the industrial schema — so the variant lives entirely in `dcf.py`'s dispatch and a slider-relabel on the frontend, with no schema split on the wire. The original universe was 10 industrial / tech tickers; all four additional industries landed without a parallel codebase, and each shipped in roughly the same effort because the variant always landed in the right place — schema variant when the data shape differed, `dcf.py` dispatch when only the valuation math did.
-- **Three of the original ten tickers needed Track B or derivation to compose; the four variant tickers all extracted cleanly through Track A alone.** XBRL tagging consistency turned out to be worse than the universe size suggests — even among hand-picked clean-reporting filers, ~30% have at least one required line item that's untagged or under a non-canonical concept. JPM, PRU, PLD, and EOG all extracted cleanly via XBRL because their per-industry tags (post-CECL bank tags, life-insurer reserve tags, REIT real-estate tags, and the E&P-specific oil-and-gas-property and depletion tags) are well-standardized within their own taxonomy. The two-track-plus-derivation architecture earns its keep on industrials; the per-industry XBRL maps are why the variant filers compose without needing Claude at all. When the curated grid later grew to 18 with AMZN, META, F, and WMT, Walmart joined the Track-B list — it uses a non-canonical XBRL concept for D&A that Track A's alternates don't catch, and Track B finds it in the filing's cash-flow text every run. Adding curated tickers is incremental work, not architectural work.
-- **Persistence tradeoff:** the backend supports Postgres-backed persistence when `DATABASE_URL` is configured, but the current live deployment uses a process-local extraction cache pending a formal freshness/invalidation policy. This keeps the demo simple and avoids serving stale 10-K extractions across filings, at the cost of re-running SEC + Claude extraction after deploys.
-- **Scope honesty lives in the UI copy, not just the docs.** Below the curated 18-ticker grid is a free-text search that accepts any SEC-filed company; its caveat names the same five-industry coverage as the README, but at the point where the user is about to choose rather than buried in a doc. An extraction-coverage audit on the production endpoint surfaced the real scope ceiling: ~88-92% of randomly-typed S&P 500 tickers compose successfully, and the residual is dominated by structurally-unaddressable cases (foreign filers on 20-F forms, SPACs without operating history, and a small number of Berkshire-class filers whose own XBRL tagging is non-standard enough that even Track B can't reach the missing fields). The friendly-error UI handles all of these gracefully. The escape hatch exists; the choice was to make the caveat unmissable, not the hatch unreachable.
-- **A senior review pass surfaced three real gaps; the architecture absorbed all three without rework.** (1) `/override` had no auth — anyone could `PUT` against the database. Closed with a bearer-token dependency on the backend and a `proxy.ts` on the Vercel edge that injects the token from a non-public env var. (2) `/extract` had no rate limit — each first-time call is a Claude charge. Closed with an in-memory sliding-window IP limiter (10/hr default), keyed off `X-Forwarded-For` since Railway sits behind an edge proxy. (3) Zero integration tests against a real filing — the 23 unit tests covered XBRL math against synthetic data, but a section-extractor regex break or SEC API shape change would have shipped silently. Closed with one network-marked test that runs the full graph against AAPL's latest 10-K and asserts structural invariants (industry classification, scale bands, balance-sheet identity, plausible fair-value range). The same pass added stock-based compensation as a first-class line item (AAPL FY25: $12.86B, surfaced in the statements panel) and AFFO/share alongside FFO for REITs (PLD: $4.34 AFFO vs $6.22 FFO) — both are credibility moves a real research analyst would expect, and neither shifted the architecture's center of gravity.
-- **A second pass closed the polish gaps the first review left.** CI now runs on every push (pytest + tsc + production build), the Track B system prompt carries a worked example that anchors confidence calibration and the unit-multiplication rule, the workspace renders correctly on phones, the Pydantic deprecation that fired on every test run is closed, and — most substantively — E&P workspaces now surface the SEC-mandated Standardized Measure of Discounted Future Net Cash Flows (ASC 932-235) as a sell-side-style PV-10/share NAV anchor. EOG's 10-year FCFF lands at \$35.98/share (conservative by construction); the SMOG cross-check lands at \$75.67/share. Both are defensible, and showing both is more useful than picking one.
-- **A third pass tightened the model's economic credibility, the workspace's day-to-day UX, the AI extraction's measurability, and the deploy's diagnosability.** Fifteen items, four clusters: (1) WACC now computed per-company from the actual capital structure (Re weighted with after-tax cost of debt) instead of a flat default; tax rates clipped to a structural [15%, 30%] band so observed ETR wonkiness doesn't propagate; bank DDM `g` anchored on `(1−payout) × ROE` (textbook sustainable-growth rate) instead of naive CAGR; operating-lease liabilities (ASC 842) added to the net-debt bridge — AAPL surfaces ~\$12.5B in leases the prior model ignored; Monte Carlo σ derived from each filer's own historical volatility instead of universal hardcoded values. (2) `/version` endpoint returns the running commit SHA + prompt hash for "is this deploy stale?" diagnostics; one-line-per-request structured JSON logging with `X-Request-ID` correlation; optional Sentry integration that lazy-imports so the package is opt-in. (3) Track B system prompt's sha256 is hash-tracked at module load and surfaced through `/version`; a second harder few-shot example demonstrates footnote-vs-statement confidence calibration; an `eval/` directory holds hand-pinned ground-truth values for the curated tickers with a runner that scores Claude's extractions within ±0.5%, exit-non-zero on regression — suitable for a cron. (4) Fair-value display now shows the live yfinance market price + model-vs-market spread (green/rose) so the "cheap or rich?" question doesn't require math; the load state has a 4-step progress checklist instead of a bare spinner; backend errors get parsed into readable titles + hints (ticker-not-found vs. rate-limited vs. composition-error) with the raw payload tucked into a `<details>`; a localStorage-backed "recently viewed" chip row sits above the curated grid for return visitors. None of this changed the architecture's center of gravity — every fix sat squarely inside the existing schema-variant + dispatch-only split.
-- **A fourth pass — hands-on QA of the live app plus an adversarial review — hardened the human-in-the-loop path and turned extraction accuracy from a claim into a measured number.** Driving the deployed workspace surfaced that the override endpoint — the product's whole verification premise — silently rejected every field correction on the three schema-variant industries (a bank's `net_interest_income`, an insurer's `premiums_earned`, a REIT's `depreciation_amortization`), because it validated the field against the standard schema instead of the company's actual statement variant; it also collapsed multi-year history to a single period on each write. Both fixed, with override tests across all four statement variants. The same pass added the coverage earlier passes had skipped on the *default* path — deterministic assertions for the standard FCFF buildup, terminal value, EV→equity bridge, and per-share fair value, plus Monte Carlo determinism and sensitivity-grid behavior (the four exotic flavors already had closed-form tests; the path most tickers take did not). Abuse surface tightened: the `/value` Monte Carlo iteration count is now bounded, and the `/extract` limiter trusts the proxy-appended `X-Forwarded-For` hop rather than the client-spoofable leftmost value. The workspace got a request-ordering guard so a slow, stale `/value` response can't overwrite a newer slider state. Most substantively, the extraction eval grew from a Claude-only spot-check on five tickers into dual-track scoring across all five industry categories: **extraction eval baseline 97.7% within ±0.5% across 43 fields and 11 filers — XBRL extraction 100%, Claude fallback 75% on the income-tax fields it covers.** The single Track-B miss was an *omission* — Claude returned no value for one filer's pre-tax income — not a wrong number, which is exactly the failure mode the flags-and-provenance surface exists to catch; it's filed as a tracked recall issue rather than papered over. As with every prior pass, none of it shifted the architecture's center of gravity.
-
-## Closing observation
-
-The most useful principle: **make extraction failures visible rather than hide them.** A valuation that comes with a flagged-items list and source quotes per line item is more honest and more useful than one that arrives with full confidence and no provenance. The verification surface is what turns this from a demo into something a finance reviewer would actually trust.
+The remaining limits affect how the tool should be used. Unclassified companies fall back to the standard DCF even when that model may not fit. Older periods can have incomplete field coverage. The energy model uses a fixed ten-year horizon rather than a company-specific reserve forecast. Filing freshness, broader extraction evaluation, and correction history need further work before this could support a production research workflow.
