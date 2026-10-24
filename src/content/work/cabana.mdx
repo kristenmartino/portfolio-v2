@@ -18,7 +18,7 @@ AI classifies requests and drafts acknowledgments for staff; staff control prici
   {/* Inline SVG — theme-reactive via design tokens. Raster fallback in /public/work: cabana-architecture-dark.png (dark) + cabana-architecture-light.png (light). */}
   <svg viewBox="0 0 960 560" role="img" aria-labelledby="cab-ttl cab-dsc" fontFamily="var(--font-sans, system-ui, sans-serif)" className="w-full h-auto">
     <title id="cab-ttl">Cabana system architecture</title>
-    <desc id="cab-dsc">Member portal and ops automation for Sailfish Pool Care: member browser to Next.js on Vercel, Supabase Postgres as source of truth with three edge functions, and external services Claude Haiku, Stripe, n8n, Airtable, Telegram and Resend operational alerts.</desc>
+    <desc id="cab-dsc">Member portal and ops automation for Sailfish Pool Care: Next.js on Vercel, Supabase Postgres, three incoming webhook handlers and a private outbound Telegram function. n8n updates Airtable and calls the Telegram function; Stripe records test payments.</desc>
     <defs>
       <marker id="ah" viewBox="0 0 8 8" refX="6.6" refY="4" markerWidth="7" markerHeight="7" orient="auto" markerUnits="userSpaceOnUse">
         <path d="M0.5,1 L6.8,4 L0.5,7 Z" fill="var(--color-graphite-60)"/>
@@ -51,7 +51,9 @@ AI classifies requests and drafts acknowledgments for staff; staff control prici
       <path stroke="var(--color-signal-blue)" strokeWidth="1.9" fill="none" d="M435,213 L435,88 L901,88 L901,236" markerEnd="url(#aha)"/>
       <text fill="var(--color-signal-blue)" paintOrder="stroke" stroke="var(--color-soot)" strokeWidth="3.2" strokeLinejoin="round" fontWeight="600" x="650" y="80" fontSize="10" textAnchor="middle">outbox: trigger + sweep</text>
       <path stroke="var(--color-graphite-60)" strokeWidth="1.2" fill="none" d="M846,264 L830,180" markerEnd="url(#ah)"/>
-      <path stroke="var(--color-graphite-60)" strokeWidth="1.2" fill="none" d="M846,280 L830,274" markerEnd="url(#ah)"/>
+      <path stroke="var(--color-graphite-60)" strokeWidth="1.2" fill="none" d="M846,280 L837,324 L659,324" markerEnd="url(#ah)"/>
+      <path stroke="var(--color-graphite-60)" strokeWidth="1.2" fill="none" d="M656,324 L680,324 L700,302" markerEnd="url(#ah)"/>
+      <path stroke="var(--color-graphite-60)" strokeWidth="1.2" fill="none" d="M548,324 L513,310" markerEnd="url(#ah)"/>
       <path stroke="var(--color-graphite-60)" strokeWidth="1.2" fill="none" d="M846,296 L830,368" markerEnd="url(#ah)"/>
       <path stroke="var(--color-graphite-60)" strokeWidth="1.2" fill="none" d="M700,178 L659,170" markerEnd="url(#ah)"/>
       <text fill="var(--color-graphite-40)" paintOrder="stroke" stroke="var(--color-soot)" strokeWidth="3.2" strokeLinejoin="round" x="678" y="147" fontSize="10" textAnchor="middle">whitelisted automation</text>
@@ -91,6 +93,8 @@ AI classifies requests and drafts acknowledgments for staff; staff control prici
       <text fill="var(--color-bone)" fontWeight="600" x="602" y="174" fontSize="11" textAnchor="middle">airtable-writeback</text>
       <rect fill="var(--color-soot)" stroke="var(--color-signal-blue)" strokeWidth="1.1" x="548" y="254" width="108" height="40" rx="8"/>
       <text fill="var(--color-bone)" fontWeight="600" x="602" y="278" fontSize="11" textAnchor="middle">telegram-webhook</text>
+      <rect fill="var(--color-soot)" stroke="var(--color-signal-blue)" strokeWidth="1.1" x="548" y="306" width="108" height="36" rx="8"/>
+      <text fill="var(--color-bone)" fontWeight="600" x="602" y="328" fontSize="11" textAnchor="middle">telegram-notify</text>
       <rect fill="var(--color-soot)" stroke="var(--color-signal-blue)" strokeWidth="1.1" x="548" y="356" width="108" height="40" rx="8"/>
       <text fill="var(--color-bone)" fontWeight="600" x="602" y="380" fontSize="11" textAnchor="middle">stripe-webhook</text>
     </g>
@@ -129,7 +133,7 @@ AI classifies requests and drafts acknowledgments for staff; staff control prici
 
 Next.js provides the member portal. Supabase Postgres stores member and booking data, with row-level security restricting access to each member’s records.
 
-Edge functions validate incoming Stripe, Telegram and Airtable events. n8n processes pending outbox events to update Airtable and send notifications. Claude Haiku classifies requests and drafts acknowledgments for staff. Member status messages use recorded booking and payment states.
+Edge functions validate incoming Stripe, Telegram and Airtable events. n8n processes pending outbox events to update Airtable and calls a private Supabase function to send Telegram notifications. That function records Telegram’s message ID after a successful send. Claude Haiku classifies requests and drafts acknowledgments for staff. Member status messages use recorded booking and payment states.
 
 ## Problem framing
 
@@ -183,6 +187,6 @@ The public demo uses fictional data, a shared demo member account and Stripe tes
 
 The deposit screen includes a test card number and instructions for completing Stripe’s sandbox checkout. No real money is collected.
 
-**Live check — October 24, 2026:** Request submission, a Stripe test payment and Airtable synchronization were verified. Telegram delivery from Railway timed out; those notifications use retries and a dead-letter queue.
+**Live check — October 24, 2026:** Request submission, a $75 Stripe test payment, one matching Airtable record and all three Telegram notifications were verified. Telegram sends now run through Supabase after connection timeouts from Railway. The two previously failed notifications were retried successfully, with Telegram message receipts recorded and their failure history retained.
 
 Member email notifications are not implemented. The Telegram bot rejects and logs unauthorized chats; rate limiting and alerts for those attempts remain follow-up work.
