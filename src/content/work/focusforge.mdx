@@ -1,34 +1,50 @@
-## What I built
+## Overview
 
-FocusForge is an iPhone focus timer with character customization, cosmetic rewards and written prompts selected on the device. Completed sessions contribute to progression; streak milestones and earned coins unlock cosmetics.
+FocusForge is an iPhone focus timer with a customizable character, session history, and cosmetic rewards. I designed and built the app to test whether visible progress gives people a reason to return to a focus routine. That remains a product hypothesis; I don’t have retention results to report.
 
 <Specs>
-  <Spec label="Role" value="Product design and iOS development" />
+  <Spec label="Role" value="Product design and engineering" />
   <Spec label="Year" value="2026" />
+  <Spec label="Domain" value="iOS productivity" />
   <Spec label="Stack" value="Swift · SwiftUI · SwiftData · Firebase · Swift Charts" />
-  <Spec label="Status" value="MVP build · beta and release checks remain" />
+  <Spec label="Status" value="MVP build · beta preparation" />
 </Specs>
 
-## Sessions and rewards
+## The session flow
 
-A user starts a focus session, records its completion and sees the resulting progression. The character has configurable appearance and equipment slots. Cosmetics unlock through streak milestones or the app's coin economy.
+A user names a task, chooses a focus duration, and starts the timer. Focus sessions alternate with short or long breaks. Completed sessions show earned XP and coins; the user can then review progress, equip cosmetics, or return to the timer.
 
-The design goal is to make returning to a focus session appealing. Whether the rewards improve retention or encourage people to optimize for the reward system is a question for beta.
+I kept the timer screen sparse and moved the character and reward animation to the completion screen. The reward sequence can be skipped and includes a Reduce Motion path. Those are implemented accommodations, not a claim that the whole app has passed an accessibility audit.
 
-## Written prompts on the device
+## What earns rewards
 
-The coach selects from written templates using signals such as completion rate, session length and streak risk. It offers a prompt before a session, a reflection afterward or a reminder near a streak deadline. Users can edit, accept, dismiss or rate the prompt.
+The app rewards completed time and consistency. It does not measure attention or the quality of the work.
 
-This is deterministic template selection. It does not run a language model or call a model API. Local prompt selection also does not mean that every part of the app is offline: Firebase is integrated for analytics, crash reporting and remote configuration.
+- **Session rewards:** each whole planned focus minute earns one base XP and one coin when the session completes. A completed 25-minute session therefore earns 25 base XP and 25 coins, before bonuses.
+- **Streak bonus:** streak days add an XP multiplier, capped at 50% extra. Coins do not receive that multiplier.
+- **Other progression:** daily and weekly quests offer additional XP and coins. Cosmetics can be bought with coins or unlocked at streak milestones of 3, 7, 14, 30, and 60 days.
+- **Breaks and abandoned sessions:** neither earns session XP or coins. Abandoned sessions remain in the local history with their actual duration.
 
-## Interface and implementation
+A longer completed session earns more base rewards than a shorter one. Whether these incentives encourage useful focus, or just more timer completions, needs user testing.
 
-SwiftData stores local application records. SwiftUI provides the timer, character views, quests and statistics. The visual design separates a restrained focus screen from the more detailed reward presentation.
+## Coaching from a written catalog
 
-The reward overlay has a staged reveal, a skip action and a reduced-motion alternative. Contrast checks informed changes to text and rarity colors. VoiceOver, Dynamic Type, hit targets and motion preferences are part of the release review; these implementation measures do not establish complete accessibility conformance.
+The app labels this feature “AI Coach,” but it uses an on-device template engine, without a hosted language model. It selects written prompts using recent completion and abandonment rates, session length, and streak risk. Task keywords help select a pre-session prompt.
 
-## What remains
+With the relevant coaching settings enabled, users can edit, accept, or dismiss a suggested task framing before starting. After a completed focus session, they can mark a reflection helpful or not helpful. A streak nudge can be opened or dismissed. Each moment has its own controls.
 
-Beta runtime checks, accessibility review and App Store submission remain. iPad layout and CloudKit sync were deferred so the initial release could concentrate on iPhone.
+The catalog keeps the wording reviewable and works without a server call for coaching. Its limitation is equally clear: it selects and fills in existing text rather than giving open-ended advice. The [coach engine source](https://github.com/kristenmartino/focusforge-coach-engine) shows the templates and selection logic.
 
-Beta evaluation should examine whether people return to the timer, how they use rewards and whether the prompts are useful. The privacy review also needs to confirm actual analytics payloads and opt-out behavior alongside the local prompt workflow.
+## Local coaching, with Firebase analytics
+
+SwiftData stores task names, session records, and progression on the device. Coaching uses those local records. This does **not** mean that all behavioral data stays on the phone.
+
+Firebase Analytics is enabled by default. Session events include planned and actual duration, rewards, and streak information. The reviewed session events send the task name’s character count, rather than the task text. Firebase Crashlytics also provides crash diagnostics.
+
+Users can turn product analytics off under **Settings → Privacy → Send anonymous analytics**. The preference gates events in the app and Firebase’s analytics collection. It is not a switch for crash reporting.
+
+## Current state and next checks
+
+The MVP includes the timer, local session history, character customization, rewards, quests, statistics, and coaching. iPad layouts and CloudKit sync are deferred.
+
+The next checks are beta use, native accessibility testing, and release preparation. I need to observe whether people return, whether the rewards help them work, and whether the coaching is useful. The current build demonstrates the workflow; it does not establish a retention improvement or a change in focus quality.

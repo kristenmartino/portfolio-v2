@@ -259,7 +259,7 @@ export const projects: Project[] = [
     title: "FocusForge",
     category: "iOS Mobile App",
     summary:
-      "An iOS focus timer that turns completed sessions into character progression and cosmetic rewards. Its on-device coach selects written prompts for setting session goals, reflecting afterward, and maintaining a streak.",
+      "An iPhone focus timer with character customization, minutes-based XP and coins, and streak rewards. An on-device template coach offers task prompts and reflections; Firebase analytics can be turned off in Settings.",
     href: "/work/focusforge",
     slug: "focusforge",
     codeHref: "https://github.com/kristenmartino/focusforge",
@@ -269,11 +269,11 @@ export const projects: Project[] = [
     shape: "mobile",
     metrics: [
       "SwiftUI + SwiftData",
-      "On-device written prompts",
-      "Firebase + Crashlytics",
-      "Contrast checks + Reduce Motion",
+      "Minutes-based XP + streak rewards",
+      "On-device template coaching",
+      "Firebase analytics opt-out",
     ],
-    },
+  },
   {
     index: "11",
     title: "GTM Healthcare Intelligence",
