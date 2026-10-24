@@ -1,12 +1,12 @@
 ## What I built
 
-Medicare Provider Outliers compares provider costs and service volumes with peers in the same taxonomy and state. I loaded 43.7 million rows from CMS Part D, Part B and NPPES sources for calendar year 2023 into Snowflake, modeled them with dbt and published a static data app with supporting model documentation.
-
+Medicare Provider Outliers compares provider costs and service volumes with peers in the same taxonomy and state. I loaded 43.7 million rows from 2023 Medicare Part B/D files and an April 2026 NPPES registry snapshot into Snowflake, modeled them with dbt and published a static data app with supporting model documentation. The [source documentation](https://github.com/kristenmartino/medicare-provider-outliers/blob/48b862ff6b216187dbad3d418e0911f60389d515/docs/data_sources.md) records those distinct vintages.
 
 <Specs>
   <Spec label="Role" value="Data modeling, analysis and application development" />
   <Spec label="Year" value="2026" />
-  <Spec label="Data" value="CMS Part D, Part B and NPPES · CY2023" />
+  <Spec label="Medicare data" value="Part B and Part D · CY2023" />
+  <Spec label="Provider registry" value="NPPES · April 2026 snapshot" />
   <Spec label="Stack" value="Snowflake · dbt · DuckDB · Evidence · GitHub Actions" />
   <Spec label="Delivery" value="Public data app and dbt documentation" />
 </Specs>
@@ -22,6 +22,8 @@ CI parses project configuration and declared model/source dependencies without c
 ## Choosing peers
 
 The first version grouped providers using CMS specialty text. Internal Medicine combined providers with substantially different prescribing patterns. Switching to NPPES taxonomy codes split that category into 28 subspecialties and changed its recorded flag rate from 45% to 31.8%.
+
+The [provider profile model](https://github.com/kristenmartino/medicare-provider-outliers/blob/48b862ff6b216187dbad3d418e0911f60389d515/models/intermediate/int_provider__profile.sql) uses NPPES taxonomy and prefers its practice state, falling back to Medicare state fields when needed. These comparisons classify 2023 utilization with later registry attributes; specialty or location changes can affect which peers are grouped together.
 
 The model requires at least 30 peers and exposes coverage counts per metric. In this dataset, 9,490 taxonomy-by-state groups meet the floor. The threshold is a modeling choice; meeting it does not make every comparison clinically equivalent.
 
