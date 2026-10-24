@@ -1,89 +1,36 @@
-## Overview
+## What I built
 
-Most leaderboards for open-weight vs frontier LLMs answer a question one level too abstract for an applied team — *"how does Llama 3.1 8B score on MMLU vs Sonnet 4.6"* — and stop there. The question that determines whether a team actually switches is the next one down: *for this specific pipeline stage, on this specific corpus, can this specific open-weight model replace the frontier API I'm paying for, and at what cost-per-quality-point trade-off?*
-
-This harness is built to answer that question on a real production workload — [Sift](/work/sift)'s news-pipeline stages (categorization, summarization, structured extraction, grounded RAG) — across nine LLMs (five open-weight on a local DGX Spark via Ollama; four closed-weight via API). The deliverable is a routing-decision framework, not a benchmark leaderboard. The leaderboard is the worked example.
+I built a Python evaluation harness to compare language models on [Sift](/work/sift)'s news-processing tasks. The harness and methodology are available; the comparison on the real news corpus has not run, so there are no model rankings or routing recommendations yet.
 
 <Specs>
-  <Spec label="Role" value="Strategy, experimental design, methodology, harness engineering" />
+  <Spec label="Role" value="Evaluation design and Python development" />
   <Spec label="Year" value="2026" />
-  <Spec label="Domain" value="Applied LLM evaluation · production routing" />
-  <Spec label="Stack" value="Python · Ollama · Anthropic + OpenAI APIs · Bradley-Terry MM · Next.js (site)" />
-  <Spec label="Hardware" value="NVIDIA DGX Spark · 128 GB unified memory · Ollama local inference" />
-  <Spec label="Status" value="Methodology shipped · Phase 1 execution in progress · v0.3 trajectory-eval harness built (165 tests)" />
+  <Spec label="Stack" value="Python · Ollama · Anthropic and OpenAI APIs" />
+  <Spec label="Status" value="Harness implemented · corpus benchmark pending" />
 </Specs>
 
-## Problem framing
+## How a run works
 
-Three observations shape the design:
+Model adapters expose a shared interface. Task modules supply prompts, parse responses and calculate scores. The runner records inputs, model settings and outputs in JSONL files so interrupted runs can resume.
 
-1. **Public benchmarks measure general capability; production teams need workload-specific answers.** MMLU and HumanEval tell you whether a model is competent in the abstract. They don't tell you whether Qwen 2.5 7B can replace Claude Haiku in *your* article-categorization step without quality regression. The only way to know that is to run your actual workload through both and measure.
-2. **LLM-as-judge methodology is one bad choice away from being unfalsifiable.** Pairwise preference judged by Sonnet, on a candidate set that includes Sonnet, produces a number you cannot falsify — judges measurably favor their own outputs ([Panickssery et al. 2024](https://arxiv.org/abs/2404.13076)). The fix isn't to drop the methodology; it's to architect around it. Cross-vendor judging is the lever.
-3. **"I held out 20% for final scoring" is a vibes claim unless the lock is verifiable.** Anyone can say they held out the data and didn't peek during prompt iteration. The version that survives scrutiny is the one where the held-out set is SHA-256 hashed and committed to git *before* any tuning happens, and the runner enforces the gate. Then the proof is in the commit history, not the author's word.
+Categorization and summarization modules are implemented. Structured extraction and grounded question answering are planned. The study design covers nine models and keeps output quality, response time and cost separate for each task.
 
-## Design
+For pairwise summarization, judge selection avoids assigning an Anthropic model to judge pairs containing an Anthropic candidate. This addresses direct self-judging; it does not remove every source of judge bias. The design also includes an overlap sample for comparing judges and Bradley-Terry ranking of pairwise results.
 
-**Nine models, three tiers.**
+## Keeping final scoring separate
 
-- **Open-weight, deployment-feasible** (eligible for hybrid-routing recommendations) — Llama 3.1 8B Instruct, Qwen 2.5 7B Instruct, Qwen 2.5 14B Instruct, DeepSeek V2 Lite.
-- **Open-weight, quality-ceiling reference** — Llama 3.1 70B Q4. Included as an upper bound on what open-weight can achieve on Sift's tasks, but excluded from the deployment cost view because expected DGX Spark throughput (~10–15 tok/s on 3–4K-token articles) is infeasible at Sift's daily volume. A pre-flight timing benchmark confirms or rejects this split before the full eval runs.
-- **Closed-weight reference** — Claude Haiku 4.5 (Sift's current production model; the bar to beat), Claude Sonnet 4.6 (quality ceiling; also primary judge), GPT-4o (cross-vendor judge), GPT-4o mini.
+The runner requires an explicit flag before using held-out data and checks its contents against a SHA-256 manifest. A sample lock and tamper-detection tests exercise that mechanism. The real corpus still needs to be collected, split and locked before prompt tuning.
 
-**Four tasks chosen because they're the actual pipeline.** Task A is single-label multiclass categorization (the highest-volume step, biggest cost lever). Task B is summarization for the UI (user-facing quality matters most). Task C is structured entity extraction (tests whether open-weight can hold schemas). Task D is grounded RAG with citations (the agentic capability the rest of the industry actually cares about). Plus a 50-prompt safety smoke test for deployment-blocking regressions.
+A committed hash can show that a dataset stayed unchanged. It cannot establish that nobody inspected its contents. That boundary matters when interpreting the eventual results.
 
-**Identical prompt content across models; native chat templates per model.** A foreign chat template (Qwen prompts wrapped in Llama 3's role tokens) measurably degrades performance for tokenizer reasons unrelated to capability. So the content is shared, the framing is per-model.
+## Testing agent runs
 
-## Methodology decisions worth flagging
+A second track records an agent's tool calls, arguments, recovery from errors and final answer. Recorded runs support tests without API keys; checks that require a model judge use a separate live path. Fault and injection scenarios exercise failure handling.
 
-The credibility of a leaderboard sits in its methodology, not its numbers. Five decisions that earn the most reviewer trust:
+Those tests check the evaluation machinery. They do not establish how well a model performs on Sift's real corpus.
 
-1. **Cross-vendor judging architecture.** Sonnet 4.6 judges the 21 of 36 model pairs that don't include an Anthropic candidate; GPT-4o judges the 15 of 36 pairs that do. A 50-pair overlap subset is judged by both, with inter-judge Cohen's κ reported (caveat triggered if κ &lt; 0.6). Eliminates the case where Sonnet's outputs are judged by Sonnet — which would otherwise make Sonnet's score unfalsifiable.
-2. **Bradley-Terry MM ranking across all 36 pairs**, not pairwise-vs-reference. Asymmetric pairwise (everyone-vs-Haiku) makes Haiku unrankable as a candidate. The BT MM algorithm ([Hunter 2004](https://www.jstor.org/stable/3448513)) fits a global strength ranking from the full pairwise matrix and lets every model be evaluated against every other.
-3. **Hardware-amortized cost methodology**, reported alongside published API rates. Local compute cost = DGX Spark capex amortized over a 3-year useful life + measured wall-clock × FL residential kWh rate. All assumptions pinned and stated; a dual view (individual-developer vs production-scale) is deferred to a later benchmark pass for the procurement audience.
-4. **Per-task split between schema-adherence and extraction quality.** Task C reports two metrics, not one: JSON validity rate (capability A) and entity F1 conditional on validity (capability B). Splitting prevents conflating "weak at JSON" with "weak at extraction" — which the leaderboard would otherwise do silently, because invalid JSON gates everything else.
-5. **A v0.2 spec critique round before any code was written.** Eleven methodology items surfaced in a structured peer-review pass — judge contamination, pairwise design ambiguity, the 70B-on-Task-A throughput problem, scoring conflation, sample-size power, contamination acknowledgement, and others. Nine applied directly to the spec; three deferred as post-data-collection decisions. The spec critique is the artifact most worth pointing senior reviewers at; it shows the methodology bend-tested before any number was computed.
+## What remains
 
-## Pre-flight and the held-out lock
+The next steps are to prepare the corpus, measure local-model throughput on the DGX Spark, complete the remaining task modules and run final scoring. Until those runs are complete, the project demonstrates evaluation infrastructure and study design. Quality rankings, measured cost comparisons and model-selection decisions remain pending.
 
-The held-out discipline is what separates a benchmark from a defensible eval, so the mechanism is worth describing concretely:
-
-- Held-out items live in `data/holdout/`, separate from `data/dev/`.
-- The runner refuses held-out access without an explicit `--include-held-out` flag and verifies the set against a committed `holdout.sha256` manifest before scoring, rejecting any set that changed since it was locked. This gate is implemented and enforced today, with tamper-detection tests ([eval-harness #1](https://github.com/kristenmartino/eval-harness/pull/1)).
-- The real Set-1 `holdout.sha256` is committed to git *before any prompt iteration begins*, at corpus pull (Phase 1); a sample lock ships now to demonstrate the mechanism.
-- The final-scoring run then commits results alongside the unchanged hash file, so any reviewer can verify (a) the hash hasn't changed since the pre-iteration commit, (b) the runner invocation logs include the held-out flag only on the final run.
-
-> The proof is in the commit history, not the author's word.
-
-Pre-flight scripts (five, stdlib-only) close the rest of the loop before Phase 1 runs: a timing benchmark on the DGX Spark to confirm the 70B-Task-A tier split, a length-stratified sampler for Task A, a category distribution check that drops any category with fewer than 20 articles (upsampling biases macro-F1), an API cost estimator that prints to the dollar and rate-limit hour, and an annotation validator that catches schema violations before they enter the eval set.
-
-## What the routing-decision framework will answer
-
-The leaderboard alone is a snapshot — a model-by-model table at a single point in time. The artifact worth shipping is a *routing-decision framework* that the leaderboard feeds: for each pipeline stage, the framework will name the model to route to, the conditions under which to do it, the escalation rule when the model's confidence drops, and the failure mode that disqualifies a model regardless of its headline score. Those specific calls — which model, what threshold, what escalation, what kill condition — get committed only after Phase 1 runs and the held-out numbers come back. Until then, the methodology is what's defensible; the decisions live downstream of the data.
-
-## v0.3 — Agentic trajectory evaluation (Phase 2)
-
-v0.2 answers *which model do we ship*. The next question a production team asks once an agent is in the loop is different in kind: *is the agent reliable enough to deploy, and will we catch it when it regresses?* That is agent evaluation plus observability — the LangSmith / Braintrust / Phoenix category — and it grades a **path**, not a string. v0.3 is a distinct track that reuses v0.2's substrate (the adapter Protocol, the JSONL run-unit, the held-out lock, the cross-vendor judge) to evaluate a single-model, multi-role agent over the same Sift corpus.
-
-It began the way v0.2 did — with a critique pass. Every "reuse" claim in the v0.3 spec was ground-truthed against the actual code before a line was written: the ones that held (adapter Protocol, held-out lock, the score-downstream invariant) were kept; the ones that overstated — a Cohen's κ that lived in the prose but not the code, a pairwise judge repurposed for a pointwise task, a stale test count — were corrected and shipped as a tracked diff. Each design choice is anchored to current practice rather than invented: `pass^k` reliability from [τ-bench](https://arxiv.org/abs/2406.12045), nugget-recall answer-correctness from RAGAS and the TREC RAG track, the two-axis injection eval from [AgentDojo](https://arxiv.org/abs/2406.13352) and InjecAgent, and dev/test-split contamination discipline from SWE-bench Pro and the reusable-holdout literature.
-
-What is built and tested today — **165 tests, zero runtime dependencies, entirely key-free**:
-
-- **A four-role agent loop** — router, planner, executor, critic — over a `ToolRegistry` seam that mirrors the model-adapter Protocol, so a deterministic mock tool store swaps for a real vector store without touching the loop or the scorers. The loop never crashes on a tool fault: it retries, falls back to synthesis, and records faithfully what happened.
-- **Six trajectory scorers on two axes.** *Process:* layered tool-selection (legality as a hard gate, then coverage, a partial-order precedence check, and state-legality), arg-schema-validity, report-only step-efficiency, and error-recovery. *Outcome:* answer-correctness (vital-weighted nugget recall plus precision) and citation-faithfulness, both pointwise-judged, plus a free deterministic check that the answer's citations cover the gold article IDs. A green outcome never launders a bad path — the two axes are reported separately.
-- **An adversarial guardrail suite.** Injection rides in on a retrieved document, and the verdict is a *conjunction* over the OWASP-LLM01 channels — no injected-arg tool call, no canary disclosure, no data-exfil two-step, no output-steering — so a run that refuses out loud but still leaks the secret is correctly scored compromised. A fixed per-scenario canary makes disclosure a deterministic substring scan, and attack-success rate is reported separately from utility. A broad, partly-unanticipated stdlib fault set exercises recovery.
-- **A two-tier CI regression gate.** The per-PR Tier-A gate replays recorded trajectories with no API keys and gates per-dimension — a conjunction of committed thresholds, never a blended average. Because each recorded response is keyed by a hash of the assembled request, a prompt or tool-schema edit trips a replay miss and fails the build until it is deliberately re-recorded — a prompt regression cannot land silently. The judged dimensions, which need a live model, run in a keyed Tier-B nightly.
-
-The honest scope line matches v0.2's: the machinery is built, tested, and CI-gated; the **live run over the real corpus is corpus-gated** — it needs the Sift pull, a real vector store behind the tool seam, and the authored question set, the same operator inputs the Phase-1 leaderboard is waiting on. A step-7 runbook lays out that turnkey path, and no v0.3 numbers are claimed until the data lands.
-
-## Reflections
-
-- **The methodology page is the deliverable; the leaderboard numbers are the worked example.** A leaderboard with weak methodology is forgettable. A methodology that holds up under reviewer pressure is the part that gets cited. The site at evals.kristenmartino.ai leads with methodology and treats the leaderboard as the supporting evidence — not the other way around.
-- **Pre-execution scoping has been the highest-leverage time spent.** The v0.2 critique round caught nine real methodology issues that would have invalidated specific claims if shipped. The cost of catching them after Phase 1 ran would have been a complete rerun. Rigor up-front is cheaper than rework downstream.
-- **The harness is reusable by design — adapters and tasks are clean modules.** A `ModelAdapter` is a Protocol with one method (`complete(prompt, params) → Completion`); a task is a self-contained module that exports a prompt template, a parser, and a scorer. Swapping `tasks/` and pointing at a new dataset is what makes this harness work for [GridPulse](/work/gridpulse), [Tarazu](/work/tarazu), or any other ML product without re-engineering the runner.
-- **Cost methodology is the most-probed section in any technical review pass.** Anyone with infrastructure intuition asks first about cost amortization and second about anything else. Pinning DGX Spark capex, FL kWh rate, measured power draw, and useful-life assumption — and stating each as an explicit number rather than a hand-wave — is what makes the cost view defensible.
-
-## Closing observation
-
-The framing question isn't *"how does open-weight compare to frontier on a benchmark"* — that's published already, in many forms, none of them actionable. The framing question is *"for this real production system, where does open-weight already meet the bar, and where does it not."* The eval-harness is the apparatus that answers that question for Sift specifically — and the methodology, adapter abstractions, and decision-framework structure are what make the same apparatus reusable for the next production system that needs the same answer.
-
-The deliverable a hiring manager remembers is the methodology. The numbers come from running the apparatus the methodology describes.
+The [methodology site](https://evals.kristenmartino.ai/methodology) contains the detailed study plan; the [repository](https://github.com/kristenmartino/eval-harness) contains the implementation.

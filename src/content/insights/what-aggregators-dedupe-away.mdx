@@ -1,17 +1,7 @@
-News aggregators optimize for volume. More sources, more headlines, more frequent updates — measured in throughput, evaluated on coverage. The implicit theory: the reader who consults more sources understands more.
+Grouping articles about the same event can make a news feed easier to scan. It can also hide useful differences if the group replaces every source with a single summary.
 
-The empirical evidence is mixed. A reader who consults five outlets on the same story typically encounters minor variations — different headlines, slightly different framings — and rarely the substantive disagreement that would change their view. The aggregator's optimization for volume actively works against the comparative reading the serious reader is trying to do.
+For [Sift](/work/sift), I wanted readers to compare coverage and open the original reporting. A shared event does not mean the articles make identical claims. One may include a qualification, a different source or a later update. A comparison should preserve those details and let the reader inspect them.
 
-What the serious reader actually wants from cross-source consumption: **what is each source choosing to highlight, and what are they choosing not to mention.** Aggregators treat this as duplication and dedupe it away.
+There is a second problem: readers may need context before they can compare coverage. Sift includes background explainers, term definitions and sourced reference pages about people, organizations and legislation mentioned in stories.
 
-Three design implications:
-
-- **Comparative consumption has to be architectural.** A reader should not be able to land on a single source's story without seeing what other sources said about the same event. If an article-first surface is available, readers will default to it.
-- **Embedding similarity alone produces false merges and false splits.** Two articles about the same event can use entirely different vocabularies; two articles that look similar can discuss different events that share entities. Pair embedding distance with structured entity extraction to reduce both error modes.
-- **Describe framing, don't characterize it.** A summarizer that asks for "comparison-relevant facts" is constrained productively. A summarizer that labels sources as "biased" or "objective" requires more context than the pipeline has — and labeling is the failure mode that has degraded most existing news products.
-
-Cross-source disagreement is one signal. A product organized around clusters rather than articles redirects time from consuming to comparing — and comparing is where view shifts happen.
-
----
-
-*A note on what shipped:* The cluster-based design argued for here is one answer to the aggregator problem — and the one I started building Sift around. In real-world use a different bottleneck surfaced. Most readers, even consulting five outlets on the same story, do not actually know who the senator is, what the bill does, or who funds the relevant lobbying body. The cross-source disagreement matters less than the **civic scaffolding around every story.** Sift's shipped version kept the aggregator and added that scaffolding on top — an adaptive *"what you should know first"* primer above each story, an inline glossary for civic terms, and a dossier graph of politicians, organizations, bills, and outlets sourced from public records. The argument above still stands as one cut at the aggregator problem; what shipped is *aggregator + civic footnotes* — both layers earn their place.
+These are design choices, rather than evidence that reading more sources changes someone's view. To evaluate the product, I would test whether readers can locate the original claims, identify differences and find the context they need.

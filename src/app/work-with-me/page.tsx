@@ -82,9 +82,7 @@ export default function WorkWithMe() {
           </div>
 
           <p className="mt-6 text-sm text-[var(--color-graphite-60)] max-w-2xl">
-            Fixed scope, fixed price agreed up front. Bigger or ongoing work is
-            quoted from there — the diagnosis is how we both find out if it&rsquo;s
-            worth it.
+            Scope and price are agreed before work begins. Additional work is quoted separately.
           </p>
         </Section>
 

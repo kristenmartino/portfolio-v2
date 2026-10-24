@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
 
-export const alt = "Work with me — AI product diagnosis · Kristen Martino";
+export const alt = "Work with me — Product and AI review · Kristen Martino";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -89,9 +89,9 @@ export default async function OpengraphImage() {
                 color: "#ffffff",
               }}
             >
-              <div>AI product diagnosis.</div>
+              <div>Product and AI review.</div>
               <div style={{ color: "#a6c8ff" }}>
-                Taken apart. Handed back.
+                Findings and next steps.
               </div>
             </div>
             <div
@@ -103,7 +103,7 @@ export default async function OpengraphImage() {
                 color: "#7a7a7a",
               }}
             >
-              The messy thing nobody wants to touch — as a plan you can act on.
+              Feature reviews, supporting examples and prioritized fixes.
             </div>
           </div>
         </div>

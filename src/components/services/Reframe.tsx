@@ -15,15 +15,15 @@ import { headlines, headlineTail, activeHeadline } from "@/content/services";
    ────────────────────────────────────────────────────────────────────────── */
 
 const FINDINGS = [
-  { sev: "HIGH", label: "Silent failure on empty retrieval" },
-  { sev: "MED", label: "No citation on 12% of answers" },
-  { sev: "LOW", label: "Latency spikes under load" },
+  { sev: "01", label: "Observed issue and affected workflow" },
+  { sev: "02", label: "Supporting example and testing limits" },
+  { sev: "03", label: "Recommended change and priority" },
 ] as const;
 
 const SEV_COLOR: Record<string, string> = {
-  HIGH: "var(--color-signal-magenta)",
-  MED: "var(--color-signal-blue-soft)",
-  LOW: "var(--color-graphite-40)",
+  "01": "var(--color-signal-magenta)",
+  "02": "var(--color-signal-blue-soft)",
+  "03": "var(--color-graphite-40)",
 };
 
 /* Raw input, scattered at the corners, that drifts inward and dissolves as the
@@ -40,10 +40,10 @@ type Fragment = {
 };
 
 const FRAGMENTS: Fragment[] = [
-  { text: "it's slow?", top: "2%", left: "0%", r: -7, dx: 34, dy: 26 },
-  { text: "users complain", top: "-2%", right: "2%", r: 5, dx: -30, dy: 28 },
-  { text: "is the AI wrong??", bottom: "6%", right: "0%", r: 8, dx: -26, dy: -24 },
-  { text: "ship date?", bottom: "0%", left: "3%", r: -5, dx: 30, dy: -22 },
+  { text: "trace the workflow", top: "2%", left: "0%", r: -7, dx: 34, dy: 26 },
+  { text: "check the source", top: "-2%", right: "2%", r: 5, dx: -30, dy: 28 },
+  { text: "review the output", bottom: "6%", right: "0%", r: 8, dx: -26, dy: -24 },
+  { text: "test the edge cases", bottom: "0%", left: "3%", r: -5, dx: 30, dy: -22 },
 ];
 
 function DiagnosisArtifact({ reduced }: { reduced: boolean }) {
@@ -55,7 +55,6 @@ function DiagnosisArtifact({ reduced }: { reduced: boolean }) {
 
   return (
     <div
-      aria-hidden
       className="relative w-full h-[360px] sm:h-[400px] lg:h-[440px]"
       style={{ contain: "paint" }}
     >
@@ -118,7 +117,7 @@ function DiagnosisArtifact({ reduced }: { reduced: boolean }) {
             transition={tween(0.28, DUR.base)}
           >
             <Mono variant="label" tone="muted">
-              Diagnosis · reality check
+              Example deliverable
             </Mono>
             <span className="flex items-center gap-1.5">
               <span
@@ -126,7 +125,7 @@ function DiagnosisArtifact({ reduced }: { reduced: boolean }) {
                 style={{ backgroundColor: "var(--color-signal-teal)" }}
               />
               <Mono variant="caption" tone="muted">
-                resolved
+                outline
               </Mono>
             </span>
           </motion.div>
@@ -137,9 +136,9 @@ function DiagnosisArtifact({ reduced }: { reduced: boolean }) {
             animate={{ opacity: 1, y: 0 }}
             transition={tween(0.36)}
           >
-            The feature works.{" "}
+            Assessment{" "}
             <span className="text-[var(--color-signal-blue-soft)]">
-              The trust doesn&rsquo;t.
+              outline.
             </span>
           </motion.p>
 
@@ -176,7 +175,7 @@ function DiagnosisArtifact({ reduced }: { reduced: boolean }) {
             transition={tween(0.78, DUR.base)}
           >
             <Mono variant="caption" tone="muted">
-              4 findings · ranked · 1 fix first
+              Findings · evidence · next steps
             </Mono>
           </motion.div>
         </div>

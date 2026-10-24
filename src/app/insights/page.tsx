@@ -8,7 +8,7 @@ import { notes } from "@/content/insights/index";
 export const metadata: Metadata = {
   title: "Insights — Kristen Martino",
   description:
-    "Short pieces on strategy, analytics, and design — across decision tools, AI products, dashboards, and consumer software. Perspectives from independent builds and a decade in enterprise systems.",
+    "Notes on document review, product prioritization, news interfaces and dashboard design, with examples from my projects.",
 };
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
@@ -38,15 +38,14 @@ export default function InsightsIndex() {
                 lineHeight: "var(--leading-tight)",
               }}
             >
-              Perspectives on
+              Notes from
               <br />
               <span className="text-[var(--color-signal-blue-soft)]">
-                applied AI and product design.
+                building and reviewing software.
               </span>
             </h1>
             <p className="mt-6 text-base md:text-lg leading-relaxed max-w-xl text-[var(--color-graphite-40)]">
-              Short pieces on strategy, analytics, and design — across
-              decision tools, AI products, dashboards, and consumer software.
+              Design choices and open questions from my projects, with examples of how I would review them.
             </p>
           </div>
 
