@@ -140,7 +140,7 @@ export const projects: Project[] = [
     title: "Eval Harness",
     category: "Applied LLM Evaluation",
     summary:
-      "A framework for comparing language models on Sift’s news-processing tasks, covering output quality, cost, and response time. Includes tests for agent tool use and failure handling. Benchmark results are still pending.",
+      "A model-evaluation framework with a first categorization development result on 400 Sift articles. Reports agreement with stored model labels; human label review and the final held-out comparison remain pending.",
     href: "/work/eval-harness",
     slug: "eval-harness",
     liveHref: "https://evals.kristenmartino.ai",
@@ -151,13 +151,13 @@ export const projects: Project[] = [
     shape: "data-viz",
     image: "/work/eval-harness.png",
     imageAlt:
-      "Eval Harness site with links to the evaluation methodology and pending benchmark results.",
+      "Eval Harness live site, captured October 24, 2026: a 400-article development agreement baseline, model-assigned reference labels, and an unevaluated 100-item holdout.",
     metrics: [
-      "Planned comparison: 9 models · 4 tasks",
-      "Categorization and summarization modules",
-      "Held-out access gate · SHA-256 checks",
-      "Local and API cost comparison planned",
-      "Agent replay tests · live corpus run pending",
+      "400 real development articles",
+      "319/400 stored-label matches · 79.8%",
+      "Model-assigned labels · human review pending",
+      "100 held out · unevaluated",
+      "Full model and cost comparison pending",
     ],
   },
   {
@@ -199,7 +199,7 @@ export const projects: Project[] = [
     shape: "data-viz",
     image: "/work/gridpulse.png",
     imageAlt:
-      "GridPulse dashboard for Florida (FPL), showing reported electricity demand, forecasts, and model evaluation metrics.",
+      "GridPulse live demo captured October 24, 2026 for Florida (FPL), showing reported demand, a dated forecast, and the displayed snapshot's model metrics.",
     metrics: [
       "51 balancing authorities",
       "3 models + weighted ensemble",

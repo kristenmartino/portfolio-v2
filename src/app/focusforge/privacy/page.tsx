@@ -174,6 +174,13 @@ export default function FocusForgePrivacyPolicy() {
                   It is not an export of Firebase Analytics or Crashlytics records.
                 </p>
                 <p>
+                  Version 1.0 has no import/restore feature. The JSON file is
+                  a copy for inspection or use outside the app; exporting it
+                  does not provide an in-app recovery path after reinstalling
+                  the app or changing devices. It does not include every app
+                  record, such as individual coaching-prompt feedback events.
+                </p>
+                <p>
                   If you save or share that file through Files, email, AirDrop, or another
                   destination, its contents leave the app at your direction. Your chosen service
                   and device backup settings may retain copies.

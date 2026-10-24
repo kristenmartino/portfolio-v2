@@ -1,13 +1,23 @@
 ## What I built
 
-I built a Python evaluation harness to compare language models on [Sift](/work/sift)'s news-processing tasks. The harness and methodology are available; the comparison on the real news corpus has not run, so there are no model rankings or routing recommendations yet.
+I built a Python evaluation harness for [Sift](/work/sift)'s news-processing tasks. The first real categorization development run is published. A final held-out comparison across models and tasks remains pending.
 
 <Specs>
   <Spec label="Role" value="Evaluation design and Python development" />
   <Spec label="Year" value="2026" />
   <Spec label="Stack" value="Python · Ollama · Anthropic and OpenAI APIs" />
-  <Spec label="Status" value="Harness implemented · corpus benchmark pending" />
+  <Spec label="Status" value="Development baseline published · final comparison pending" />
 </Specs>
+
+## First development result
+
+On October 24, 2026, local Llama 3.1 8B Instruct Q4_K_M matched **319 of 400 stored category labels (79.8%)** across ten reference categories. Macro-F1 was **0.7598**, with a descriptive 95% bootstrap interval of **0.7100–0.8035**. All 400 items completed without execution or parsing failures.
+
+These references are Sift's existing model-assigned labels, not independently reviewed human answers. The score measures stored-label agreement. A disagreement may reflect a new model error, a noisy reference label or ambiguous category rules; it has not been adjudicated.
+
+The 400 development articles came from a selected cohort spanning 55 outlets and publication dates from October 2024 to October 2026. This is not a random sample of recent production traffic. The `top` category had too few captured examples for reference sampling, though it remained a valid classifier output. Another 100 articles are reserved and unevaluated.
+
+The [run report](https://github.com/kristenmartino/eval-harness/blob/312ef96c4e6d8fea32780d6207d7fc96524d665f/docs/results/2026-10-24-categorization-development.md) records the selection, model digest, runtime and provenance checks. The [aggregate artifact](https://github.com/kristenmartino/eval-harness/blob/312ef96c4e6d8fea32780d6207d7fc96524d665f/web/public/results/categorization-development-2026-10-24.json) provides category counts and measurements. Article text and per-item outputs remain local; the public evidence contains aggregates and provenance hashes.
 
 ## How a run works
 
@@ -15,22 +25,24 @@ Model adapters expose a shared interface. Task modules supply prompts, parse res
 
 Categorization and summarization modules are implemented. Structured extraction and grounded question answering are planned. The study design covers nine models and keeps output quality, response time and cost separate for each task.
 
-For pairwise summarization, judge selection avoids assigning an Anthropic model to judge pairs containing an Anthropic candidate. This addresses direct self-judging; it does not remove every source of judge bias. The design also includes an overlap sample for comparing judges and Bradley-Terry ranking of pairwise results.
+For pairwise summarization, judge selection avoids assigning Sonnet to pairs containing an Anthropic candidate. GPT-4o still judges pairs that include GPT-4o, so self-judging is not eliminated. The proposed overlap calibration has not been measured. Bradley-Terry ranking is implemented for pairwise results.
 
 ## Keeping final scoring separate
 
-The runner requires an explicit flag before using held-out data and checks its contents against a SHA-256 manifest. A sample lock and tamper-detection tests exercise that mechanism. The real corpus still needs to be collected, split and locked before prompt tuning.
+The runner requires an explicit flag before using held-out data and checks its contents against a SHA-256 manifest. A sample lock and tamper-detection tests exercise that mechanism. The first real corpus now has a 400-item development set and a separate 100-item holdout manifest. The published run reports the holdout unchanged and disjoint from development.
 
-A committed hash checks for changes to the dataset. Prior inspection is outside that check.
+A committed hash checks for changes to the dataset. It does not prevent prior inspection. The real holdout manifest was saved before inference and committed with publication, not in a pre-run commit.
 
 ## Testing agent runs
 
 A second track records an agent's tool calls, arguments, recovery from errors and final answer. Recorded runs support tests without API keys; checks that require a model judge use a separate live path. Fault and injection scenarios exercise failure handling.
 
-These tests cover the evaluation machinery; model performance awaits a run on Sift's real corpus.
+These scripted tests cover the evaluation machinery. They do not measure a live agent's reliability or injection resistance. The categorization baseline is a separate model run.
 
 ## What remains
 
-The next steps are to prepare the corpus, measure local-model throughput on the DGX Spark, complete the remaining task modules and run final scoring. Until those runs are complete, the project demonstrates evaluation infrastructure and study design. Quality rankings, measured cost comparisons and model-selection decisions remain pending.
+The next steps are independent label review, judge calibration, the remaining task modules, broader model runs and final held-out scoring. DGX Spark timing and measured cost comparisons are also pending; the published baseline ran on local macOS ARM64, not that hardware.
+
+One development run does not establish a model ranking or justify changing Sift's production routing. Its categorization-only prompt is also narrower than the production batch summarization operation.
 
 The [methodology site](https://evals.kristenmartino.ai/methodology) contains the detailed study plan; the [repository](https://github.com/kristenmartino/eval-harness) contains the implementation.

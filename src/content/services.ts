@@ -99,7 +99,7 @@ export const engagements: readonly Engagement[] = [
 export const proofHeading = "Related projects.";
 export const proofSub = "These independent projects show the kind of implementation and review work I do. Each case study states what is built, tested or still pending.";
 export const proof: readonly ProofItem[] = [
-  { slug: "eval-harness", name: "Eval Harness", claim: "Building a model-comparison framework.", detail: "Python adapters, task modules, held-out data checks and agent replay tests. The benchmark on Sift's real corpus is pending; no model rankings are claimed.", metric: "Harness implemented · corpus benchmark pending", caseStudyHref: "/work/eval-harness", liveHref: "https://evals.kristenmartino.ai", liveLabel: "View the methodology" },
+  { slug: "eval-harness", name: "Eval Harness", claim: "A measured development baseline.", detail: "Llama 3.1 8B matched 319/400 existing Sift category labels. The references are model-assigned; human label review and the final held-out model comparison remain pending.", metric: "79.8% stored-label agreement · development set", caseStudyHref: "/work/eval-harness", liveHref: "https://evals.kristenmartino.ai/leaderboard", liveLabel: "View development results" },
   {
     slug: "cabana",
     name: "Cabana",
