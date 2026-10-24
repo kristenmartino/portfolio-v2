@@ -281,7 +281,7 @@ export const projects: Project[] = [
     title: "GTM Healthcare Intelligence",
     category: "Healthcare GTM Analytics",
     summary:
-      "A collection of seven analytics projects for specialty healthcare sales and marketing, using synthetic and public data. Includes sales-funnel analysis, market comparisons, practice benchmarks, shared metric definitions, and AI tools for asking questions about the data.",
+      "Two sales and reporting review workflows, supported by five smaller analytics demos. Uses synthetic scenarios and embedded reference values to explore funnel conversion, metric definitions, market comparisons, and practice-level questions.",
     href: "/work/gtm-healthcare",
     slug: "gtm-healthcare",
     liveHref: "https://gtm.kristenmartino.ai",
@@ -291,20 +291,20 @@ export const projects: Project[] = [
     shape: "data-viz",
     image: "/work/gtm-healthcare.png",
     imageAlt:
-      "GTM Healthcare Intelligence — the analytics maturity model mapping seven GTM sub-projects across governance, descriptive, diagnostic, and prescriptive layers, above the NorthStar and AskGTM project cards.",
+      "GTM Healthcare Intelligence — the current homepage introduces the ConvertPath and NorthStar reviews beside a note explaining the synthetic data and reference assumptions.",
     metrics: [
-      "7 demos · synthetic and public data",
-      "CMS NPPES · Medicare PUF · Census",
-      "L2 logistic regression",
+      "2 review workflows · 5 supporting demos",
+      "Synthetic scenarios · reference assumptions",
+      "Calculated answers · Claude fallback for GTM",
       "React · Next.js · Python · Claude API",
     ],
     },
   {
     index: "12",
     title: "Orrery",
-    category: "Decision Support + AI",
+    category: "Astrological Timing",
     summary:
-      "An astrology-based planning tool for comparing dates and times for launches, pitches, and other events. Calculates celestial positions, applies published astrological rules, and uses AI to explain its timing scores.",
+      "An astrology-based date-comparison tool that computes planetary positions and ranks windows using fixed astrological rules. Each score is tied to the computed conditions; optional AI selects explanations from server-written facts. The scores describe those conventions, not validated probabilities of success.",
     href: "https://orrery.day",
     year: "2026",
     status: "Shipped",
