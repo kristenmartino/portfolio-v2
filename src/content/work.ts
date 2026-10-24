@@ -1667,11 +1667,13 @@ export const projects: Project[] = [
     title: "Salesforce CPQ Catalog Simplification",
     category: "Business Systems",
     summary:
-      "Reduced the Salesforce CPQ product catalog by more than 50% using product-usage analysis and input from Sales Operations and Billing. Defined requirements for configurable products and validated quotes, contracts, and invoices.",
-    href: "#contact",
+      "Led Salesforce CPQ catalog simplification, combining product-usage analysis with input from Sales Operations and Billing. Defined requirements for configurable products and validated quotes, contracts and invoices.",
+    href: "/work/salesforce-cpq-catalog-simplification",
+    slug: "salesforce-cpq-catalog-simplification",
     status: "Shipped",
     mode: "Cross-functional",
     shape: "decision",
+    metrics: ["Catalog analysis", "Configurable products", "Quote-to-invoice validation"],
   },
   {
     index: "17",

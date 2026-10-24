@@ -1,0 +1,32 @@
+import { CPQCatalogDiagram } from "@/components/case-study/CPQCatalogDiagram";
+
+## The work
+
+At RealPage, I led Salesforce CPQ catalog simplification, combining product-usage analysis with input from Sales Operations and Billing. I defined requirements for configurable products and validated quotes, contracts and invoices.
+
+The catalog had grown to thousands of SKUs, including unused and duplicate entries that added complexity to orders and billing. I was assigned to simplify it and determine an approach that preserved the product differences customers needed.
+
+<Specs>
+  <Spec label="Company" value="RealPage" />
+  <Spec label="Platform" value="Salesforce CPQ" />
+  <Spec label="Responsibility" value="Usage analysis, requirements and validation" />
+  <Spec label="Collaboration" value="Product, Pricing, Sales Operations and Billing" />
+</Specs>
+
+## How the approach took shape
+
+I analyzed product usage to identify unused and overlapping entries. A walkthrough with Sales Operations showed how they selected products for quotes: several similarly named SKUs represented the same underlying product with different options.
+
+The usage data identified the overlap; the walkthrough explained why those variations existed. That informed the recommendation to use configurable base products, options and add-ons in place of separate SKUs for each variation.
+
+<CPQCatalogDiagram />
+
+## What I defined and validated
+
+I defined the requirements and coordinated decisions across Product, Pricing, Sales Operations and Billing. The work needed to preserve valid product choices while changing how those choices were represented in the catalog.
+
+I validated the resulting configurations through quotes, contracts and invoices, then coordinated UAT and sign-off. The checks followed the product selection through to its downstream documents and billing output.
+
+## Outcome
+
+The catalog was reduced by more than 50% while preserving the differences customers needed. Quote cycle time and downstream billing-error changes were not separately measured.
