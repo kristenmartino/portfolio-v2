@@ -1,27 +1,49 @@
 ## What I built
 
-Tarazu is a product-prioritization tool built around RICE: reach, impact, confidence and effort. Users can review AI-suggested inputs, change the values, compare product ideas and record the reasoning behind a ranking.
+Tarazu helps people compare product options, keep the evidence behind a choice, and revisit that choice later. I designed and built the scoring, evidence and decision-record workflows.
+
+The [Relay demo](https://tarazu.app/demo) follows a fictional team with one engineer and two weeks. Approval requests are delayed. Should the team build reminders, add a status dashboard, or test a readiness checklist?
 
 <Specs>
   <Spec label="Role" value="Product design and development" />
-  <Spec label="Year" value="2024" />
-  <Spec label="Stack" value="Next.js · TypeScript · LLM API integration" />
-  <Spec label="Delivery" value="Web application" />
+  <Spec label="Year" value="2024–2026" />
+  <Spec label="Stack" value="Next.js · React · JavaScript · Clerk · Supabase · Anthropic" />
+  <Spec label="Example" value="Relay · fictional research and planning data" />
 </Specs>
 
-## Reviewing the inputs
+## Follow the Relay decision
 
-I organized the workflow around the assumptions behind each score. Reach asks which user segment is affected. Impact asks what behavior might change. Confidence asks what evidence supports the estimate. Effort asks who supplied the estimate and how recent it is.
+1. **Inspect the assumption.** The initial case for reminders is that people overlook complete requests. The demo keeps that assumption beside the candidate and its scoring inputs so a reviewer can question what the ranking rests on.
 
-For a hypothetical initiative with an optimistic reach estimate, a reviewer can lower that input and see how the ranking responds.
+2. **Compare the evidence.** Fictional administrator notes support reminders, while approvers describe missing information. In the prepared example, four of five reviewed requests were waiting for documents. Those records challenge the original explanation; they do not establish how common either problem is.
 
-## Keeping the calculation inspectable
+3. **Choose the next test.** The team proposes trying a paper readiness checklist with five requesters before committing engineering time. Reminders remain an option for complete requests that are overlooked. The decision is saved as a draft, with its reasoning and unknowns.
 
-The application displays the four inputs alongside the resulting score. AI-generated guidance is separate from the calculation, so a user can inspect the arithmetic and revise a suggestion.
+4. **Reopen the reasoning.** The saved decision brings together the problem, supporting and challenging evidence, the choice, and the next test. A reviewer can compare the two demo decision rounds and see why the proposed direction changed.
 
+<Diagram title="Relay: inspect conflicting evidence">
+  <img src="/work/tarazu-relay.png" alt="The live Relay demo’s Evidence step: fictional administrator notes support reminders, while approvers report missing documents. The four-step story remains visible above the explanation." />
+</Diagram>
+<Caption>Current Relay demo, captured October 24, 2026. The research records and planning figures are fictional. <a href="/work/tarazu-relay.png" target="_blank" rel="noreferrer">Open the full-size screenshot.</a></Caption>
 
-## What I would test next
+## Keep scores with their assumptions
 
-I would observe people comparing a small set of product ideas: can they find the assumptions behind a score, correct an estimate and explain why the ranking changed? A later review could compare the estimates with actual reach and effort.
+Tarazu uses 1–100 bands for all four RICE inputs: reach, impact, confidence and effort. The priority index is reach × impact × confidence ÷ effort. The inputs are relative planning scores, not measured returns or calibrated probabilities.
 
-The current web workflow also leaves room for better evidence capture and a compact export for planning discussions. Those are follow-up improvements; the existing score and generated guidance should be reviewed with the uncertainty of their inputs in mind.
+The candidate’s assumptions and linked notes help a reviewer examine the score. The Relay story shows why a team may choose a different next step after reviewing the evidence.
+
+## Copy a decision brief
+
+**Copy decision brief** is available in the current app. It copies a Markdown brief containing the problem, choice, reasoning, evidence and next test for use in another document. If clipboard access is blocked, the app provides selectable text for manual copying.
+
+The decision also has review controls for recording an outcome and choosing whether to keep, revise or retire the direction. Earlier reasoning remains available alongside later reviews.
+
+## Guest work and optional AI
+
+The fictional demo and local browser work are available without an account. Sign-in is required for cloud saving and live AI analysis or score suggestions.
+
+An AI request sends the supplied workspace context, including linked evidence, to Tarazu and Anthropic. Users review the proposed scores and recommendations; the calculation and saved decision remain available for inspection.
+
+## Demo scope
+
+Relay demonstrates the workflow using synthetic research, assumptions and draft decisions. The paper-checklist test has not been run. Whether the workflow helps teams make and review better decisions needs evaluation in real use.
