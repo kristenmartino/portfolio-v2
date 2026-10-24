@@ -100,7 +100,17 @@ export const proofHeading = "Related projects.";
 export const proofSub = "These independent projects show the kind of implementation and review work I do. Each case study states what is built, tested or still pending.";
 export const proof: readonly ProofItem[] = [
   { slug: "eval-harness", name: "Eval Harness", claim: "Building a model-comparison framework.", detail: "Python adapters, task modules, held-out data checks and agent replay tests. The benchmark on Sift's real corpus is pending; no model rankings are claimed.", metric: "Harness implemented · corpus benchmark pending", caseStudyHref: "/work/eval-harness", liveHref: "https://evals.kristenmartino.ai", liveLabel: "View the methodology" },
-  { slug: "cabana", name: "Cabana", claim: "Request triage with staff approval.", detail: "A demo pool-service portal where AI classifies requests, staff approve repairs and Stripe handles test deposits. The company and customer records are fictional.", metric: "Demo · staff approval · Stripe test mode", caseStudyHref: "/work/cabana", liveHref: "https://cabana-kristenmartinos-projects.vercel.app", liveLabel: "Try the demo" },
+  {
+    slug: "cabana",
+    name: "Cabana",
+    claim: "Request triage with staff approval.",
+    detail:
+      "A demo pool-service portal where AI classifies requests, staff approve work, and Stripe records test deposits. One failure-injection run produced 50 Airtable records for 50 bookings with no duplicates.",
+    metric: "Recorded test: 50/50 Airtable records · no duplicates",
+    caseStudyHref: "/work/cabana",
+    liveHref: "https://cabana-kristenmartinos-projects.vercel.app",
+    liveLabel: "Try the demo",
+  },
   { slug: "tarazu", name: "Tarazu", claim: "Reviewing product-prioritization inputs.", detail: "A RICE prioritization tool where users can adjust AI-suggested inputs and record the reasons behind a ranking.", metric: "Reach · impact · confidence · effort", caseStudyHref: "/work/tarazu", liveHref: "https://prioritize.kristenmartino.ai", liveLabel: "Try Tarazu" },
 ];
 export const processHeading = "How the review works.";
