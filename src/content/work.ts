@@ -42,7 +42,7 @@ export const projects: Project[] = [
     title: "Cabana",
     category: "Ops Automation + AI",
     summary:
-      "A pool-service demo for reporting problems, tracking repairs and paying test deposits. AI classifies requests; staff control pricing and scheduling.",
+      "A pool-service demo for reporting problems and tracking repairs. AI can route a repair to a fixed $75 test deposit step before staff approval; staff approve work and assign visit times.",
     href: "/work/cabana",
     slug: "cabana",
     liveHref: "https://cabana-kristenmartinos-projects.vercel.app",
@@ -54,7 +54,7 @@ export const projects: Project[] = [
     shape: "pipeline",
     image: "/work/cabana-architecture-dark.png",
     imageAlt:
-      "Cabana system architecture — a member browser to Next.js, Supabase Postgres as the source of truth with three edge functions, and n8n fanning out to Airtable and Telegram through a transactional outbox, with Resend for operational alert fallback.",
+      "Cabana system architecture: Next.js, Supabase Postgres and four edge functions. n8n updates Airtable and calls the private telegram-notify function; Resend supplies operational alert fallback.",
     metrics: [
       "8 services · transactional outbox",
       "Webhook-authoritative payments · RLS",

@@ -2,7 +2,7 @@
 
 Cabana is a demo portal for a fictional pool-service company. Customers can report problems, track repairs and pay test deposits.
 
-AI classifies requests and drafts acknowledgments for staff; staff control pricing and scheduling.
+AI classifies requests and drafts acknowledgments for staff. Eligible repair classifications can open a fixed $75 test deposit step before staff approval. Staff approve work and assign visit times.
 
 <Specs>
   <Spec label="Role" value="Solo build with AI-assisted coding" />
@@ -141,13 +141,15 @@ Three risks shaped the implementation:
 
 1. **Failed integrations:** A booking change may succeed while an update to Airtable or a staff notification fails.
 2. **Payment confirmation:** Customers may close their browser after paying, and Stripe can resend the same event. Payment recording needs to handle both cases.
-3. **AI mistakes:** Request classification and drafted responses can be incorrect. Prices and scheduling commitments remain staff decisions, and uncertain requests go to review.
+3. **AI mistakes:** A misclassified request can reach the test deposit step. Staff approval and visit times remain separate decisions, and AI drafts stay off member status pages.
 
 ## AI request triage
 
-Claude Haiku classifies free-text repair requests and drafts acknowledgments for staff. The application checks responses against a defined schema and uses a confidence threshold to determine whether staff review is needed.
+Claude Haiku classifies free-text requests and drafts acknowledgments for staff. The application validates the response structure, then applies a [routing policy](https://github.com/kristenmartino/cabana/blob/e9c447e029d50faaf14206a8a48cb5650f2d5e7f/lib/triage/schema.ts). Its confidence score comes from the model; it does not measure observed classification accuracy.
 
-Requests go to staff review when the AI call times out, returns invalid data or produces a low-confidence classification. Staff retain control of pricing and scheduling. The CI test suite includes prompt-injection cases that check these restrictions.
+A repair classification with a score of at least 0.8 can open the fixed $75 Stripe test deposit step unless it is flagged as out of the service area. This happens before staff approval. The [request action](https://github.com/kristenmartino/cabana/blob/e9c447e029d50faaf14206a8a48cb5650f2d5e7f/app/request/actions.ts) routes other classifications, low scores, timeouts and invalid responses to review. Staff still approve the work and assign its visit time.
+
+The [20-case golden suite](https://github.com/kristenmartino/cabana/blob/e9c447e029d50faaf14206a8a48cb5650f2d5e7f/tests/golden/golden.test.ts) checks expected routes and forbidden phrases in draft acknowledgments, including prompt-injection cases. It is a regression sample, rather than a general accuracy or containment result.
 
 ## Member status
 
