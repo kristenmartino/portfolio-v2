@@ -1,52 +1,62 @@
-## What I built and ran
+## A specialty review for sales or operations
 
-I built SpecialtyPulse for an analyst reviewing specialty payment trends, procedure differences and sales exposure. A local Spark run now takes **29,982 raw records through shared ingestion, staging and mart transformations to 870 rows used by the live dashboard**. The Databricks notebooks call those same transformation functions.
+The proposed user is a **specialty analyst preparing a payment-pattern review for a sales or operations lead**. The decision is which patterns need further investigation and what evidence the next reviewer should check before a commercial recommendation.
 
-The normal procedure list displays **$104.91 across 3,777 services** for Dermatology / HCPCS 99213. That value reconciles to the raw records, the exported Spark mart and the browser data. The [run receipt](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/pipeline_run.json) records execution time, runtime versions and source/code/output hashes.
+I designed SpecialtyPulse around that review task: compare specialty measures, inspect procedure detail, and prepare a handoff with supporting observations, unanswered questions and a receiving role. It is an independent prototype using synthetic records and comparison scenarios. Stakeholder use and business impact have not been measured.
 
-All records are synthetic CMS-schema fixtures. The 2021–2022 inputs are explicitly generated comparison scenarios based on the synthetic 2023 fixture, rather than historical CMS observations. Sales and usage are synthetic too.
+## What the reviewer hands off
+
+The [demo](https://specialtypulse.kristenmartino.ai/?view=market) includes “Prepare a specialty review · sample handoff.” Selecting a specialty updates its observations. The analyst can inspect the related procedures, compare pipeline exposure and download a sample brief.
+
+In the current constructed scenario, the example starts with Orthopedic Surgery:
+
+- **Focus:** investigate its payment comparison. The scenario score is 70.1 and average procedure-level payment change is −3.9%.
+- **Exposure context:** 47 synthetic active deals worth $6.27M, or 15.6% of active pipeline. Those amounts are separate from the score.
+- **Questions:** do source records, service mix and calculation explain the comparison? Are opportunity stages current, and what account needs support further review?
+- **Proposed handoff:** the specialty analyst checks the source and interpretation; sales operations checks deal/account context; the receiving sales or operations lead confirms the next reviewer and evidence request.
+- **Status:** sample only, with source and account validation pending. This is a question-led review brief, not an approved account shortlist or a record of stakeholder sign-off.
+
+The intended output is a clearer request for follow-up. A specialty-level score does not establish an account's need or justify outreach by itself.
+
+## How usefulness would be evaluated
+
+These are **proposed acceptance criteria**, also visible in the demo. No user-test results, adoption improvements or time savings are claimed.
+
+1. **Explain the focus.** An intended reviewer identifies the selected specialty, cites a payment comparison and pipeline exposure, and recognizes that the inputs are synthetic.
+2. **Interpret the measures.** The reviewer explains the payment denominator and distinguishes a scenario score from a sales recommendation.
+3. **Make a usable handoff.** The brief names an unresolved question, a receiving role and a next check. The receiving reviewer can identify what follow-up is requested.
+
+In a future evaluation, I would ask an intended reviewer to prepare a brief, observe where coaching is needed, and ask the recipient to explain the requested action. I would record interpretation errors, missing evidence, unanswered questions and recipient feedback before making claims about business usefulness. The [workflow and evaluation plan](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/docs/BUSINESS_REVIEW.md) documents that proposed process.
+
+## Decisions behind the workflow
+
+**Make the payment denominator explicit.** Average payment per billed service gives larger service volumes more weight. In the reconciled example, a simple average across 57 source rows is $103.80; weighting by their 3,777 services gives $104.91. Different denominators can lead reviewers to different conclusions.
+
+**Keep procedure comparisons specific.** I rank the most-used procedures by service count and display payment alongside them. A specialty's blended average combines different procedures, so a payment below that blend is not evidence that a particular procedure is underpaid. The ratio-based outlier definition is available beside the table.
+
+**Keep scores and sales dollars separate.** The index organizes comparison scenarios; pipeline amounts provide exposure context. The score prompts questions about payment, charge and volume inputs. Its weights have not been validated against purchase decisions or sales outcomes.
+
+## Evidence supporting the review
+
+The public procedure list displays **$104.91 across 3,777 services** for Dermatology / HCPCS 99213. The 57 matching raw rows have a weighted payment sum of $396,247.22. The displayed value reconciles to those records, the exported reporting table and the browser data.
+
+A recorded local Spark run processes **29,982 raw records into 870 rows used by the dashboard**. The Databricks notebook adapters import the same transformation functions. Independent Decimal tests reconcile all 870 groups, and CI re-executes Spark to compare every business column. The build rejects source, transformation-code or output hashes that differ from the recorded run.
 
 <Specs>
-  <Spec label="Role" value="Data modeling, pipeline development, validation and dashboard build" />
+  <Spec label="My role" value="Review-workflow design, metric definitions, pipeline development and validation" />
   <Spec label="Year" value="2026" />
-  <Spec label="Data" value="Synthetic 2023 base · generated 2021–2022 scenarios" />
-  <Spec label="Executed" value="Local Spark 4.0.1 · 29,982 raw rows → 870 mart rows" />
+  <Spec label="Data" value="Synthetic 2023 base · generated 2021–2022 comparison scenarios" />
+  <Spec label="Execution" value="Local Spark 4.0.1 · 29,982 raw records → 870 reporting rows" />
 </Specs>
 
-## Analytical decisions
+The first complete run exposed duplicate synthetic provider identifiers. I corrected them deterministically and retained duplicate-key rejection before aggregation. Policy tests [import the deployed builders directly](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/tests/test_pdp_policy_builders.py) and exercise the real configuration with a fake API client.
 
-**Weight payments by service count.** The question is average payment per billed service, so larger service volumes contribute more. For the reconciled example, a simple average across the 57 source rows is $103.80; weighting by their 3,777 services gives $104.91. The difference shows why the denominator matters.
+Open [Procedure Detail](https://specialtypulse.kristenmartino.ai/?view=procedure) to inspect the displayed payment and its source trace. The [run receipt](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/pipeline_run.json), [input/output artifact](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/payment_verification.json) and [reproduction guide](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/docs/verification/payment-check.md) provide the technical detail.
 
-**Keep procedure comparisons specific.** I rank the most-used procedures by service count and display payment alongside them. A specialty's blended average combines different procedures; a payment below that blend is not evidence that a particular procedure is underpaid. The outlier flag therefore has its own ratio-based definition, available beside the table.
+## Scope and next validation
 
-**Keep scores and sales dollars separate.** The pressure index organizes comparison scenarios. Pipeline amounts provide exposure context. A high score prompts inspection of payment, charge and volume inputs; its weights have not been validated against purchase decisions or sales outcomes.
+All records are synthetic. The 2021–2022 inputs are generated comparison scenarios, not historical CMS observations. The verified run uses local Spark and a Parquet staging round-trip. Databricks catalog/Delta operations, Airflow orchestration and Domo services remain separately unverified; public access rules and usage are illustrative.
 
-## A walkthrough
+The Databricks mart adapter's drop-and-rename replacement also leaves an availability gap. Operational use would require an atomic replacement or view switch, tested recovery, real-source reconciliation and intended-user access checks.
 
-In the current [demo](https://specialtypulse.kristenmartino.ai), Orthopedic Surgery ranks highest at 70.1 in the constructed scenario. Its synthetic pipeline contains 47 active deals worth $6.27M—15.6% of active pipeline. Selecting a specialty opens its procedures; summary links connect the observations to those views.
-
-The ranking is a scenario result, not a finding about historical Medicare reimbursements. An analyst can inspect how the inputs and weighting produced it before deciding what additional evidence to gather.
-
-## Follow a displayed value to its source
-
-The [raw 2023 fixture](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/sample_2023_puf_10k.csv) contains 57 Dermatology / HCPCS 99213 rows with 3,777 services. Summing payment multiplied by services gives $396,247.22. Dividing by 3,777 and rounding to cents produces **$104.91**.
-
-The shared Spark functions write that result to the mart used by the app. Open [Procedure Detail](https://specialtypulse.kristenmartino.ai/?view=procedure), expand “Verify one calculation,” then find HCPCS 99213 in the normal procedure list: both show the same payment and service count. The [input/output artifact](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/payment_verification.json) lists the source row numbers.
-
-Independent Decimal tests reconcile service totals, provider counts and three weighted payment columns for **all 870 mart rows**. CI also re-executes Spark and compares every business column with the committed output. The app build rejects source, transformation-code or mart hashes that differ from the recorded run.
-
-The [reproduction guide](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/docs/verification/payment-check.md) contains the commands and complete evidence path.
-
-## Engineering and verification
-
-The first complete run exposed duplicate synthetic provider identifiers. I corrected the fixture IDs deterministically and kept duplicate-key rejection in the shared staging checks. The pipeline validates the grain before aggregation instead of silently dropping conflicting rows.
-
-Policy tests now [import the deployed builders and setup function directly](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/tests/test_pdp_policy_builders.py). They exercise the real 13-user configuration, policy grouping and schema guard with a fake API client. Importing the module requires no credentials and sends no requests.
-
-The verified execution is local Spark with a Parquet staging round-trip. Databricks catalog/Delta operations, Airflow orchestration and Domo services remain separate integration work; no successful service run is claimed. Public access rules and usage remain illustrative. The [implementation record](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/docs/PRD.md) separates those states.
-
-## One deployment tradeoff
-
-The Databricks mart adapter checks a temporary table before replacing the previous version. Its drop-and-rename step leaves an availability gap. An operational deployment would need an atomic replacement or a view switch with a tested recovery path.
-
-Next I would reconcile complete real source releases, verify the external integrations and intended-user access, and evaluate the pressure score against actual CRM outcomes. [GTM Healthcare Intelligence](/work/gtm-healthcare) covers the related reporting-workflow prototype.
+My next business-validation step would be the proposed reviewer-and-recipient exercise above. External integrations and outcome validation would follow before operational recommendations. [GTM Healthcare Intelligence](/work/gtm-healthcare) covers the related reporting-workflow prototype.
