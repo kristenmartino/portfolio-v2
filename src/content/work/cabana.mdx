@@ -163,6 +163,12 @@ Cabana uses Stripe Checkout in test mode for $75 repair deposits. Payment status
 
 The application records event IDs so it can recognize repeated deliveries and avoid applying the same payment update twice. The confirmation page checks the database and displays “confirming…” until payment is recorded.
 
+## Telegram staff approval
+
+Staff can use **Approve** or **Needs info** on a Telegram notification. Approve records staff approval, updates the existing Airtable booking record and clears the message’s buttons. When a visit time is still unassigned, the member dashboard and request page show “Approved · time pending.” The payment receipt stays separate.
+
+Needs info displays “Noted — reach out to the member for details.” It leaves the booking status unchanged; staff still need to contact the member.
+
 ## The transactional outbox
 
 Booking status changes and their pending integration events are saved in the same database transaction. This record of pending work is the transactional outbox.
@@ -188,5 +194,7 @@ The public demo uses fictional data, a shared demo member account and Stripe tes
 The deposit screen includes a test card number and instructions for completing Stripe’s sandbox checkout. No real money is collected.
 
 **Live check — October 24, 2026:** Request submission, a $75 Stripe test payment, one matching Airtable record and all three Telegram notifications were verified. Telegram sends now run through Supabase after connection timeouts from Railway. The two previously failed notifications were retried successfully, with Telegram message receipts recorded and their failure history retained.
+
+Both buttons were then tested in a signed-in Telegram staff chat. Needs info left the booking unchanged. Approve recorded one transition from `scheduled` to `confirmed`, attributed to `owner:telegram`. The same Airtable row updated without a duplicate, the app showed “Approved · time pending,” and the $75 test deposit remained paid. The approval notification reached Telegram, and the live health check showed no pending or dead-lettered events.
 
 Member email notifications are not implemented. The Telegram bot rejects and logs unauthorized chats; rate limiting and alerts for those attempts remain follow-up work.
