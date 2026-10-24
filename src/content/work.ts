@@ -67,7 +67,7 @@ export const projects: Project[] = [
     title: "SpecialtyPulse Pipeline",
     category: "Healthcare Data Platform",
     summary:
-      "A Medicare reporting pipeline with specialty rankings, procedure drill-downs and example access policies.",
+      "A healthcare reporting pipeline with specialty comparisons, procedure drill-downs and a reproducible payment check.",
     href: "/work/specialtypulse-pipeline",
     slug: "specialtypulse-pipeline",
     liveHref: "https://specialtypulse.kristenmartino.ai",
@@ -80,10 +80,10 @@ export const projects: Project[] = [
     imageAlt:
       "SpecialtyPulse procedure view with a specialty selector, service-count ranking, HCPCS codes and average payments",
     metrics: [
-      "CMS PUF schema · sample 2021–2023",
+      "Synthetic CMS-schema data · 2021–2023",
       "Databricks PySpark · Airflow",
-      "Domo DataFlow · 5-page dashboard",
-      "Example access policies · 4 roles",
+      "React demo · Domo integration code",
+      "Reproducible raw-fixture payment check",
     ],
   },
   {

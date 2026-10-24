@@ -1,32 +1,46 @@
 ## What I built
 
-I built SpecialtyPulse to compare Medicare payments across specialties, inspect procedure-level differences, and test example access policies. The public demo uses sample reimbursement data and synthetic sales and usage records.
+I built SpecialtyPulse for an analyst reviewing specialty payment trends, procedure differences and sales exposure. The work includes the data model, PySpark notebooks, Airflow DAG, Domo integration code and a five-view React dashboard.
+
+All bundled records are synthetic. Reimbursement fixtures follow the CMS Medicare PUF schema; they are not actual CMS extracts. The raw fixture and the multi-year dashboard mart are independently generated samples. Sales and usage records are synthetic too.
 
 <Specs>
   <Spec label="Role" value="Data modeling, pipeline development and dashboard build" />
   <Spec label="Year" value="2026" />
-  <Spec label="Data" value="CMS Medicare PUF schema · sample 2021–2023" />
+  <Spec label="Data" value="Synthetic CMS-schema records · dashboard years 2021–2023" />
   <Spec label="Stack" value="PySpark · Delta Lake · Airflow · Domo · React" />
 </Specs>
 
 ## A walkthrough
 
-In the [demo](https://specialtypulse.kristenmartino.ai), Dermatology has the highest pressure score at 62.8. Its synthetic sales pipeline contains 53 active deals worth $4.58M—11.4% of the total. The summary puts those observations together and links to the underlying views.
+In the [demo](https://specialtypulse.kristenmartino.ai), Dermatology has the highest pressure score at 62.8. Its synthetic pipeline contains 53 active deals worth $4.58M—11.4% of the total. Selecting the specialty opens its ten most-used procedures, with service counts, HCPCS codes and average payments. The summary links observations to those views.
 
-Opening Dermatology's procedures shows the ten most-used services, ranked by service count. Each row includes the procedure description, HCPCS code and average Medicare payment. Changing the specialty updates the procedure list, flagged rows and trend charts.
+This workflow lets a reviewer investigate the numbers behind a specialty comparison. The pressure score is project-defined; its weights have not been validated against sales outcomes.
 
-The pressure score is a project-defined comparison measure. Its weights have not been validated against sales outcomes.
+## Verify one calculation
 
-## How the data moves
+The [raw fixture](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/sample_2023_puf_10k.csv) contains 9,994 synthetic records for 2023. Selecting Dermatology, HCPCS 99213 and at least 11 services per source row gives a reproducible example:
 
-PySpark notebooks load CSV values as text, cast and normalize them in staging, then aggregate a reporting table by specialty, procedure and year. Airflow sequences the notebooks with retries. A shared Python module defines columns, suppression rules and validation thresholds.
+1. **Source:** 57 rows covering 3,777 services. The [verification artifact](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/payment_verification.json) records every source row number, service count, payment and the source-file hash.
+2. **Calculation:** the sum of payment multiplied by services is $396,247.22. Dividing by 3,777 gives $104.910569… per service, rounded to **$104.91**.
+3. **Output:** the build writes a verification mart row at specialty × procedure × year grain. [Independent Python Decimal tests](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/tests/test_payment_trace.py) reconcile the inputs, totals, rounding and saved result.
+4. **Display:** open [Procedure Detail](https://specialtypulse.kristenmartino.ai/?view=procedure) and expand “Verify one calculation.” The app reads $104.91 from that generated output.
 
-The Domo integration uploads the reporting table and defines output access policies. The standalone React build calculates its benchmarks from a bundled sample, so the demo can run after the Domo trial ended.
+The main procedure list uses a separate synthetic mart with $122.25 and 580 services for the same procedure/year. This check does not establish lineage for that value or successful Databricks or Domo execution. It demonstrates the weighting calculation and makes the fixture boundary visible.
+
+To reproduce the check, run `npm --prefix domo/app run generate:data`, then `python -m pytest tests/test_payment_trace.py -q`. The [evidence walkthrough](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/docs/verification/payment-check.md) documents the complete path.
+
+## Implementation and verification
+
+- **Public demo:** the React app computes benchmarks, pressure scores and summaries from bundled fixtures. Dashboard regression tests and the public deployment can be inspected.
+- **Offline checks:** CI runs policy-construction, schema-guard and payment-reconciliation tests, notebook syntax checks, DAG import checks and app builds.
+- **Integration code:** PySpark, Airflow and Domo source is present. Those offline checks do not establish a successful external pipeline run. The Domo trial has ended; no current external execution receipt is bundled.
+- **Planned work:** regional access needs a state-level output. Live CRM integration, intended-user access tests and complete-source reconciliation remain operational work. Public usage is synthetic, so no adoption or business-impact result is claimed.
+
+The [current implementation record](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/docs/PRD.md) distinguishes those states. The public access page shows example rules and assignments; it does not enforce Domo policies or present simulated passing checks.
 
 ## One implementation tradeoff
 
-The notebooks validate a temporary reporting table before replacing the previous version. That catches bad output before publication, but the drop-and-rename step leaves a brief availability gap. An operational deployment would need an atomic replacement or a view switch.
+The notebooks validate a temporary reporting table before replacing the previous version. That catches bad output before publication, but the drop-and-rename step leaves a brief availability gap. An operational deployment would need an atomic replacement or a view switch with a tested recovery path.
 
-Metric definitions document the formulas and alternatives. Policy scripts check the example role configuration; CI runs live checks only with Domo credentials and otherwise checks syntax. The public demo displays illustrative policy results and does not enforce Domo access controls.
-
-Next I would validate the pipeline against complete source releases, test access as each intended role and evaluate the pressure score against actual CRM outcomes. [GTM Healthcare Intelligence](/work/gtm-healthcare) covers the related reporting-workflow prototype.
+Next I would reconcile the complete source releases, collect external execution evidence, test each intended role's access and evaluate the pressure score against actual CRM outcomes. [GTM Healthcare Intelligence](/work/gtm-healthcare) covers the related reporting-workflow prototype.
