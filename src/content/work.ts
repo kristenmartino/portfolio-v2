@@ -67,7 +67,7 @@ export const projects: Project[] = [
     title: "SpecialtyPulse Pipeline",
     category: "Healthcare Data Platform",
     summary:
-      "A healthcare reporting pipeline with specialty comparisons, procedure drill-downs and a reproducible payment check.",
+      "A healthcare analytics demo with a shared Spark pipeline, specialty comparisons and source-reconciled procedure payments.",
     href: "/work/specialtypulse-pipeline",
     slug: "specialtypulse-pipeline",
     liveHref: "https://specialtypulse.kristenmartino.ai",
@@ -80,10 +80,10 @@ export const projects: Project[] = [
     imageAlt:
       "SpecialtyPulse procedure view with a specialty selector, service-count ranking, HCPCS codes and average payments",
     metrics: [
-      "Synthetic CMS-schema data · 2021–2023",
-      "Databricks PySpark · Airflow",
+      "Synthetic 2023 base · 2021–22 scenarios",
+      "Shared PySpark · Airflow DAG source",
       "React demo · Domo integration code",
-      "Reproducible raw-fixture payment check",
+      "870-row Spark mart · raw-to-screen trace",
     ],
   },
   {
