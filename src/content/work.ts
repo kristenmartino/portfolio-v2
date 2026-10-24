@@ -1654,11 +1654,13 @@ export const projects: Project[] = [
     title: "Revenue Management System Testing",
     category: "Decision Support",
     summary:
-      "Defined requirements and designed 2,000+ test cases for a revenue-management system. Led user acceptance testing with eight analysts and worked with the vendor to resolve data-mapping and forecasting issues before launch.",
-    href: "#contact",
+      "Led user acceptance testing for a revenue-management system, defined test scenarios and worked with analysts and the vendor to resolve data-mapping and forecasting defects before launch.",
+    href: "/work/revenue-management-system-testing",
+    slug: "revenue-management-system-testing",
     status: "Shipped",
     mode: "Cross-functional",
     shape: "decision",
+    metrics: ["UAT leadership", "Data validation", "Vendor coordination"],
   },
   {
     index: "16",
