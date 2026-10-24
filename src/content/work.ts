@@ -71,7 +71,7 @@ export const projects: Project[] = [
     shareDescription:
       "Independent prototype using synthetic records and generated comparison scenarios. User evaluation and business outcomes remain unmeasured.",
     summary:
-      "A specialty review prototype for preparing payment comparisons and follow-up questions for a sales or operations lead.",
+      "A specialty review prototype for healthcare-software sales teams, connecting payment comparisons to evidence and account-discovery questions.",
     href: "/work/specialtypulse-pipeline",
     slug: "specialtypulse-pipeline",
     liveHref: "https://specialtypulse.kristenmartino.ai",

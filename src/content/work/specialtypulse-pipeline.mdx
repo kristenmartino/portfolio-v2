@@ -1,6 +1,8 @@
 ## A specialty review for sales or operations
 
-SpecialtyPulse is a prototype for a **specialty analyst preparing a review of payment patterns for a sales or operations lead**. The decision is which patterns need further investigation and what evidence the next reviewer should check before a commercial recommendation.
+SpecialtyPulse is a prototype for a **specialty analyst supporting a healthcare-software sales team**. The assumed employer sells electronic health record (EHR), practice management (PM) and revenue cycle management (RCM) subscriptions to specialty practices. A sales or operations lead uses the brief to decide which questions need analyst verification or account discovery before a software recommendation.
+
+Medicare payment comparisons describe practice-side signals; pipeline dollars represent hypothetical software contracts for the vendor. Account conversations must establish customer needs before recommending software or prioritizing outreach. This business setting is a design assumption, not a finding from customer research.
 
 I designed SpecialtyPulse around that review task: compare specialty measures, inspect procedure detail, and prepare a handoff that states the supporting observations, open questions and who should review them next. It is an independent prototype using synthetic records and comparison scenarios.
 
@@ -27,7 +29,7 @@ Open [Dermatology / HCPCS 99213 / CY2023](https://specialtypulse.kristenmartino.
 - **Open question:** Which source rows and service mix explain this constructed change?
 - **Next reviewer:** Specialty analyst.
 - **Requested next check:** Match Dermatology / HCPCS 99213 in the pinned 2022 and 2023 inputs and reporting rows. Reproduce the service-weighted payments and service counts, then record unresolved data or interpretation issues for the sales or operations lead.
-- **Commercial context:** Dermatology's scenario score is 66.6. Its 53 synthetic active deals total $4,579,800, or 11.4% of active pipeline. Those amounts are separate from the procedure comparison and score.
+- **Commercial context:** Dermatology's scenario score is 66.6. Its 53 synthetic active deals total $4,579,800 in assumed annual contract value (USD), or 11.4% of active pipeline. Those amounts are separate from the procedure comparison and score.
 - **Recipient verification:** The downloaded brief carries the exact comparison link, versioned input/mart files, data hashes and run receipt. Its 2023 calculation trace identifies the 57 raw rows behind the $104.91 value below; that trace does not verify the generated 2022 inputs.
 - **Status:** illustrative draft; source and account validation remain pending. Naming a reviewer does not send or assign the brief. No shortlist or stakeholder approval has been recorded.
 
@@ -56,7 +58,13 @@ These thresholds are proposed, not achieved results. If accuracy or completeness
 
 **Keep procedure comparisons specific.** The comparison matches specialty, HCPCS code and consecutive years. Missing inputs or a zero prior value leave percentage changes unavailable. I also rank the most-used procedures by service count. A specialty's blended average combines different procedures, so a payment below that blend is not evidence that a particular procedure is underpaid. The ratio-based outlier definition is available beside the table.
 
+**Count providers at the decision grain.** A provider billing several procedures counts once within each specialty and year. Spark computes that distinct count from staged provider IDs before procedure aggregation; the dashboard and pressure index use it once. A regression with overlapping procedures checks this behavior, and independent raw-input reconciliation verifies every published specialty/year count.
+
 **Keep scores and sales dollars separate.** The index organizes comparison scenarios; pipeline amounts provide exposure context. The score prompts questions about payment, charge and volume inputs. Its weights have not been validated against purchase decisions or sales outcomes.
+
+**Define the sales dollar basis and date scope.** For this demo, opportunity amount is assumed annual contract value (ACV) in USD. Active totals are unweighted and exclude Closed Won and Closed Lost. Closed-won ACV is a separate stage total, not recognized revenue or a forecast.
+
+The **invented sales scenario snapshot is August 31, 2026**; the source capture date was not recorded. Stages remain as supplied. All 500 fixture opportunities are included without a reporting-period filter: created dates September 2, 2025–February 24, 2026; close dates October 11, 2025–August 14, 2026. These sales dates are separate from reimbursement CY2021–2023.
 
 ## Evidence supporting the review
 
