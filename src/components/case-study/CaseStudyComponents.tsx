@@ -9,11 +9,11 @@ export function Spec({
   value: ReactNode;
 }) {
   return (
-    <div className="flex items-baseline gap-4 py-3 border-b border-[var(--color-graphite-90)]">
-      <Mono variant="caption" tone="muted" className="min-w-[120px]">
+    <div className="flex flex-col gap-1 py-3 sm:flex-row sm:items-baseline sm:gap-4 border-b border-[var(--color-graphite-90)]">
+      <Mono variant="caption" tone="muted" className="sm:min-w-[120px]">
         {label}
       </Mono>
-      <span className="text-sm md:text-base text-[var(--color-graphite-20)]">
+      <span className="min-w-0 [overflow-wrap:anywhere] text-sm md:text-base text-[var(--color-graphite-20)]">
         {value}
       </span>
     </div>
@@ -58,12 +58,16 @@ export function Caption({ children }: { children: ReactNode }) {
 export function Diagram({
   title,
   children,
+  scrollOnMobile = false,
+  fullSizeHref,
 }: {
   title?: string;
   children: ReactNode;
+  scrollOnMobile?: boolean;
+  fullSizeHref?: string;
 }) {
   return (
-    <figure className="my-12 border border-[var(--color-graphite-90)] bg-[var(--color-soot)]">
+    <figure className="my-12 min-w-0 max-w-full border border-[var(--color-graphite-90)] bg-[var(--color-soot)]">
       {title && (
         <div className="border-b border-[var(--color-graphite-90)] px-5 py-3">
           <Mono variant="caption" tone="muted">
@@ -71,7 +75,33 @@ export function Diagram({
           </Mono>
         </div>
       )}
-      <div className="p-8">{children}</div>
+      <div className={scrollOnMobile ? "p-3 md:p-8" : "p-8"}>
+        {scrollOnMobile && (
+          <p className="mb-3 text-sm text-[var(--color-graphite-20)] md:hidden">
+            Swipe horizontally to explore the diagram.
+          </p>
+        )}
+        <div
+          className={scrollOnMobile ? "max-w-full overflow-x-auto overscroll-x-contain focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--color-signal-blue)]" : undefined}
+          role={scrollOnMobile ? "region" : undefined}
+          aria-label={scrollOnMobile ? `${title ?? "Diagram"} — horizontally scrollable` : undefined}
+          tabIndex={scrollOnMobile ? 0 : undefined}
+        >
+          <div className={scrollOnMobile ? "min-w-[960px] md:min-w-0" : undefined}>
+            {children}
+          </div>
+        </div>
+        {fullSizeHref && (
+          <a
+            href={fullSizeHref}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-3 inline-flex min-h-11 items-center text-sm font-medium text-[var(--color-signal-blue-soft)] underline underline-offset-4"
+          >
+            Open full-size diagram ↗
+          </a>
+        )}
+      </div>
     </figure>
   );
 }

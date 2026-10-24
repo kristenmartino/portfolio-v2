@@ -42,7 +42,7 @@ export const projects: Project[] = [
     title: "Cabana",
     category: "Ops Automation + AI",
     summary:
-      "A demo portal for a fictional pool-service company. Customers report problems, track repairs, and pay test deposits. AI classifies requests and drafts acknowledgments for staff; staff control pricing and scheduling.",
+      "A pool-service demo for reporting problems, tracking repairs and paying test deposits. AI classifies requests; staff control pricing and scheduling.",
     href: "/work/cabana",
     slug: "cabana",
     liveHref: "https://cabana-kristenmartinos-projects.vercel.app",

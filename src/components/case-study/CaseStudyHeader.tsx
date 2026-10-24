@@ -34,7 +34,7 @@ export function CaseStudyHeader({
       <div className="max-w-[1280px] mx-auto px-6 md:px-12 lg:px-16">
         <Link
           href="/#work"
-          className="inline-block text-sm text-[var(--color-graphite-40)] hover:text-[var(--color-bone)] transition-colors"
+          className="inline-flex min-h-11 items-center text-sm text-[var(--color-graphite-40)] hover:text-[var(--color-bone)] transition-colors"
         >
           ← Back to work
         </Link>
@@ -67,38 +67,44 @@ export function CaseStudyHeader({
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: DUR.slow, delay: 0.25, ease: EASE.outExpo }}
-          className="mt-10 flex flex-wrap items-center gap-x-3 gap-y-2"
+          className="mt-8 flex flex-col gap-4 md:mt-10 md:flex-row md:flex-wrap md:items-center md:gap-x-3 md:gap-y-2"
         >
-          {metrics.map((m) => (
-            <Mono
-              key={m}
-              variant="meter"
-              className="px-3 py-1.5 border !text-[var(--color-graphite-40)]"
-              style={{ borderColor: "var(--color-graphite-80)" }}
-            >
-              {m}
-            </Mono>
-          ))}
-          <span className="grow" />
-          {liveHref && (
-            <a
-              href={liveHref}
-              target="_blank"
-              rel="noreferrer"
-              className="text-sm font-medium text-[var(--color-signal-blue-soft)] hover:text-[var(--color-bone)] transition-colors"
-            >
-              {liveLabel ?? "Open"} ↗
-            </a>
-          )}
-          {codeHref && (
-            <a
-              href={codeHref}
-              target="_blank"
-              rel="noreferrer"
-              className="text-sm text-[var(--color-graphite-40)] hover:text-[var(--color-bone)] transition-colors"
-            >
-              Source ↗
-            </a>
+          <div className="order-2 flex min-w-0 flex-wrap gap-x-3 gap-y-2 md:order-none md:contents">
+            {metrics.map((m) => (
+              <Mono
+                key={m}
+                variant="meter"
+                className="max-w-full [overflow-wrap:anywhere] px-3 py-1.5 border !text-[var(--color-graphite-40)]"
+                style={{ borderColor: "var(--color-graphite-80)" }}
+              >
+                {m}
+              </Mono>
+            ))}
+          </div>
+          <span className="hidden grow md:block" />
+          {(liveHref || codeHref) && (
+            <div className="order-1 flex flex-wrap items-center gap-x-5 gap-y-2 md:order-none md:contents">
+              {liveHref && (
+                <a
+                  href={liveHref}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex min-h-11 items-center text-sm font-medium text-[var(--color-signal-blue-soft)] hover:text-[var(--color-bone)] transition-colors"
+                >
+                  {liveLabel ?? "Open"} ↗
+                </a>
+              )}
+              {codeHref && (
+                <a
+                  href={codeHref}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex min-h-11 items-center text-sm text-[var(--color-graphite-40)] hover:text-[var(--color-bone)] transition-colors"
+                >
+                  Source ↗
+                </a>
+              )}
+            </div>
           )}
         </motion.div>
       </div>
