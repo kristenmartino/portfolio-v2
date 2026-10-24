@@ -14,11 +14,11 @@ A valuation can calculate correctly while relying on the wrong input. SEC filers
 
 The first extraction stage queries SEC XBRL company facts using a concept map. It returns the values it finds and leaves missing fields for Claude to extract from the filing's financial-statements section. Required fields still missing after the fallback and supported calculations produce an explicit error.
 
-This matters because failing on the first missing XBRL field would prevent the fallback from running. In the original ten-company sample, three needed AI extraction or a calculated fallback. That observation describes this sample; it does not establish a market-wide coverage rate.
+This matters because failing on the first missing XBRL field would prevent the fallback from running. In the original ten-company sample, three needed AI extraction or a calculated fallback. Those figures describe the ten-company sample only.
 
 ## 2. Show how each value was obtained
 
-Each line item identifies its source: SEC XBRL, AI extraction, calculation, or user correction. Source details show an XBRL concept, an extracted excerpt, or a calculation explanation where available. These details support manual review; an excerpt alone does not establish that a value is correct.
+Each line item identifies its source: SEC XBRL, AI extraction, calculation, or user correction. Source details show an XBRL concept, an extracted excerpt, or a calculation explanation where available. Reviewers still need to check each value against the filing.
 
 Automated checks flag extraction scores below 0.80 and balance-sheet discrepancies above 0.5%. The scores are heuristics: XBRL scores reflect tag priority, while AI scores are model-reported. They are not calibrated probabilities of correctness, and an absence of flags does not mean a person verified the data.
 

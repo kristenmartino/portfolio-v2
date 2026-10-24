@@ -21,13 +21,13 @@ For pairwise summarization, judge selection avoids assigning an Anthropic model 
 
 The runner requires an explicit flag before using held-out data and checks its contents against a SHA-256 manifest. A sample lock and tamper-detection tests exercise that mechanism. The real corpus still needs to be collected, split and locked before prompt tuning.
 
-A committed hash can show that a dataset stayed unchanged. It cannot establish that nobody inspected its contents. That boundary matters when interpreting the eventual results.
+A committed hash checks for changes to the dataset. Prior inspection is outside that check.
 
 ## Testing agent runs
 
 A second track records an agent's tool calls, arguments, recovery from errors and final answer. Recorded runs support tests without API keys; checks that require a model judge use a separate live path. Fault and injection scenarios exercise failure handling.
 
-Those tests check the evaluation machinery. They do not establish how well a model performs on Sift's real corpus.
+These tests cover the evaluation machinery; model performance awaits a run on Sift's real corpus.
 
 ## What remains
 

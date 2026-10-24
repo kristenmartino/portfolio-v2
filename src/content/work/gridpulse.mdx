@@ -26,7 +26,7 @@ The Overview shows current demand, seven-day statistics, and a chart joining rep
 
 Four role selections change the default tab and the historical observations included in the summary. They share the same demand data, KPIs, and forecasts.
 
-The US Grid view compares balancing authorities using reported demand, interchange, and capacity context. Demand relative to nameplate capacity is a comparison metric; it does not establish available reserves or an impending shortage.
+The US Grid view compares balancing authorities using reported demand, interchange, and capacity context. The demand-to-nameplate-capacity ratio is a comparison metric. Available reserves and shortage risk need separate assessment.
 
 ## Model evaluation
 
@@ -44,7 +44,7 @@ The Forecast view provides temperature, wind, and solar adjustments and named pr
 
 Scheduled jobs fetch data, score forecasts, and retrain models. The Dash web service reads cached results from Redis, while model artifacts are stored in Google Cloud Storage. A read-only API exposes the same cached data for use outside the dashboard.
 
-The interface discloses stale forecasts, provisional EIA readings, and excluded reporting artifacts. Those disclosures matter because a recent timestamp alone does not establish that an input is complete or settled.
+The interface discloses stale forecasts, provisional EIA readings, and excluded reporting artifacts. A recent timestamp can still accompany incomplete or provisional inputs.
 
 ## Next steps
 

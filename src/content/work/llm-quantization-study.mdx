@@ -26,7 +26,7 @@ MMLU uses answer accuracy. Named-entity recognition requires matching both the e
 
 Q8_0 met the study's ±1 percentage-point equivalence criterion on MMLU accuracy and per-sentence NER F1. The reported NER micro-F1 confidence interval was also within that margin. Recorded throughput was about 1.8 times FP16, with roughly half its memory footprint.
 
-Q4_K_M had a 3.2 percentage-point lower corpus micro-F1 than FP16 on NER, with a reported 95% confidence interval of 0.7 to 5.7 points and Holm-adjusted p-value of 0.032. Its per-sentence F1 was 5.0 points lower. The recorded MMLU difference did not reach statistical significance; that does not establish equivalence.
+Q4_K_M had a 3.2 percentage-point lower corpus micro-F1 than FP16 on NER, with a reported 95% confidence interval of 0.7 to 5.7 points and Holm-adjusted p-value of 0.032. Its per-sentence F1 was 5.0 points lower. The recorded MMLU difference was not statistically significant, leaving Q4's equivalence to FP16 unresolved.
 
 ## Inspecting the NER errors
 
@@ -38,6 +38,6 @@ Q4 also had a 99.7% JSON parse rate. In this sample, correctly formatted output 
 
 The analysis uses paired comparisons, bootstrap confidence intervals, McNemar tests for binary outcomes and equivalence testing against the stated margin. Holm correction is applied across the three pairwise comparisons within each task. Subject-level MMLU differences did not survive their multiple-comparison correction.
 
-These findings apply to this model, these prompts, the sampled tasks and the recorded local setup. They do not establish a default quantization setting for other models, hardware or production workflows.
+These findings apply to this model, these prompts, the sampled tasks and the recorded local setup. Other models, hardware and production workflows need their own evaluation.
 
 For a similar deployment, I would use these results to choose candidates for a workload-specific test. Q8_0 is a candidate when reduced memory and higher throughput matter; Q4 requires particular attention to entity-extraction errors. The final choice still needs quality thresholds and measurements from the intended application.
