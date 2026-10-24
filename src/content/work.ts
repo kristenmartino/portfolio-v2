@@ -1627,12 +1627,13 @@ export const projects: Project[] = [
     title: "Enterprise Billing Migration",
     category: "Cross-Functional Delivery",
     summary:
-      "Managed billing cutover and validation for a SaaS migration spanning 750+ property management companies and approximately 100,000 properties. Coordinated rollout sequencing, readiness checks, and updates to customers and leadership.",
-    href: "#contact",
-    year: "2023",
+      "Led billing migrations, coordinating cutover, validation, rollout sequencing and communications across business and technical teams.",
+    href: "/work/enterprise-billing-migration",
+    slug: "enterprise-billing-migration",
     status: "Shipped",
     mode: "Cross-functional",
     shape: "pipeline",
+    metrics: ["Billing cutover", "Migration validation", "Cross-functional delivery"],
   },
   {
     index: "14",
