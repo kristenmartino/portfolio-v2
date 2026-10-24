@@ -294,10 +294,10 @@ export const projects: Project[] = [
     title: "SpecialtyPulse Pipeline",
     category: "Healthcare Data Platform",
     summary:
-      "A healthcare analytics project that uses Databricks and Airflow to turn Medicare data into reimbursement and procedure reports. Includes documented metric definitions and role-based access checks. The public dashboard uses representative data.",
+      "A healthcare analytics portfolio project with Databricks and Airflow pipeline code, reimbursement comparisons, and example access policies. The public dashboard uses sample and synthetic data.",
     href: "/work/specialtypulse-pipeline",
     slug: "specialtypulse-pipeline",
-    liveHref: "https://specialtypulse.vercel.app",
+    liveHref: "https://specialtypulse.kristenmartino.ai",
     codeHref: "https://github.com/kristenmartino/specialtypulse_pipeline",
     year: "2026",
     status: "Shipped",
@@ -305,126 +305,13 @@ export const projects: Project[] = [
     shape: "pipeline",
     image: "/work/specialtypulse.png",
     imageAlt:
-      "SpecialtyPulse dashboard — Market Intelligence page with pressure index by specialty, reimbursement compression trend, and volume-versus-compression views",
+      "SpecialtyPulse sample dashboard with specialty pressure scores and reimbursement comparisons",
     metrics: [
-      "CMS PUF 2021–2023 · Delta Lake",
+      "CMS PUF schema · sample 2021–2023",
       "Databricks PySpark · Airflow",
       "Domo DataFlow · 5-page dashboard",
-      "Row-level security · CI-verified",
+      "Example access policies · 4 roles",
     ],
-    artifact: {
-      problem: {
-        situation:
-          "Specialty-healthcare GTM teams set territory and outreach priorities off Medicare reimbursement trends, and CMS publishes the data that answers the question — the Physician & Other Practitioners PUF, released annually as multi-gigabyte CSVs with no types, no benchmarks, and no access model.",
-        complication:
-          "The failure point in stacks like this is rarely the transformation — it is governance at the delivery layer. \"Average Medicare payment\" supports several defensible definitions that diverge exactly when leadership compares numbers at a QBR. And Domo's row-level security has a documented trap: PDP applied to a DataFlow input is silently stripped at execution, so the dashboard reads as governed while serving every row to every user.",
-        question:
-          "Can one pipeline land certified, role-filtered Medicare market intelligence in the executive reporting layer — with the governance verified by CI rather than asserted in a wiki?",
-      },
-      requirements: [
-        {
-          stakeholder: "RevOps leadership",
-          need: "Metrics that match board reporting and survive challenge — one certified definition per metric, with competing definitions resolved on the record.",
-          evidence: "Certification log records rationale, approver, and impact-if-wrong",
-        },
-        {
-          stakeholder: "Regional sales manager",
-          need: "Monday-morning territory signals scoped to their own states — same dashboard, different rows.",
-          evidence: "PDP regional role filters provider_state",
-        },
-        {
-          stakeholder: "Specialty analyst",
-          need: "Procedure-level depth for their vertical only, benchmarked across specialties.",
-          evidence: "PDP specialty filter · 5 specialty analysts scoped",
-        },
-        {
-          stakeholder: "Security & compliance",
-          need: "Proof the row-level policies hold on the surface users actually query — not just at setup time.",
-          evidence: "pdp_verify script + a dedicated CI governance job",
-        },
-      ],
-      decisions: {
-        criteria: [
-          "Rows filtered at render",
-          "Survives DataFlow runs",
-          "Verifiable in CI",
-          "Build effort",
-        ],
-        options: [
-          {
-            option: "PDP on the mart (the DataFlow input)",
-            scores: ["unmet", "unmet", "unmet", "met"],
-          },
-          {
-            option: "Per-role duplicate DataSets and dashboards",
-            scores: ["met", "partial", "partial", "unmet"],
-          },
-          {
-            option: "PDP on the DataFlow output — zero policies on input, anti-pattern checked in CI",
-            chosen: true,
-            scores: ["met", "met", "met", "partial"],
-            rationale:
-              "PDP-on-input is the classic enterprise Domo mistake: input policies are stripped during DataFlow execution and the output ships unfiltered — worse than no security, because it reads as governed. Here policies apply exclusively to the DataFlow output — four roles across two filter dimensions, with all-rows policies for finance and executive — and a verification script fails if any policy ever appears on the input. A React governance app renders the live role-policy matrix inside the dashboard so the security model is inspectable by the people it governs, and a dedicated CI job re-runs the verification on every push.",
-          },
-        ],
-      },
-      solution: {
-        summary:
-          "A Databricks → Airflow → Domo pipeline: PySpark raw → staging → mart layers on Delta Lake, orchestrated as an Airflow DAG with an explicit data contract, feeding a SQL DataFlow and certified metrics into a five-page executive dashboard behind verified row-level security.",
-        pillars: [
-          {
-            title: "Medallion transform with honest ingestion",
-            detail:
-              "Raw CMS CSVs land all-strings — schema inference off — because sentinel formatting causes silent cast failures; staging does explicit casts, handles the CMS taxonomy shift across release years, and honors the under-11-services suppression rule. Marts write, validate, then rename, so a failed run never corrupts the served table.",
-          },
-          {
-            title: "Orchestration with an explicit contract",
-            detail:
-              "An Airflow DAG runs the four PySpark notebooks with per-task retries; a schema contract file is the agreed boundary between the BI side and Data Engineering, and a stakeholder map records who owns, approves, and is consulted on every component.",
-          },
-          {
-            title: "Certified metrics, not just calculated ones",
-            detail:
-              "Five certified metric definitions enforced in the mart and the Domo SQL DataFlow; every certification logs the competing definitions, the rationale, the approver, and what goes wrong if the other definition wins. Changes require a version bump and a log entry.",
-          },
-          {
-            title: "Governance that proves itself",
-            detail:
-              "Row-level security on the DataFlow output across four roles and two filter dimensions; a React 18 verification app surfacing the live role-policy matrix; CI that lints, validates the DAG, builds the app, and fails on the PDP anti-pattern.",
-          },
-        ],
-      },
-      outcome: {
-        kind: "metrics",
-        items: [
-          {
-            metric: "Pipeline",
-            after: "raw → staging → mart → Domo",
-            note: "4 PySpark notebooks · Delta Lake · Airflow-orchestrated",
-          },
-          {
-            metric: "Coverage",
-            after: "CMS PUF 2021–2023",
-            note: "Provider × procedure × year grain → specialty-level mart",
-          },
-          {
-            metric: "Governance",
-            after: "4 PDP roles · 2 filter dimensions",
-            note: "Policies on output only · anti-pattern check fails CI",
-          },
-          {
-            metric: "Certified metrics",
-            after: "5 definitions",
-            note: "Competing definitions resolved on the record, with approver",
-          },
-          {
-            metric: "Delivery",
-            after: "5-page dashboard",
-            note: "Market Intelligence · Procedure Detail · Pipeline · Adoption · PDP Governance",
-          },
-        ],
-      },
-    },
   },
   {
     index: "03",
@@ -1569,7 +1456,7 @@ export const projects: Project[] = [
           {
             title: "Descriptive",
             detail:
-              "PracticeFlow + SpecialtyPulse — benchmarking against MGMA/HFMA standards and trend monitoring at practice and specialty level, anchored on CMS NPPES, Medicare PUF, and Census demographics. SpecialtyPulse is built to production depth in its own case study — SpecialtyPulse Pipeline.",
+              "PracticeFlow + SpecialtyPulse — benchmarking against MGMA/HFMA standards and trend monitoring at practice and specialty level, anchored on CMS NPPES, Medicare PUF, and Census demographics. SpecialtyPulse Pipeline documents the pipeline code, example policies and limits of the public demo.",
           },
           {
             title: "Diagnostic",
