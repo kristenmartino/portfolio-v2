@@ -7,7 +7,7 @@ import { Mono } from "@/components/typography/Mono";
 export const metadata: Metadata = {
   title: "FocusForge — Terms of Use",
   description:
-    "FocusForge's terms of use. Personal use license, honest limits on what the app does, fair liability terms. Built solo by Kristen Martino.",
+    "FocusForge's terms of use: the app license, local data export, template-based coaching, and conditions of use.",
   robots: { index: true, follow: true },
 };
 
@@ -45,7 +45,7 @@ export default function FocusForgeTermsOfUse() {
                 <span className="font-medium text-[var(--color-graphite-20)]">
                   Last updated:
                 </span>{" "}
-                May 17, 2026
+                October 24, 2026
               </span>
             </div>
 
@@ -54,17 +54,17 @@ export default function FocusForgeTermsOfUse() {
                 The short version
               </Mono>
               <p className="mt-4 text-base md:text-lg leading-relaxed text-[var(--color-graphite-20)]">
-                You can use FocusForge to do your work. We make no warranty
-                that the app is perfect or that your data is invulnerable —
-                back up via <strong>Settings → Export My Progress</strong> if
-                losing your streak would actually upset you. Don&apos;t try to
-                break the app for fun. If you do something illegal with the
-                app, that&apos;s between you and the law. If FocusForge genuinely
-                harms you, our liability is capped at what you paid for the
-                app (currently $0).
+                FocusForge is a focus timer with local progress records and
+                template-based coaching. Firebase receives usage events and
+                crash diagnostics as described in the{" "}
+                <Link href="/focusforge/privacy">Privacy Policy</Link>.
+                <strong> Settings → Export My Progress</strong> creates a JSON
+                copy of local progress. Version 1.0 cannot import that file
+                to restore progress in the app.
               </p>
               <p className="mt-3 text-base leading-relaxed text-[var(--color-graphite-40)]">
-                The long version follows. If anything is unclear, email{" "}
+                The full terms follow, including the warranty and liability
+                provisions. If anything is unclear, email{" "}
                 <a
                   href="mailto:legal@kristenmartino.ai"
                   className="text-[var(--color-signal-blue-soft)] underline-offset-4 hover:underline"
@@ -144,23 +144,25 @@ export default function FocusForgeTermsOfUse() {
                   You own everything you input into the app: your task names,
                   your character customizations, your streak history, your AI
                   Coach feedback. The app stores all of this on your device.
-                  You can export a complete JSON snapshot at any time via{" "}
+                  You can export a JSON file containing local progress via{" "}
                   <strong>Settings → Export My Progress</strong>.
                 </p>
                 <p>
-                  How we handle the small amount of data that does leave the
-                  device (crash reports, anonymous analytics) is described in
-                  detail in our <Link href="/focusforge/privacy">Privacy Policy</Link>. Read it.
+                  Firebase receives usage events and crash diagnostics, which
+                  can include installation or device identifiers. These
+                  records are not treated as fully anonymous. Collection
+                  and controls are described in the{" "}
+                  <Link href="/focusforge/privacy">Privacy Policy</Link>.
                 </p>
                 <p>
                   We make no promises about preserving your local data. If
                   your phone is damaged, lost, stolen, restored from a
-                  backup, or wiped, your FocusForge data may be lost. Cloud
-                  sync is planned for v1.1 but is not in v1.0.{" "}
-                  <strong>
-                    Back up via the export feature if your streak or character
-                    matters to you.
-                  </strong>
+                  backup, or wiped, your FocusForge data may be lost. Version
+                  1.0 has neither cloud sync nor an import/restore feature.
+                  The export contains session history, progression, inventory,
+                  quests and selected preferences; it does not contain every
+                  app record or Firebase data. Keep a saved export if you want
+                  a copy to inspect or use outside the app.
                 </p>
               </Section>
 
@@ -176,9 +178,7 @@ export default function FocusForgeTermsOfUse() {
                   </li>
                   <li>
                     A productivity guarantee. We make no claim that using
-                    FocusForge will cause you to get more done. (Spoiler:
-                    actually doing the work is the thing that gets the work
-                    done.)
+                    FocusForge will cause you to get more done.
                   </li>
                   <li>
                     Therapeutic advice. The AI Coach&apos;s templates are
@@ -202,11 +202,10 @@ export default function FocusForgeTermsOfUse() {
               <Section title="5. The AI Coach">
                 <p>
                   The &quot;AI Coach&quot; inside FocusForge is a hand-written catalog
-                  of templates routed by your local behavior. It is not a
-                  language model, it does not generate text dynamically, and
-                  it does not learn from you. It will surface one of a fixed
-                  set of pre-written sentences based on your task category
-                  and recent session pattern.
+                  of templates selected using your local behavior. It selects
+                  and fills written prompts using task context and recent
+                  session patterns. It does not call a language model or
+                  train a model on your activity.
                 </p>
                 <p>
                   The coach&apos;s suggestions are general. They may not apply to
@@ -256,9 +255,10 @@ export default function FocusForgeTermsOfUse() {
               <Section title="8. Service availability">
                 <p>
                   FocusForge is provided &quot;as is&quot; and &quot;as available.&quot; We make
-                  no promises about uptime, since the app runs entirely on
-                  your device and does not depend on a backend service.
-                  However:
+                  no promises about uninterrupted availability. The timer,
+                  local progress and coaching run on your device; Firebase
+                  analytics and crash reporting use external services.
+                  In particular:
                 </p>
                 <ul>
                   <li>
