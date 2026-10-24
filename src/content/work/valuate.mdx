@@ -27,6 +27,8 @@ Each line item identifies its source: SEC XBRL, AI extraction, calculation, or u
 
 Automated checks flag extraction scores below 0.80 and balance-sheet discrepancies above 0.5%. The scores are heuristics: XBRL scores reflect tag priority, while AI scores are model-reported. They are not calibrated probabilities of correctness, and an absence of flags does not mean a person verified the data.
 
+The balance-sheet check keeps parent equity and noncontrolling interests separate, adding them when required without counting the component twice for consolidated equity. This resolves Prologis's false reconciliation warning while preserving the reported figures and valuation inputs. A missing component is accepted only from matching annual-filing facts; unavailable or ambiguous coverage still needs review.
+
 A reviewer can replace a flagged value and optionally supply a supporting excerpt. Validation then runs again. The stored company record retains the current correction and its source label; it does not provide reviewer identity or a chronological edit history.
 
 ## 3. Make the model choice explicit
