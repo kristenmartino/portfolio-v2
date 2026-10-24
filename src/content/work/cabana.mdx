@@ -151,6 +151,8 @@ The dashboard shows the regular service day from the member’s plan. The reques
 
 A request that reaches scheduling without an assigned visit window shows “Awaiting visit time,” or “Approved · time pending” after approval. Payment, staff approval and a confirmed visit time are separate states.
 
+When a visit window is recorded before approval, the app labels it “Awaiting approval” and shows the proposed time separately.
+
 ## Deposit confirmation
 
 Cabana uses Stripe Checkout in test mode for $75 repair deposits. Payment status is updated from Stripe webhook events after their signatures are verified.
@@ -177,6 +179,8 @@ These results come from one recorded run at demo volume.
 
 ## Demo scope
 
-The public demo uses fictional data, a shared demo member account and Stripe test mode. Row-level security restricts the demo session to that member’s records.
+The public demo uses fictional data, a shared demo member account and Stripe test mode. Requests and edits are saved to that shared account, so visitors should use sample details. Row-level security restricts the demo session to that member’s records.
+
+The deposit screen includes a test card number and instructions for completing Stripe’s sandbox checkout. No real money is collected.
 
 Member email notifications are not implemented. The Telegram bot rejects and logs unauthorized chats; rate limiting and alerts for those attempts remain follow-up work.
