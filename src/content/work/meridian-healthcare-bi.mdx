@@ -1,0 +1,137 @@
+import { MeridianReportFigure } from "@/components/case-study/MeridianReportFigure";
+
+## The reporting question
+
+Which clinics are furthest from their goals, which metrics explain the gap, and how does the answer change across markets and reporting periods?
+
+Meridian is an independent reporting project for a fictional primary-care operator, using synthetic healthcare operations data. It combines a Power BI report, SQL/dbt transformations, a shared metric dictionary, and reconciliation checks.
+
+The screenshots below are Power BI Desktop captures from October 23–24, 2026, cropped to the report canvas. They show the June 2026 reporting period using synthetic healthcare operations data. Open any image to inspect it at full resolution.
+
+<Specs>
+  <Spec label="Work" value="Independent portfolio project" />
+  <Spec label="Data" value="Synthetic healthcare operations data" />
+  <Spec label="Financials" value="Illustrative financial scenarios" />
+  <Spec label="Coverage" value="23 clinics · 15 operational metrics · 17 catalog entries" />
+  <Spec label="Tools" value="Power BI · DAX · SQL · dbt · Snowflake · DuckDB" />
+  <Spec label="Delivery" value="Power BI Desktop report and supporting data models" />
+</Specs>
+
+## Start with the reporting scope
+
+The Overview shows performance for the selected market, clinic and period. Its category table identifies the metric furthest from goal in each category, while the headline cards summarize the selected population.
+
+The metric-changes panel has its own comparison: June versus March. “Relative improvement” measures change relative to the earlier value, with the sign adjusted for whether higher or lower is better. It is a percentage change, not a percentage-point difference, and stays fixed when the period or comparison selection changes.
+
+<MeridianReportFigure
+  src="/work/meridian/overview.png"
+  title="Overview"
+  alt="Meridian Overview for all markets and clinics, YTD against goal, showing 3 of 15 metrics on goal, category performance, June-versus-March relative improvement, and illustrative financial scenarios."
+  caption="Overview: all markets and clinics, YTD, compared with goals. The metric-changes panel names its separate June-versus-March comparison."
+  width={2426}
+  height={1365}
+/>
+
+The financial cards show illustrative financial scenarios based on stated assumptions. They do not show realized savings or validated revenue forecasts. Some scenarios overlap, so their amounts should not be added together.
+
+## Compare metrics and clinics
+
+All metrics places actual, goal, comparison, trend and status in one table. The comparison column names its baseline. A positive value means above that baseline; a negative value means below it. Whether that is favorable depends on the metric’s direction. Status always uses the goal, even when the comparison changes to a prior period.
+
+<MeridianReportFigure
+  src="/work/meridian/all-metrics.png"
+  title="All metrics"
+  alt="All metrics showing 15 operational measures with actual, goal, Comparison versus goal, 12-month trend, clinics on goal and text status. A note explains positive and negative comparison values."
+  caption="All metrics: YTD against goal. The pale blue column marks Actual; status retains its separate colors and text labels. Trends show the latest 12 monthly values, independently of the summary period."
+  width={2390}
+  height={1344}
+/>
+
+Clinic matrix compares the same measures across clinics grouped by market. Category and metric labels stay fixed during horizontal scrolling. A reviewer can open a clinic scorecard from a clinic’s value without losing the reporting period.
+
+<MeridianReportFigure
+  src="/work/meridian/clinic-matrix.png"
+  title="Clinic matrix"
+  alt="Clinic matrix with clinic names and codes grouped by market, all 15 operational metric rows, and on-goal, Watch and off-goal markers alongside the values."
+  caption="Clinic matrix: YTD, with clinics grouped by market. More clinics are available by scrolling horizontally; a clinic cell provides the drill-through to Clinic scorecard."
+  width={2426}
+  height={1365}
+/>
+
+## Identify clinics to review
+
+Needs attention shows up to five clinic exceptions for the latest month. The supporting model compares clinics with peers for the same metric, accounts for whether higher or lower is preferable, and selects each clinic’s most adverse eligible metric. Ranks remain global when a market or clinic filter is applied.
+
+A flag identifies something to investigate. It does not establish the cause, clinical impact or a financial outcome.
+
+<MeridianReportFigure
+  src="/work/meridian/needs-attention.png"
+  title="Needs attention"
+  alt="Needs attention showing five of 23 clinics with exceptions, including global rank, clinic, selected off-goal metric, actual, goal, off-goal count and dollar amounts for illustrative financial scenarios where available."
+  caption="Needs attention: latest month, all markets and clinics. Clinics are ranked by deviation from peers. Dollar amounts come from illustrative financial scenarios; a dash indicates no dollar estimate."
+  width={2390}
+  height={1344}
+/>
+
+## Follow a clinic into the underlying metric
+
+Clinic scorecard keeps the full set of 15 operational metrics available, even when the drill-through begins from a single metric. Its comparison column states how far actual is above or below the selected baseline, including percentage-point units where applicable.
+
+<MeridianReportFigure
+  src="/work/meridian/clinic-scorecard.png"
+  title="Clinic scorecard"
+  alt="Orlando Central Clinic scorecard with 1,299 attributed members, all 15 operational metrics, goal-based status, and Comparison versus goal using above and below wording."
+  caption="Orlando Central: YTD, compared with goals. Back returns to the source page with the selected reporting period."
+  width={2390}
+  height={1344}
+/>
+
+Metric detail carries the clinic or market context into a focused view of one measure. It brings the summary, comparison, monthly trend, definition and calculation together. The chart adapts to the metric’s units and shows 12 monthly values separately from the selected summary period.
+
+<MeridianReportFigure
+  src="/work/meridian/metric-detail.png"
+  title="Metric detail"
+  alt="Metric detail for Orlando Central ER visits per 1,000, YTD: actual 543, goal 480, Off goal, 63 above goal, a 12-month trend, definition and calculation."
+  caption="ER visits / 1,000 for Orlando Central. The page retains clinic scope, membership, period and comparison context through drill-through and Back navigation."
+  width={2390}
+  height={1344}
+/>
+
+## Make the rules inspectable
+
+Metric definitions contains 17 catalog entries, including the operational measures, attributed members and Star composite. Each entry documents its definition, calculation, reference goal, direction and roll-up rule. Sources, owners and refresh cadence are illustrative. Financial assumptions support the illustrative financial scenarios.
+
+The status guide explains the report’s rules. Watch allows up to 5% below goal when higher is better, or 6% above goal when lower is better. Those tolerances are relative to the goal, not percentage points. Missing actual or goal values receive no rating.
+
+<MeridianReportFigure
+  src="/work/meridian/metric-definitions.png"
+  title="Metric definitions"
+  alt="Metric definitions with all 17 catalog entries visible, ER visits selected, its definition and calculation, illustrative metadata, and a status guide explaining On goal, Watch, Off goal and missing ratings."
+  caption="Metric definitions: ER visits / 1,000 selected. The status guide sits below the metric picker and labels its thresholds as illustrative rules."
+  width={2390}
+  height={1344}
+/>
+
+The hover tooltip provides a shorter reference directly from All metrics and Clinic matrix. It shows the selected metric’s definition, calculation, reference goal, direction and illustrative owner. Group selections prompt the reviewer to hover a single metric instead of choosing the first definition in the group.
+
+<MeridianReportFigure
+  src="/work/meridian/definition-tooltip.png"
+  title="Metric definition hover tooltip"
+  alt="Native Power BI hover tooltip for Third next available days, with reference goal at most 5.0, lower-is-better direction, complete definition, calculation, illustrative owner and a note identifying synthetic healthcare operations data."
+  caption="Metric definition hover tooltip. Longer definitions and calculations wrap within the tooltip."
+  width={886}
+  height={742}
+  compact
+/>
+
+## Keep the numbers consistent
+
+For rate metrics, the data model stores the numerator and denominator. Clinic, market and enterprise values are calculated from the summed components, rather than by averaging percentages. The SQL/dbt models and Power BI measures use the same calculation rule.
+
+Data-layer checks cover relationships, allowed values and reconciliation across reporting levels. Native Power BI checks compare measure results with independently calculated expected values, including missing inputs, valid zero values, zero baselines and status boundaries. Report checks also covered period and comparison selections, filter carryover, drill-through, Back navigation and long-text rendering.
+
+Accessibility metadata includes descriptions, reading order and decorative exclusions. Manual keyboard traversal and screen-reader testing remain incomplete.
+
+## What the project demonstrates
+
+Meridian demonstrates report design, metric documentation, dimensional modeling, DAX filter behavior and reconciliation using a controlled dataset. Operational and clinical outcomes have not been measured. Financial figures come from illustrative financial scenarios.

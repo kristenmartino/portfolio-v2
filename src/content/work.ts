@@ -1668,6 +1668,26 @@ export const projects: Project[] = [
     mode: "Cross-functional",
     shape: "decision",
   },
+  {
+    index: "17",
+    title: "Meridian Healthcare BI",
+    category: "Business Intelligence",
+    summary:
+      "A Power BI reporting project using synthetic healthcare operations data. Compares clinic performance, highlights exceptions, and documents how each metric is calculated. Includes SQL/dbt data models and automated checks that metrics reconcile across clinics and markets.",
+    href: "/work/meridian-healthcare-bi",
+    slug: "meridian-healthcare-bi",
+    status: "In progress",
+    mode: "Solo build",
+    shape: "data-viz",
+    image: "/work/meridian/overview.png",
+    imageAlt:
+      "Meridian Power BI report overview using synthetic healthcare operations data, with reporting filters and illustrative financial scenarios.",
+    metrics: [
+      "Power BI · SQL · dbt",
+      "Synthetic healthcare operations data",
+      "KPI definitions · reconciliation",
+    ],
+  },
 ];
 
 export type Study = {
