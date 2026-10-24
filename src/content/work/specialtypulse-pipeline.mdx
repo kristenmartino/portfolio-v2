@@ -62,6 +62,11 @@ These thresholds are proposed, not achieved results. If accuracy or completeness
 
 The public procedure list displays **$104.91 across 3,777 services** for Dermatology / HCPCS 99213. The 57 matching raw rows have a weighted payment sum of $396,247.22. The displayed value reconciles to those records, the exported reporting table and the browser data.
 
+<Diagram title="Procedure comparison" fullSizeHref="/work/specialtypulse.png" fullSizeLabel="View full-size screenshot ↗">
+  <img src="/work/specialtypulse.png" alt="SpecialtyPulse compares Dermatology / HCPCS 99213: the generated 2022 scenario has $108.05 across 3,626 services; the synthetic 2023 records have $104.91 across 3,777 services." width={1280} height={960} className="h-auto w-full" />
+</Diagram>
+<Caption>Live Procedure Detail, captured October 24, 2026 with Dermatology / HCPCS 99213 and the constructed CY2022–2023 comparison selected.</Caption>
+
 A recorded local Spark run processes **29,982 raw records into 870 rows used by the dashboard**. The Databricks notebook adapters import the same transformation functions. Independent Decimal tests reconcile all 870 groups, and CI re-executes Spark to compare every business column. The build rejects source, transformation-code or output hashes that differ from the recorded run.
 
 <Specs>

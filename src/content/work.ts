@@ -78,7 +78,7 @@ export const projects: Project[] = [
     shape: "pipeline",
     image: "/work/specialtypulse.png",
     imageAlt:
-      "SpecialtyPulse procedure view with a specialty selector, service-count ranking, HCPCS codes and average payments",
+      "SpecialtyPulse Procedure Detail for Dermatology / HCPCS 99213, comparing a generated 2022 scenario with synthetic 2023 records: $104.91 across 3,777 services in 2023.",
     metrics: [
       "Analyst → sales or operations lead",
       "Editable brief with procedure evidence",
@@ -102,7 +102,7 @@ export const projects: Project[] = [
     shape: "pipeline",
     image: "/work/valuate.png",
     imageAlt:
-      "Valuate company picker with sample tickers and model labels for banks, insurers, REITs, and energy companies.",
+      "Valuate's current company selector, with a ticker field, sample companies and a note about extraction failures and model fit.",
     metrics: [
       "18 sample tickers · 5 model categories",
       "SEC XBRL + AI fallback",
