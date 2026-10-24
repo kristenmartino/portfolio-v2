@@ -1,67 +1,63 @@
+import Image from "next/image";
+
 ## Overview
 
-Multifamily operators turn lease PDFs into structured data at portfolio scale — during acquisitions, audits, and renewals. A language model can read a lease and emit the fields; that part is close to free. The hard part is making a reviewer *trust* the output, which means showing — for every rent amount, deposit, and term date — exactly where in the document it came from.
+Tenancy extracts nine sections from residential lease PDFs and flags fields for review. The reviewer can compare each flagged value with the source document, accept it, save a correction or reject it.
 
-Tenancy extracts nine structured sections from a residential lease, flags anything ambiguous into a human-review queue, and on every field offers a click-to-highlight back to the source page. The design bet is narrow and load-bearing: the highlight has to be anchored to the document, because a highlight in the wrong place erodes a reviewer's trust faster than no highlight at all.
+I built the frontend, extraction service and MCP interface as an independent portfolio demo. The current UI puts the review queue beside the PDF on desktop and before it on mobile.
 
 <Specs>
-  <Spec label="Role" value="Strategy, design, and engineering (frontend + backend + MCP)" />
+  <Spec label="Role" value="Product, design and engineering (frontend, backend and MCP)" />
   <Spec label="Year" value="2026" />
-  <Spec label="Domain" value="AI document extraction · lease abstraction" />
-  <Spec label="Stack" value="Next.js 16 · FastAPI · LangGraph · Claude (claude-sonnet-4-6 extract, claude-haiku-4-5 Q&A) · ocrmypdf + pdfplumber + pypdfium2 · Neon Postgres · MCP" />
-  <Spec label="Status" value="Shipped" />
+  <Spec label="Domain" value="Lease extraction and document review" />
+  <Spec label="Stack" value="Next.js · FastAPI · LangGraph · Claude · OCR · Postgres · MCP" />
+  <Spec label="Status" value="Live portfolio demo" />
 </Specs>
 
-## Problem framing
+<figure className="my-10">
+  <Image
+    src="/work/tenancy.png"
+    alt="Tenancy's live review queue beside the source lease PDF, showing eight review items and four open blockers separately from extraction completion."
+    width={1280}
+    height={960}
+    sizes="(max-width: 768px) 100vw, 768px"
+    className="h-auto w-full border border-[var(--color-graphite-80)]"
+  />
+  <Caption>Live app, October 24, 2026. The sample lease has finished extraction and still has eight items to review.</Caption>
+</figure>
 
-Three observations shape the design, and all three are about the highlight, not the extraction:
+## The review problem
 
-1. **The extraction is the easy part; the highlight is the product.** Claude reads a Texas Apartment Association lease and returns the nine sections — parties, property, term, rent, deposits, utilities, pets, special clauses, compliance — without much coaxing. What a property-management reviewer actually needs is to click a field and see the source line light up in the PDF. That link is where the system repeatedly broke.
-2. **A wrong-place highlight is worse than none.** The first approach was text matching: find the extracted snippet in the PDF's text layer and highlight it. Twelve-plus iterations of increasingly elaborate fuzzy matching still produced confident highlights on the wrong line — and a reviewer who catches the tool highlighting the wrong place once stops trusting every highlight after. The honest fallback (highlight nothing when you're not sure, and say so) beats a clever wrong guess.
-3. **Letting the model emit coordinates fails exactly where it matters.** The obvious fix — ask Claude's vision to return a bounding box per field — drifted three to eight percent on filled values and boxed entire section headers when the field was a blank template placeholder. The blank and scanned fields are precisely the ones a reviewer most needs to verify, so a method that degrades there is a method that fails the job.
+A structured value is difficult to check without its source. Early text matching sometimes highlighted the wrong line, while model-generated coordinates drifted around blank fields. I moved highlight positioning to OCR word coordinates and kept the model responsible for extracting values and source snippets.
 
-## Solution
+The UI also needed to distinguish completed extraction from completed review. A blank rent field could previously appear beside a green confidence percentage, while the review queue sat below all nine extracted sections.
 
-The pipeline ingests and OCRs the PDF, extracts the nine sections grounded on page images, derives highlight coordinates from OCR positions rather than model estimation, validates the result into an exception queue, and answers grounded questions over the stored extraction. The same backend is exposed as an MCP server.
+## The current workflow
 
-### Page-image-grounded extraction
+The review queue now comes first, with blockers before warnings. Each item shows the extracted value or a missing-value description, a source-page link and three actions:
 
-Each section is extracted by Claude Sonnet over the OCR'd text *plus* a rendered PNG of each page. The split is explicit in the prompt: the image is ground truth for visual fields — checkboxes, signatures, hand-fill — and the OCR text is ground truth for dense prose. This fixed a class of false-positive checkbox reads where Tesseract had read scan noise as a stray mark and the model trusted the text.
+- **Accept value** keeps the value and clears that review item.
+- **Edit value** saves a correction to the stored extraction.
+- **Reject value** records the decision. Rejected blocking values remain visible and continue to block review.
 
-### The highlight pivot — OCR-anchored bounding boxes
+After a saved decision, the app reloads both the lease fields and review items. If that reload fails, it labels the displayed data as the previous snapshot and pauses further decisions until reload succeeds.
 
-The model's response contract carries no coordinates. It returns `{value, snippet, match_type, section_label}` and nothing geometric. The backend then aligns each snippet against pdfplumber's word-level positions in the OCR'd PDF using `rapidfuzz` partial-ratio matching, groups the matched words into lines by their vertical coordinate, and emits one bounding box per line — the PDF specification's QuadPoints highlight model, the same shape Adobe and Mendeley render. The frontend draws absolutely-positioned overlays scaled to the rendered page width. Filled values land tight on the value; multi-line values render as stacked rectangles; blank template fields anchor on the labeled blank line rather than the section header above it.
+The status badge says **Extraction complete** separately from the open-review count. Missing fields read **Blank in document**, **Not stated** or **Not extracted**, according to the source information. Short notes appear beside relevant values; full model notes and self-reported certainty remain expandable. The averaged confidence score is no longer displayed.
 
-### Exception queue with real resolve semantics
+## Extraction and source links
 
-Validation rules — required-field presence, date ordering, confidence thresholds — flag exceptions as `blocking` or `warning`. The three resolve actions are genuinely distinct: **approve** accepts the current value and clears the blocker; **edit** walks the extraction JSON to the exception's `field_path`, rewrites the leaf value, and bumps confidence to 1.0 (a human said so); **reject** closes the row for audit but keeps the blocking flag material. A derived `ready_to_proceed` boolean on every lease is true only when the lease is complete and no blocking exception is left unresolved-or-rejected.
+The service combines OCR text with page images to extract parties, property, term, rent, deposits, utilities, pets, special clauses and disclosures. Page images provide context for checkboxes and handwritten entries that OCR can misread.
 
-### Grounded Q&A and the MCP surface
+The backend matches source snippets to OCR word positions with pdfplumber and RapidFuzz, then returns a highlight box for each matched line. Field links open the source page and draw an overlay when coordinates are available. Checkbox and signature geometry is not highlighted.
 
-Claude Haiku answers natural-language questions over the stored extraction — never the raw PDF — so every answer cites a `field_path`, page, and snippet, and the citation clicks through to the same highlight overlay. The whole agent is also a six-tool MCP server (`list_leases`, `get_lease`, `extract_lease`, `query_lease`, `list_exceptions`, `resolve_exception`), so it runs inside Claude Desktop against the same Railway backend the SaaS UI uses.
+Questions use the stored extraction. Their citations open the cited PDF page without a highlight overlay. The same backend exposes six MCP tools for listing, retrieving and extracting leases, asking questions, and listing or resolving review items.
 
-## Implementation considerations
+Source: [frontend](https://github.com/kristenmartino/tenancy) and [backend / MCP](https://github.com/kristenmartino/tenancy-api).
 
-**The strict matcher was the right retreat, not the answer.** After the fuzzy-matching iterations, the interim ship was exact-normalized-match-only: highlight only on an exact text-layer hit, and fail silently otherwise. That made the failure mode honest — no more wrong-place highlights — but it couldn't highlight a scanned page or a blank field at all, because there was no text-layer string to match. It bought time to build the real thing without shipping a dishonest one.
+## Verification and limits
 
-**The model must not emit coordinates.** The pattern I found across the OCR and document-layout tooling I looked at was consistent: let OCR own geometry and let the model own semantics. Coordinate generation from a raster is exactly where model-emitted boxes drift — it is the part to take away from the model, not tune. The pivot was to stop asking Claude for boxes and start deriving them from OCR positions the model never sees.
+The October 24 UI release was checked on the deployed app for queue order, note disclosures, source-page navigation, correction-form cancellation and mobile layout. Existing production lease data was unchanged. Saved corrections and recovery after a failed reload were tested with local fixtures.
 
-**A many-image API limit bit late, on a rotated scan.** Page renders are capped at 1950px on the longest side because Anthropic's many-image requests cap each image at 2000px — and every extraction sends nine section calls, each a many-image request. Letter at 150 DPI is fine; a legal-size or rotated-and-OCR'd scan would 400 the whole extraction with an image-dimensions error until the per-page scale was clamped.
+Ten automated checks cover review state, missing-value labels, formatting, source navigation and refresh behavior. They do not measure extraction accuracy. Highlight placement has been checked manually on sample documents; there is no formal extraction evaluation set.
 
-**The renderer is bbox-source-agnostic by construction.** The frontend consumes `bboxes: BoundingBox[]` and is blind to where the boxes came from. The vision-to-OCR pivot touched zero renderer code, and the eventual production-grade upgrade — AWS Textract `SELECTION_ELEMENT` for checkbox and signature geometry — is the same clean backend swap.
-
-## Reflections
-
-- **The saga was the lesson.** Twelve-plus iterations of fuzzy text matching, then a strict-match retreat that failed silently, then model-emitted boxes that drifted, then OCR-anchored boxes that held. The answer turned out to be an architecture — OCR for geometry, model for semantics — not a better heuristic. The detour lives in the commit history and the status log; I left it there, because the wrong turns are the part of the story that's actually instructive.
-- **Verified end-to-end, not measured.** On a fresh lease I checked field by field: filled values land tight, a multi-line owner address renders as two stacked rectangles, and a blank monthly-rent field anchors on the labeled blank line in the rent section rather than the section header. There is no formal eval set yet, so I describe the highlight quality from direct verification — not a single accuracy percentage I couldn't defend under questioning.
-- **The coverage gap is stated where the user sees it, not just in the docs.** Checkboxes and signatures aren't highlighted; that geometry is deferred to a Textract follow-up. Rather than guess a box, the app navigates to the right page and shows no overlay — the same silent-miss-over-wrong-place rule that governs the whole feature. A reviewer is told the truth at the moment of the click.
-- **Two surfaces, one backend.** The [SaaS frontend](https://github.com/kristenmartino/tenancy) (Next.js on Vercel) and the six-tool MCP server both hit the same [FastAPI + LangGraph backend](https://github.com/kristenmartino/tenancy-api) (Railway). The MCP turns "show me what's flagged on this lease and fix the start date to January 1st" into a multi-tool exchange in Claude Desktop — `list_exceptions`, then `get_lease` for context, then `resolve_exception` with the correction — against live production data.
-- **What's deferred is deferred honestly.** No multi-tenant auth, no eval set, no closed-loop feedback yet. The exception queue already stores human corrections as first-class data; feeding those corrections back into the extraction prompt is the obvious next step and is explicitly not built. Calling that out is cheaper than discovering later that the demo implied it.
-
-## Closing observation
-
-The most useful principle carried straight over from the rest of this portfolio's work:
-
-> Make the failure visible. A lease abstraction that highlights nothing when it isn't sure — and says so — is more trustworthy than one that confidently boxes the wrong line.
-
-The highlight is the part a reviewer actually checks. Getting it *honest* mattered more than getting it everywhere — and that is the decision the whole system is organized around.
+Multi-tenant authentication and a feedback loop that uses review corrections to improve extraction are not implemented. Automated checks flag fields for review; they do not establish that a lease is accurate or fully reviewed.
