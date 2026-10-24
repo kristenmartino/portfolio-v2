@@ -14,19 +14,24 @@ These are assumptions, not research findings. Before a pilot, I would ask intend
 
 ## What the reviewer hands off
 
-The [demo](https://specialtypulse.kristenmartino.ai/?view=market) includes “Prepare a specialty review · sample handoff.” A shared specialty selection connects the handoff and Procedure Detail. Analysts can add a procedure from the service-count ranking to the brief, then write an observation and its limits, an open question, a next reviewer and a requested check.
+The [demo](https://specialtypulse.kristenmartino.ai/?view=market) includes “Prepare a specialty review · sample handoff.” A shared specialty selection connects the handoff and Procedure Detail. Analysts can compare the same procedure across two consecutive years, add that comparison to the brief, then write an observation and its limits, an open question, a next reviewer and a requested check.
 
-The Markdown download includes the selected procedure's specialty, HCPCS code, year, payment and service count alongside the analyst's draft notes. Each specialty keeps a separate draft as the analyst switches tabs. Drafts last until the page reloads; downloading keeps a copy and does not send or assign it. Missing fields remain explicitly marked. A four-element completeness check measures presence, not accuracy or approval.
+The Markdown download includes both years' payments and service counts, calculated changes, the analyst's draft notes and a link that reopens the selected comparison. Verification links point to the reporting mart, synthetic raw inputs and local Spark receipt at the build's repository revision; hashes identify the recorded data snapshot. Each specialty keeps a separate draft as the analyst switches tabs. Drafts last until the page reloads; downloading keeps a copy and does not send or assign it. Missing fields remain explicitly marked. A four-element completeness check measures presence, not accuracy or approval.
 
-In the current constructed scenario, the example starts with Orthopedic Surgery:
+## Worked example: a completed illustrative brief
 
-- **Focus:** investigate its payment comparison. The scenario score is 70.1 and average procedure-level payment change is −3.9%.
-- **Exposure context:** 47 synthetic active deals worth $6.27M, or 15.6% of active pipeline. Those amounts are separate from the score.
-- **Questions:** do source records, service mix and calculation explain the comparison? Are deal stages current, and what do account notes say about the customer’s needs?
-- **Proposed handoff:** the specialty analyst checks the source and interpretation; sales operations checks deal/account context; the receiving sales or operations lead confirms the next reviewer and evidence request.
-- **Status:** sample only, with source and account validation pending. No shortlist or stakeholder approval has been recorded.
+Open [Dermatology / HCPCS 99213 / CY2023](https://specialtypulse.kristenmartino.ai/?view=procedure&specialty=Dermatology&hcpcs=99213&year=2023), inspect the two-year comparison and choose **Add comparison to brief**. The following is an illustrative completed handoff, not a record of stakeholder use or assignment.
 
-The intended output is a clearer request for follow-up. A specialty-level score does not establish an account's need or justify outreach by itself.
+- **Focus and evidence:** Office visit, established patient — Dermatology / HCPCS 99213. The generated 2022 scenario has **$108.05 per service across 3,626 services**; the synthetic 2023 base has **$104.91 across 3,777 services**. Payment changes by **−$3.14 (−2.9%)** and service count by **+151 (+4.2%)**. Percentages use the prior-year value as the denominator; payment differences use the displayed mart amounts rounded to cents.
+- **Analyst observation and limits:** In this constructed comparison, payment per service falls while service count rises. The generated prior-year scenario cannot establish a historical payment trend, its cause or an account's need.
+- **Open question:** Which source rows and service mix explain this constructed change?
+- **Next reviewer:** Specialty analyst.
+- **Requested next check:** Match Dermatology / HCPCS 99213 in the pinned 2022 and 2023 inputs and reporting rows. Reproduce the service-weighted payments and service counts, then record unresolved data or interpretation issues for the sales or operations lead.
+- **Commercial context:** Dermatology's scenario score is 66.6. Its 53 synthetic active deals total $4,579,800, or 11.4% of active pipeline. Those amounts are separate from the procedure comparison and score.
+- **Recipient verification:** The downloaded brief carries the exact comparison link, versioned input/mart files, data hashes and run receipt. Its 2023 calculation trace identifies the 57 raw rows behind the $104.91 value below; that trace does not verify the generated 2022 inputs.
+- **Status:** illustrative draft; source and account validation remain pending. Naming a reviewer does not send or assign the brief. No shortlist or stakeholder approval has been recorded.
+
+The recipient's next action is to verify the evidence and report unresolved issues before a commercial recommendation. A specialty-level score does not establish an account's need or justify outreach by itself.
 
 ## How usefulness would be evaluated
 
@@ -49,7 +54,7 @@ These thresholds are proposed, not achieved results. If accuracy or completeness
 
 **Make the payment denominator explicit.** Average payment per billed service gives larger service volumes more weight. In the reconciled example, a simple average across 57 source rows is $103.80; weighting by their 3,777 services gives $104.91. Different denominators can lead reviewers to different conclusions.
 
-**Keep procedure comparisons specific.** I rank the most-used procedures by service count and display payment alongside them. A specialty's blended average combines different procedures, so a payment below that blend is not evidence that a particular procedure is underpaid. The ratio-based outlier definition is available beside the table.
+**Keep procedure comparisons specific.** The comparison matches specialty, HCPCS code and consecutive years. Missing inputs or a zero prior value leave percentage changes unavailable. I also rank the most-used procedures by service count. A specialty's blended average combines different procedures, so a payment below that blend is not evidence that a particular procedure is underpaid. The ratio-based outlier definition is available beside the table.
 
 **Keep scores and sales dollars separate.** The index organizes comparison scenarios; pipeline amounts provide exposure context. The score prompts questions about payment, charge and volume inputs. Its weights have not been validated against purchase decisions or sales outcomes.
 
@@ -68,7 +73,7 @@ A recorded local Spark run processes **29,982 raw records into 870 rows used by 
 
 The first complete run exposed duplicate synthetic provider identifiers. I corrected them deterministically and retained duplicate-key rejection before aggregation. Policy tests [import the deployed builders directly](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/tests/test_pdp_policy_builders.py) and exercise the real configuration with a fake API client.
 
-Open [Procedure Detail](https://specialtypulse.kristenmartino.ai/?view=procedure) to inspect the displayed payment and its source trace. The [run receipt](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/pipeline_run.json), [input/output artifact](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/payment_verification.json) and [reproduction guide](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/docs/verification/payment-check.md) provide the technical detail.
+Open the [same Dermatology / 99213 comparison](https://specialtypulse.kristenmartino.ai/?view=procedure&specialty=Dermatology&hcpcs=99213&year=2023) to inspect the displayed payments and 2023 source trace. The [run receipt](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/pipeline_run.json), [input/output artifact](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/payment_verification.json) and [reproduction guide](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/docs/verification/payment-check.md) provide the technical detail. The brief's versioned links preserve its evidence snapshot when the live demo changes.
 
 ## Scope and next validation
 
