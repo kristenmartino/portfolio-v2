@@ -1,7 +1,7 @@
-A team might begin with a request to replace a billing tool because invoices keep needing corrections. I would first separate the observation from the proposed fix.
+In my [billing recovery work at RealPage](/work/billing-recovery-and-reconciliation), exceptions included missing order matches, inconsistent customer or property identifiers, and product or bundle configuration problems.
 
-In that hypothetical case, the observation is repeated invoice corrections. Useful questions include which products are affected, where the incorrect values first appear and whether the issue is in configuration, source data or a manual handoff. Replacing the tool is one possible response, but the evidence may point to a smaller change.
+I translated those discrepancies into field mappings, transformation rules and reconciliation requirements. The immediate need was to produce importable billing lines for failed transactions while the underlying corrections progressed.
 
-I would collect a few representative cases, trace them through the workflow and compare explanations with the people doing the work. Then I would write down the options and what evidence would support each one.
+An interim Alteryx process supported that work before month-end close. I defined the mappings, rules and validation requirements and coordinated with Revenue Operations. The data-warehouse and implementation teams built the model.
 
-This takes time and should fit the size of the decision. A small, reversible fix may need only a short check. A migration affecting several teams calls for a more detailed investigation.
+For a similar investigation, I would write an exception as a checkable requirement: identify the source and target fields, define the expected mapping, specify how rejected rows are handled, and state how the output will reconcile. Those details are more useful to the delivery team than a broad instruction to replace or automate the workflow.

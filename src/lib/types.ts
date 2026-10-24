@@ -104,6 +104,7 @@ export type Note = {
   index: string;
   title: string;
   date: string;
+  updated?: string;
   excerpt: string;
   readingMinutes: number;
 };

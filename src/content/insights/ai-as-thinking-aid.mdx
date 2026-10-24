@@ -1,5 +1,11 @@
-In [Tarazu](/work/tarazu), AI can suggest reach, impact, confidence and effort inputs. Users can review those suggestions, change the values and record their reasoning before comparing the resulting rankings.
+[Tarazu](/work/tarazu) uses 1–100 bands for reach, impact, confidence and effort. These are relative planning inputs. A reach score of 80 does not mean 80 users, and confidence of 90 is not a calibrated 90% probability.
 
-That distinction is useful when a number depends on an assumption. Suppose a team estimates that a feature will reach 1,000 users. The review should make clear where that estimate came from and how the ranking changes if the actual reach is closer to 200. A precise score cannot make an uncertain estimate reliable.
+The [scoring function](https://github.com/kristenmartino/Tarazu/blob/87f3698af1e7665730e136e91413a961b6f86152/src/utils.js) calculates:
 
-My preference is to keep the calculation visible and treat generated explanations as supporting material. A reviewer should be able to reconstruct a ranking from its inputs without accepting the AI's explanation. Whether this helps a team make better decisions would require observing its use over time.
+`round((reach × impact × confidence) ÷ max(effort, 1))`
+
+For an illustrative candidate with reach 80, impact 60, confidence 90 and effort 30, the result is **14,400**. Change confidence to 30 and the score becomes **4,800**. No new customer evidence has appeared; only an input changed. The arithmetic shows sensitivity to an assumption, rather than a forecast of value.
+
+AI can suggest those inputs, but a reviewer still needs to decide what supports them. The fictional [Relay demo](https://tarazu.app/demo) puts an assumption about overlooked approvals beside conflicting notes about missing documents. Its draft decision favors a checklist experiment before building reminders.
+
+The records explain why the proposed next step changed. The checklist experiment remains a proposal. A useful review is to recover the inputs and evidence behind that decision, then return to the record after the test to see what changed.

@@ -28,7 +28,7 @@ export type Engagement = {
   id: string;
   index: string;
   name: string;
-  /** "starting at" anchor — placeholder, confirm before launch. */
+  /** Starting price displayed on the engagement card. */
   anchor: string;
   timeline: string;
   cadence: string;
@@ -41,7 +41,7 @@ export type Engagement = {
 export type ProofItem = {
   slug: string;
   name: string;
-  /** Reframed one-liner: what this proves about the offer. */
+  /** The implementation example illustrated by this project. */
   claim: string;
   detail: string;
   metric: string;
@@ -111,7 +111,7 @@ export const proof: readonly ProofItem[] = [
     liveHref: "https://cabana-kristenmartinos-projects.vercel.app",
     liveLabel: "Try the demo",
   },
-  { slug: "tarazu", name: "Tarazu", claim: "Reviewing product-prioritization inputs.", detail: "A RICE prioritization tool where users can adjust AI-suggested inputs and record the reasons behind a ranking.", metric: "Reach · impact · confidence · effort", caseStudyHref: "/work/tarazu", liveHref: "https://prioritize.kristenmartino.ai", liveLabel: "Try Tarazu" },
+  { slug: "tarazu", name: "Tarazu", claim: "Relative scores and saved decision reasons.", detail: "The fictional Relay walkthrough links editable scores, supporting and conflicting notes, and a draft decision. Users can copy the reasoning into a decision brief.", metric: "Fictional walkthrough · editable scores", caseStudyHref: "/work/tarazu", liveHref: "https://tarazu.app/demo", liveLabel: "Try the Relay demo" },
 ];
 export const processHeading = "How the review works.";
 export const processSteps: readonly ProcessStep[] = [

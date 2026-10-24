@@ -1,5 +1,12 @@
-An extracted value is easier to review when its source is visible beside it. In [Tenancy](/work/tenancy), that means showing lease details with the source pages and giving the reviewer a way to approve, correct or reject flagged fields.
+In [Tenancy](/work/tenancy), an extracted field can include a page number, a snippet and coordinates for highlighting the source. Those references give a reviewer somewhere to look. They do not establish that the extracted value is correct.
 
-I would use the same approach for other document workflows: keep the source excerpt close to the value, identify missing information and preserve a correction when the user supplies one. If a value was calculated from other fields, show that calculation rather than presenting it as a quote from the document.
+Two details in the implementation matter:
 
-Source links make values easier to check. Measuring extraction accuracy still requires reviewed examples, including incomplete and difficult documents.
+- The extraction schema permits `source: null`. A field can arrive without a reference.
+- The Q&A prompt requests citations, but the response schema permits an empty citation list. Parsing a valid response does not check whether the cited field supports the answer.
+
+That distinction changes how I describe the feature: source navigation is implemented; independent citation verification is not. The [extraction schema](https://github.com/kristenmartino/tenancy-api/blob/main/schemas.py) and [Q&A handler](https://github.com/kristenmartino/tenancy-api/blob/main/qa.py) show the boundary.
+
+The review queue addresses a different task. A person can accept a flagged value, save a correction or reject it. Extractions are already stored before those decisions. Clearing a blocker records a review decision; it is not an accuracy measurement.
+
+The next evaluation needs labeled leases with expected values and supporting source locations. I would score value correctness and source support separately, including missing fields and incorrect references. A working page link should not turn either failure into a pass.

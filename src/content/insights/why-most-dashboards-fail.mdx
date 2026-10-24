@@ -1,7 +1,9 @@
-When planning a dashboard, I find it useful to name a question before choosing charts. For example: which specialties have declining average payments, and which procedures account for the difference?
+In [SpecialtyPulse](/work/specialtypulse-pipeline), the procedure view answers a narrower question than the specialty summary: what was the average payment per service for a particular procedure?
 
-[SpecialtyPulse](/work/specialtypulse-pipeline) supports that review with specialty comparisons and a procedure view. Its synthetic CMS-schema records let someone inspect the calculations and navigation. It does not show that the dashboard improves sales decisions or business outcomes.
+For Dermatology / HCPCS 99213, the synthetic 2023 fixture contains **57 qualifying rows and 3,777 services**. Summing each row's payment multiplied by service count gives **$396,247.22**. Dividing by 3,777 gives **$104.91 per service**, rounded to cents. The [verification artifact](https://github.com/kristenmartino/specialtypulse_pipeline/blob/60ef4479fd197f7abf171907f9a93b757d6e5085/data/payment_verification.json) lists the inputs and source-file hash.
 
-Usage measures also depend on the task. A daily operations view might be used every morning; a monthly reconciliation report might be working well at a monthly cadence. Usage frequency needs that context to be meaningful.
+A simple average of row-level payments would give each row equal influence, even when one represents many more services. Weighting by service count answers the stated question. It still does not tell us whether a procedure is underpaid or whether a sales opportunity exists.
 
-I would evaluate a dashboard by asking intended users to complete a relevant review: find the exception, explain the measure and identify what to investigate next. I would also check whether the data reconciles and whether labels are understood. A clear purpose helps choose a view, but data quality and usability still need their own checks.
+The displayed value now comes from the same local Spark mart as the verification output. That supports the path from fixture to calculation to screen. It does not establish that the synthetic comparison years describe historical Medicare trends, or that the external Databricks, Airflow and Domo services executed.
+
+For a dashboard review, I would start with one displayed value: name the denominator, recover its source rows and reproduce the calculation. Then ask an intended user what decision that value supports. Reconciliation and usefulness are separate checks; a successful calculation does not answer both.
