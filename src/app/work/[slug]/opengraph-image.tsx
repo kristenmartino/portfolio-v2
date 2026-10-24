@@ -91,7 +91,7 @@ export default async function OpengraphImage({
             style={{
               display: "flex",
               flexDirection: "column",
-              gap: 40,
+              gap: 24,
             }}
           >
             <div
@@ -107,8 +107,22 @@ export default async function OpengraphImage({
               {title}
             </div>
 
+            {study?.shareDescription && (
+              <div
+                style={{
+                  fontFamily: "IBM Plex Sans",
+                  fontSize: 26,
+                  lineHeight: 1.35,
+                  color: "#c6c6c6",
+                  maxWidth: 1000,
+                }}
+              >
+                {study.shareDescription}
+              </div>
+            )}
+
             {metrics.length > 0 && (
-              <div style={{ display: "flex", gap: 16 }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
                 {metrics.map((m) => (
                   <div
                     key={m}

@@ -10,6 +10,10 @@ export const site = {
       "Software projects in document review, forecasting and product prioritization, informed by experience in actuarial analytics, billing, pricing and platform migrations.",
   },
   tagline: "Strategy. Analytics. Applied AI.",
+  hero: {
+    lead: "I build",
+    focus: "tools for complex business workflows.",
+  },
   currentFocus:
     "Forecasting and applied AI for operations-heavy environments.",
   builtWith: ["Next.js 16", "IBM Plex", "Framer Motion", "Vercel"],

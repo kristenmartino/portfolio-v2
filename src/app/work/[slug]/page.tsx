@@ -23,10 +23,11 @@ export async function generateMetadata({
   const study = getStudy(slug);
   if (!study) return {};
 
-  const description =
+  const description = study.shareDescription ?? (
     study.summary.length > 160
       ? `${study.summary.slice(0, 157).trimEnd()}…`
-      : study.summary;
+      : study.summary
+  );
 
   return {
     title: `${study.title} — Kristen Martino`,
