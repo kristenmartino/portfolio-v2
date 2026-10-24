@@ -1,30 +1,24 @@
 ## Overview
 
-Cabana is a member portal and operations layer for Sailfish Pool Care — a fictional three-tech residential pool company. It's a real system for an invented client: the client is fabricated so the hard parts could be exercised in the open — injecting failures, killing infrastructure mid-run, publishing a secret-rotation runbook — with no customer's live pipeline on the line.
+Cabana is a demo portal for a fictional pool-service company. Customers can report problems, track repairs and pay test deposits.
 
-The spine is one sentence: a member describes a problem in their own words → Claude Haiku triages it (confidence-gated, structurally unable to promise a price or a time) → qualified repairs collect a $75 deposit through webhook-authoritative Stripe Checkout → the owner approves with one tap from Telegram → the office runs the week from an Airtable projection → a transactional outbox and n8n guarantee that no side effect is ever silently dropped.
-
-<Quote>
-The complexity budget is spent in exactly three places — payment truth, delivery guarantees, and member-data isolation — and the design is aggressively boring everywhere else.
-</Quote>
-
-That allocation is the point. A pool company doesn't need a route optimizer or a billing migration; it needs intake that never loses a customer, money that's never wrong, and a system where the app, the owner's phone, the office board, and the member's portal can't disagree about what's true.
+AI classifies requests and drafts acknowledgments for staff; staff control pricing and scheduling.
 
 <Specs>
-  <Spec label="Role" value="Solo build — discovery, architecture, invariants, implementation, and review (paired with Claude Code)" />
+  <Spec label="Role" value="Solo build with AI-assisted coding" />
   <Spec label="Year" value="2026" />
-  <Spec label="Domain" value="Field-service operations · fictional client, real system" />
+  <Spec label="Domain" value="Field-service operations · fictional company" />
   <Spec label="Stack" value="Next.js 15 (Vercel) · Supabase (Postgres · RLS · Edge Functions) · Stripe Checkout · n8n · Airtable · Telegram · Claude Haiku · Resend" />
-  <Spec label="Status" value="v1.0 — tagged · gates 1–3a (chaos) closed · live one-click public demo (fictional data · Stripe test mode)" />
+  <Spec label="Status" value="Public demo · fictional data · Stripe test mode" />
 </Specs>
 
 ## The system
 
-<Diagram title="System architecture — the spine and its three complexity zones">
+<Diagram title="System architecture">
   {/* Inline SVG — theme-reactive via design tokens. Raster fallback in /public/work: cabana-architecture-dark.png (dark) + cabana-architecture-light.png (light). */}
   <svg viewBox="0 0 960 560" role="img" aria-labelledby="cab-ttl cab-dsc" fontFamily="var(--font-sans, system-ui, sans-serif)" className="w-full h-auto">
     <title id="cab-ttl">Cabana system architecture</title>
-    <desc id="cab-dsc">Member portal and ops automation for Sailfish Pool Care: member browser to Next.js on Vercel, Supabase Postgres as source of truth with three edge functions, and external services Claude Haiku, Stripe, n8n, Airtable, Telegram and Email.</desc>
+    <desc id="cab-dsc">Member portal and ops automation for Sailfish Pool Care: member browser to Next.js on Vercel, Supabase Postgres as source of truth with three edge functions, and external services Claude Haiku, Stripe, n8n, Airtable, Telegram and Resend operational alerts.</desc>
     <defs>
       <marker id="ah" viewBox="0 0 8 8" refX="6.6" refY="4" markerWidth="7" markerHeight="7" orient="auto" markerUnits="userSpaceOnUse">
         <path d="M0.5,1 L6.8,4 L0.5,7 Z" fill="var(--color-graphite-60)"/>
@@ -114,8 +108,8 @@ That allocation is the point. A pool company doesn't need a route optimizer or a
       <text fill="var(--color-bone)" fontWeight="600" x="764" y="272" fontSize="12.5" textAnchor="middle">Telegram</text>
       <text fill="var(--color-graphite-40)" x="764" y="288" fontSize="10" textAnchor="middle">owner bot</text>
       <rect fill="var(--color-soot)" stroke="var(--color-graphite-80)" strokeWidth="1.2" x="700" y="340" width="128" height="56" rx="9"/>
-      <text fill="var(--color-bone)" fontWeight="600" x="764" y="366" fontSize="12.5" textAnchor="middle">Email</text>
-      <text fill="var(--color-graphite-40)" x="764" y="382" fontSize="10" textAnchor="middle">member notifications</text>
+      <text fill="var(--color-bone)" fontWeight="600" x="764" y="366" fontSize="12.5" textAnchor="middle">Resend</text>
+      <text fill="var(--color-graphite-40)" x="764" y="382" fontSize="10" textAnchor="middle">ops alert fallback</text>
     </g>
     <g>
       <rect fill="var(--color-graphite-90)" stroke="var(--color-graphite-80)" strokeWidth="1" x="24" y="430" width="316" height="104" rx="10"/>
@@ -123,7 +117,7 @@ That allocation is the point. A pool company doesn't need a route optimizer or a
       <rect fill="none" stroke="var(--color-graphite-40)" strokeWidth="1.1" strokeDasharray="2.4 2" x="40" y="461" width="14" height="11" rx="2"/>
       <text x="64" y="471" fontSize="10"><tspan fill="var(--color-bone)" fontWeight="600">payment truth</tspan><tspan fill="var(--color-graphite-40)"> — verified webhook → DB, idempotent</tspan></text>
       <line stroke="var(--color-signal-blue)" strokeWidth="1.9" fill="none" x1="40" y1="488" x2="52" y2="488" markerEnd="url(#aha)"/>
-      <text x="64" y="492" fontSize="10"><tspan fill="var(--color-bone)" fontWeight="600">delivery guarantee</tspan><tspan fill="var(--color-graphite-40)"> — outbox → n8n, retries + DLQ</tspan></text>
+      <text x="64" y="492" fontSize="10"><tspan fill="var(--color-bone)" fontWeight="600">delivery tracking</tspan><tspan fill="var(--color-graphite-40)"> — outbox → n8n, retries + DLQ</tspan></text>
       <g fill="none" stroke="var(--color-signal-blue)" strokeWidth="1.1">
         <ellipse cx="47" cy="505" rx="7" ry="2.4"/>
         <path d="M40,505 L40,512 A7,2.4 0 0 0 54,512 L54,505"/>
@@ -133,54 +127,56 @@ That allocation is the point. A pool company doesn't need a route optimizer or a
   </svg>
 </Diagram>
 
-Supabase Postgres is the single source of truth; RLS enforces member isolation at the database, not in UI filters. Next.js on Vercel is the member portal — server actions perform every write, so no service key ever reaches the browser. Three edge functions are the only inbound webhook surfaces (Stripe, Telegram, Airtable write-back): they validate authenticity, translate to a state change plus an outbox row, and exit. All outbound side effects — Airtable, Telegram pings, email — are delivered by n8n from the outbox, where a non-engineer operator can open the flow and see it. Claude Haiku is a bounded subsystem: schema-validated, confidence-gated, allowed to draft but never to commit.
+Next.js provides the member portal. Supabase Postgres stores member and booking data, with row-level security restricting access to each member’s records.
+
+Edge functions validate incoming Stripe, Telegram and Airtable events. n8n processes pending outbox events to update Airtable and send notifications. Claude Haiku classifies requests and drafts acknowledgments for staff. Member status messages use recorded booking and payment states.
 
 ## Problem framing
 
-Three observations shaped the build, and none of them are about features:
+Three risks shaped the implementation:
 
-1. **The obvious build drops data in the places that matter most.** Fire-and-forget notifications vanish the moment a downstream service blinks. A status change that emits its side effect *after* the transaction commits can succeed while the notification silently fails — and nobody knows a request was lost.
-2. **The success redirect is not payment truth.** Trusting Stripe's redirect double-books on replay and lies when a member closes the tab. Payment state has to derive from signature-verified events, recorded once, idempotently.
-3. **A helpful AI is a liability if it can promise anything.** The owner's own framing was the spec: a confident wrong answer is worse than a slow one. An intake model that can quote a price or a time turns a misread into a commitment the company has to honor.
+1. **Failed integrations:** A booking change may succeed while an update to Airtable or a staff notification fails.
+2. **Payment confirmation:** Customers may close their browser after paying, and Stripe can resend the same event. Payment recording needs to handle both cases.
+3. **AI mistakes:** Request classification and drafted responses can be incorrect. Prices and scheduling commitments remain staff decisions, and uncertain requests go to review.
 
-## AI that drafts but cannot commit
+## AI request triage
 
-Claude Haiku classifies free-text intake against a zod schema and drafts a warm, specific acknowledgment. The guarantee is structural, not a prompt asking nicely: **no code path exists** by which model output sets a price, promises a time, or advances a booking past `awaiting_deposit` / `needs_review`. A timeout, malformed output, or low confidence routes to a human queue with a holding reply — and the member flow can never throw because a model call failed. The golden set in CI, including prompt-injection cases, enforces 100% containment deterministically (temperature pinned to 0, after a flaky-green run was root-caused to an unset temperature defaulting to 1.0). The system's floor is the pre-existing normal: a person looks at it.
+Claude Haiku classifies free-text repair requests and drafts acknowledgments for staff. The application checks responses against a defined schema and uses a confidence threshold to determine whether staff review is needed.
 
-## Payment truth is the webhook, not the redirect
+Requests go to staff review when the AI call times out, returns invalid data or produces a low-confidence classification. Staff retain control of pricing and scheduling. The CI test suite includes prompt-injection cases that check these restrictions.
 
-Deposits run through hosted Stripe Checkout — chosen over the embedded Payment Element because a $75 deposit doesn't justify the PCI-adjacent surface area. Two invariants hold regardless of the UI: payment state transitions originate *only* from signature-verified webhook events, and every event ID is persisted in a `stripe_events` ledger so duplicates and out-of-order deliveries are no-ops. The success page renders "confirming…" and polls until the database says paid; a member who pays and closes the tab still lands on Scheduled, because the webhook — not the redirect — is the authority.
+## Member status
+
+The dashboard shows the regular service day from the member’s plan. The request page shows the stored booking status, payment receipt and any assigned visit window separately. AI triage does not establish that Dana reviewed a request.
+
+A request that reaches scheduling without an assigned visit window shows “Awaiting visit time,” or “Approved · time pending” after approval. Paying a deposit does not reserve an appointment.
+
+## Deposit confirmation
+
+Cabana uses Stripe Checkout in test mode for $75 repair deposits. Payment status is updated from Stripe webhook events after their signatures are verified.
+
+The application records event IDs so it can recognize repeated deliveries and avoid applying the same payment update twice. The confirmation page checks the database and displays “confirming…” until payment is recorded.
 
 ## The transactional outbox
 
-This is the load-bearing decision. Every status change commits its side-effect event in the *same* transaction, so the event exists if and only if the state change did. n8n consumes at-least-once with a dedupe key (idempotent consumers make that safe), retries to a dead-letter queue, alerts on the dead-letter, and a nightly reconciliation is the backstop. Latency and durability are handled by different mechanisms — a webhook nudge for speed, a 60-second sweep for the guarantee — instead of asking one channel to do both. The alternative, database triggers calling n8n directly, is the amateur default: if n8n is down at that instant, the event is gone.
+Booking status changes and their pending integration events are saved in the same database transaction. This record of pending work is the transactional outbox.
 
-## Reliability — and what chaos day found
+n8n processes events to update Airtable and send notifications. Failed deliveries are retried, and deduplication keys identify repeated deliveries. Events that reach the retry limit move to a dead-letter queue and trigger an alert.
 
-The failure-modes table is the artifact a reviewer should read first, because **detection is the column amateur builds leave blank** — every integration names how its failure is noticed (a `stripe_events` PK conflict, an outbox-depth health probe, a per-row `last_error`, nightly reconciliation).
+A webhook trigger starts processing, while a 60-second sweep checks for pending events. Nightly reconciliation checks for unresolved work.
 
-Then it was tested for real. One committed chaos run pushed 50 bookings through the *live* cloud pipeline while the n8n consumer was killed for 90 seconds, Airtable auth was broken, and Stripe events were replayed: **0 lost, 0 duplicated** — exactly-once delivery verified from both directions, with payment idempotency ledger-checked.
+## Failure-injection testing
 
-<Quote>
-A single reproducible chaos run at demo volume — not sustained production. The guarantee under test is delivery correctness under injected failure, not throughput.
-</Quote>
+A recorded test used 50 bookings while the n8n consumer was stopped, Airtable authentication was interrupted and Stripe events were replayed.
 
-And the run earned its keep: it surfaced a genuine bug (**#23**) — dead-lettering wasn't terminal, so the sweep re-retried dead-lettered rows and piled up duplicate alerts. Nothing was lost (if anything it was *louder* than intended), but the semantics were wrong — since **fixed in migration `0018`**: dead-lettering is now terminal (a `dead_lettered_at` column the sweep skips), so the row stops re-retrying. That's what chaos day is for: it finds the flaw, and the flaw gets fixed. The submit-to-delivered p95 for that run reads ~41 minutes — a **durability** datapoint, not a latency one, because it folds in the 90-second kill and a ~25-minute injected auth outage.
+All 50 booking records appeared in Airtable with no duplicates. The log also recorded 43 dead-lettered outbox events and no duplicate booking-created events or status transitions.
 
-## Honest notes
+The test exposed a retry bug that caused repeated alerts for dead-lettered events. The sweep was updated to skip those events until an operator explicitly requeues them.
 
-- **Fictional client, fabricated data.** Every member, address, and number is invented; there is **no client or third-party PII** in the repo (the author's own name and alert-routing address appear by design). gitleaks scans full history in CI.
-- **Solo, pairing with Claude Code — stated as a strength.** I owned the discovery, the architecture, the invariants (a "never-cut list"), and every review; the AI accelerated the typing. The value shows in what review caught — a `redirect()` in a `try/catch` that swallowed `NEXT_REDIRECT`; a discarded `payments.insert` error that would have sent a member to Stripe with nothing for the webhook to flip; an AI acknowledgment that rendered only on the review path, hiding it on the entire happy path — each documented in the build log.
-- **A pre-agreed cut, honored.** The member-email leg was cut deliberately rather than slipping a gate, and the chaos log states the adapted assertion instead of pretending. The Telegram bot refuses and logs unauthorized chats but doesn't yet rate-limit them (a named v1.5 item).
-- **Real incidents.** Two secrets were rotated for real during the build; a Railway↔Telegram network flake is tracked and mitigated with an email fallback; chaos day found #23. All in the log, not swept under it.
-- **A public demo that still enforces isolation.** Anyone can click *Enter the demo* and drive the app as a seeded member — fictional data, Stripe in test mode. It's a real authenticated session, not a bypass: RLS scopes every visitor to that one member exactly as it does a paying customer. The member-gate is still the boundary; the demo just walks a fabricated member through it.
+These results come from one recorded run at demo volume.
 
-## Reflections
+## Demo scope
 
-- **The outbox was the decision that mattered.** Everything downstream — retries, dead-lettering, reconciliation, the "silence means healthy" invariant — follows from committing the event with the state change. Get that wrong and no amount of alerting saves you.
-- **Chaos day is worth more than a green badge.** It found a real distributed-systems bug that unit tests couldn't, precisely because it broke the live system on purpose.
-- **Honesty is a design constraint, not a disclaimer.** Naming the cuts, the deferrals, and the one bug the chaos run exposed is the same discipline as filling in the Detection column — it's what makes the rest of the claims trustworthy.
+The public demo uses fictional data, a shared demo member account and Stripe test mode. Row-level security restricts the demo session to that member’s records.
 
-## Closing observation
-
-> Silence never means loss. A dropped notification, a replayed payment, a model that guessed wrong — each one is either impossible by construction or loud by design. That guarantee is the product; the pool company is just where it's proven.
+Member email notifications are not implemented. The Telegram bot rejects and logs unauthorized chats; rate limiting and alerts for those attempts remain follow-up work.
