@@ -103,9 +103,9 @@ export const proof: readonly ProofItem[] = [
   {
     slug: "cabana",
     name: "Cabana",
-    claim: "Request triage with staff approval.",
+    claim: "AI triage and separate staff approval.",
     detail:
-      "A demo pool-service portal where AI classifies requests, staff approve work, and Stripe records test deposits. One failure-injection run produced 50 Airtable records for 50 bookings with no duplicates.",
+      "AI can route a repair to a fixed $75 Stripe test deposit before staff approval. Staff approve work and assign visit times. One failure-injection run produced 50 Airtable records for 50 bookings with no duplicates.",
     metric: "Recorded test: 50/50 Airtable records · no duplicates",
     caseStudyHref: "/work/cabana",
     liveHref: "https://cabana-kristenmartinos-projects.vercel.app",
