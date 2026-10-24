@@ -68,7 +68,7 @@ export function EngagementCard({ engagement }: { engagement: Engagement }) {
         {/* deliverable preview — the tangible artifact */}
         <div className="mt-7 border border-[var(--color-graphite-20)] bg-[var(--color-paper)]">
           <div className="px-4 py-2.5 border-b border-[var(--color-graphite-20)] flex items-center justify-between">
-            <Mono variant="caption">What lands in your inbox</Mono>
+            <Mono variant="caption">Deliverable</Mono>
             <span
               aria-hidden
               className="h-1.5 w-1.5 rounded-full"

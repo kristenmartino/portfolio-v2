@@ -11,6 +11,7 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", {
   year: "numeric",
   month: "long",
   day: "numeric",
+  timeZone: "UTC",
 });
 
 export function generateStaticParams() {
@@ -66,7 +67,7 @@ export default async function InsightPage({
                 Insight / {note.index}
               </Mono>
               <Mono variant="caption" tone="muted">
-                {dateFormatter.format(new Date(note.date))} · {note.readingMinutes} min read
+                {note.updated ? "Updated " : ""}{dateFormatter.format(new Date(note.updated ?? note.date))} · {note.readingMinutes} min read
               </Mono>
             </div>
             <h1

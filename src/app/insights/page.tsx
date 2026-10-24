@@ -15,6 +15,7 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", {
   year: "numeric",
   month: "short",
   day: "2-digit",
+  timeZone: "UTC",
 });
 
 export default function InsightsIndex() {
@@ -45,7 +46,7 @@ export default function InsightsIndex() {
               </span>
             </h1>
             <p className="mt-6 text-base md:text-lg leading-relaxed max-w-xl text-[var(--color-graphite-40)]">
-              Design choices and open questions from my projects, with examples of how I would review them.
+              Project notes on lease extraction, prioritization scores, data checks and billing requirements.
             </p>
           </div>
 
@@ -54,7 +55,7 @@ export default function InsightsIndex() {
               <li key={note.slug}>
                 <Link
                   href={`/insights/${note.slug}`}
-                  className="group grid grid-cols-[3rem_1fr_auto] md:grid-cols-[4rem_1fr_auto] items-baseline gap-4 md:gap-8 py-7 md:py-9 border-b border-[var(--color-graphite-90)] hover:border-[var(--color-graphite-60)] transition-colors"
+                  className="group grid grid-cols-[2rem_minmax(0,1fr)] md:grid-cols-[4rem_minmax(0,1fr)_auto] items-baseline gap-4 md:gap-8 py-7 md:py-9 border-b border-[var(--color-graphite-90)] hover:border-[var(--color-graphite-60)] transition-colors"
                 >
                   <Mono variant="index" tone="muted">
                     {note.index}
@@ -67,9 +68,9 @@ export default function InsightsIndex() {
                       {note.excerpt}
                     </p>
                   </div>
-                  <div className="flex flex-col items-end gap-1 text-right">
+                  <div className="col-start-2 flex flex-wrap items-baseline gap-x-3 gap-y-1 md:col-start-auto md:flex-col md:items-end md:text-right">
                     <Mono variant="caption" tone="muted">
-                      {dateFormatter.format(new Date(note.date))}
+                      {note.updated ? "Updated " : ""}{dateFormatter.format(new Date(note.updated ?? note.date))}
                     </Mono>
                     <Mono variant="caption" tone="muted">
                       {note.readingMinutes} min read

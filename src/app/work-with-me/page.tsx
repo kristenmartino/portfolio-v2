@@ -87,7 +87,7 @@ export default function WorkWithMe() {
         </Section>
 
         {/* §03 — proof */}
-        <Section id="proof" index="03" label="Proof" variant="soot">
+        <Section id="proof" index="03" label="Project examples" variant="soot">
           <div className="max-w-2xl">
             <h2
               className="font-semibold text-[var(--color-bone)]"
