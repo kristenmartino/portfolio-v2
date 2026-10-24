@@ -4,9 +4,19 @@ SpecialtyPulse is a prototype for a **specialty analyst preparing a review of pa
 
 I designed SpecialtyPulse around that review task: compare specialty measures, inspect procedure detail, and prepare a handoff that states the supporting observations, open questions and who should review them next. It is an independent prototype using synthetic records and comparison scenarios.
 
+## Problem hypothesis to validate
+
+**Assumed current workflow:** an analyst compares payment tables, checks pipeline context in a separate report and copies findings into a brief for a sales or operations lead. Moving between those sources may leave evidence or follow-up requests out of the handoff.
+
+**Product hypothesis:** building the brief during the investigation could reduce preparation time and clarification work while preserving the evidence needed to interpret it. The proposed improvement is a more complete brief that a recipient can act on.
+
+These are assumptions, not research findings. Before a pilot, I would ask intended analysts and recipients to walk through a recent review: how often it happens, which tools they use, how long it takes, what evidence gets lost and which decision follows. If reviews are infrequent or existing reports already meet the need, I would reconsider the product scope.
+
 ## What the reviewer hands off
 
-The [demo](https://specialtypulse.kristenmartino.ai/?view=market) includes “Prepare a specialty review · sample handoff.” Selecting a specialty updates its observations. The analyst can inspect the related procedures, compare pipeline exposure and download a sample brief.
+The [demo](https://specialtypulse.kristenmartino.ai/?view=market) includes “Prepare a specialty review · sample handoff.” A shared specialty selection connects the handoff and Procedure Detail. Analysts can add a procedure from the service-count ranking to the brief, then write an observation and its limits, an open question, a next reviewer and a requested check.
+
+The Markdown download includes the selected procedure's specialty, HCPCS code, year, payment and service count alongside the analyst's draft notes. Each specialty keeps a separate draft as the analyst switches tabs. Drafts last until the page reloads; downloading keeps a copy and does not send or assign it. Missing fields remain explicitly marked. A four-element completeness check measures presence, not accuracy or approval.
 
 In the current constructed scenario, the example starts with Orthopedic Surgery:
 
@@ -22,11 +32,18 @@ The intended output is a clearer request for follow-up. A specialty-level score 
 
 This workflow and its evaluation criteria are proposed. No stakeholder validation, user evaluation or business outcomes have been recorded. The criteria are also visible in the demo.
 
-1. **Explain the focus.** An intended reviewer identifies the selected specialty, cites a payment comparison and pipeline exposure, and recognizes that the inputs are synthetic.
-2. **Interpret the measures.** The reviewer explains the payment denominator and distinguishes a scenario score from a sales recommendation.
-3. **Make a usable handoff.** The brief names an unresolved question, who reviews it next and what they should check. The next reviewer can explain the requested follow-up.
+I would recruit **five analyst–reviewer pairs for an exploratory comparison**. Each analyst would prepare two briefs from matched data: one with their usual report or spreadsheet and one with SpecialtyPulse. I would alternate the order and scenario assigned to each method, confirming the existing workflow and comparable task difficulty first.
 
-I would ask an analyst to prepare a brief and a sales or operations lead to review it. I would note where help is needed, any interpretation errors, missing evidence and the lead’s feedback. The [workflow and evaluation plan](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/docs/BUSINESS_REVIEW.md) documents that proposed process.
+Preparation time would run from opening the data to submitting a brief. Recipients would review briefs without the method identified; I would record missing evidence, interpretation errors and clarification requests before they can state the next action.
+
+The proposed thresholds for proceeding to a larger pilot are:
+
+1. **Completeness:** at least four of five SpecialtyPulse briefs include procedure evidence, an observation with limits, an open question, and a next reviewer with a requested check. Completeness must be at least as high as the comparison method.
+2. **Interpretation:** no critical errors in SpecialtyPulse briefs or recipient explanations. Treating synthetic data as observed history, a score as account need, or a blended average as a procedure-specific expected rate would count as a critical error.
+3. **Preparation time:** a median paired time reduction of at least 20% against the comparison method, without reducing completeness.
+4. **Clarification:** at least four of five recipients can explain the next action without clarification, with no more requests overall than for the comparison briefs.
+
+These thresholds are proposed, not achieved results. If accuracy or completeness fails, I would revise the workflow before testing speed again. Sessions and page views describe activity; they do not demonstrate usefulness. The [workflow and evaluation plan](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/docs/BUSINESS_REVIEW.md) documents the proposed process.
 
 ## Decisions behind the workflow
 
@@ -59,4 +76,4 @@ All records are synthetic. The 2021–2022 inputs are generated comparison scena
 
 The Databricks mart adapter's drop-and-rename replacement also leaves an availability gap. Operational use would require an atomic replacement or view switch, tested recovery, real-source reconciliation and intended-user access checks.
 
-Next, I would run that review exercise, then verify external integrations and evaluate outcomes before operational recommendations. [GTM Healthcare Intelligence](/work/gtm-healthcare) covers the related reporting-workflow prototype.
+Next, I would validate the assumed workflow and run the comparison study, then verify external integrations before operational recommendations. [GTM Healthcare Intelligence](/work/gtm-healthcare) covers the related reporting-workflow prototype.

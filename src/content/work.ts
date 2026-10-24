@@ -81,8 +81,8 @@ export const projects: Project[] = [
       "SpecialtyPulse procedure view with a specialty selector, service-count ranking, HCPCS codes and average payments",
     metrics: [
       "Analyst → sales or operations lead",
-      "Downloadable sample handoff",
-      "Proposed user acceptance criteria",
+      "Editable brief with procedure evidence",
+      "Proposed comparison study",
       "Synthetic data · reconciled calculations",
     ],
   },
