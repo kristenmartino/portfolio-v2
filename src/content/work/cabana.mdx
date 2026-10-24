@@ -163,7 +163,7 @@ The application records event IDs so it can recognize repeated deliveries and av
 
 Booking status changes and their pending integration events are saved in the same database transaction. This record of pending work is the transactional outbox.
 
-n8n processes events to update Airtable and send notifications. Failed deliveries are retried, and deduplication keys identify repeated deliveries. Events that reach the retry limit move to a dead-letter queue and trigger an alert.
+n8n processes events to update Airtable and send notifications. Failed deliveries are retried, and deduplication keys identify repeated deliveries. Events that reach the retry limit move to a dead-letter queue for operator review.
 
 A webhook trigger starts processing, while a 60-second sweep checks for pending events. Nightly reconciliation checks for unresolved work.
 
@@ -182,5 +182,7 @@ These results come from one recorded run at demo volume.
 The public demo uses fictional data, a shared demo member account and Stripe test mode. Requests and edits are saved to that shared account, so visitors should use sample details. Row-level security restricts the demo session to that member’s records.
 
 The deposit screen includes a test card number and instructions for completing Stripe’s sandbox checkout. No real money is collected.
+
+**Live check — October 24, 2026:** Request submission, a Stripe test payment and Airtable synchronization were verified. Telegram delivery from Railway timed out; those notifications use retries and a dead-letter queue.
 
 Member email notifications are not implemented. The Telegram bot rejects and logs unauthorized chats; rate limiting and alerts for those attempts remain follow-up work.
