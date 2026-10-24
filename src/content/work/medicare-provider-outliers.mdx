@@ -15,7 +15,9 @@ Medicare Provider Outliers compares provider costs and service volumes with peer
 
 Raw columns load as text so staging can handle CMS suppression markers before casting numeric values. DuckDB filters the large NPPES extract before it is uploaded to Snowflake.
 
-Eleven dbt models cover staging, provider-year aggregates, peer statistics and reporting marts. The project records 48 dbt tests covering schema relationships, allowed values and business rules. CI parses the project without warehouse credentials; executing warehouse-backed tests in CI remains separate work.
+Eleven dbt models cover staging, provider-year aggregates, peer statistics and reporting marts. The repository defines 59 checks: 53 generic data tests, three singular data tests and three unit tests. Its passing-test count is a historical local-build report, not a current CI result.
+
+CI parses project configuration and declared model/source dependencies without connecting to Snowflake. It does not validate executable SQL, inspect warehouse columns or execute those tests. A green parse job therefore does not establish that the models build or the data checks pass.
 
 ## Choosing peers
 
@@ -29,7 +31,7 @@ The application exposes both a MAD modified z-score and a classical z-score. At 
 
 The app includes a ranked table, provider drill-down, state comparison and methodology page. A reviewer can inspect the measure, peer group, peer count and deviation before deciding what additional context is needed.
 
-A statistical flag identifies a difference to investigate, not its cause or misconduct. Facility-level activity, specialty differences and patient populations can all complicate interpretation. Any financial gap shown by the analysis is a comparison under stated assumptions, rather than a savings estimate.
+A statistical flag identifies a difference to investigate, not its cause or misconduct. Facility-level attribution is one possible explanation for extreme totals; the provider aggregates do not establish it. Specialty differences and patient populations can also complicate interpretation. Any financial gap shown by the analysis is a comparison under stated assumptions, rather than a savings estimate.
 
 ## Public delivery and tradeoff
 

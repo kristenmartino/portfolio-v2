@@ -19,13 +19,17 @@ That led to an introductory primer, inline glossary entries and reference pages.
 
 The feed organizes stories into ten categories. Readers can open source reporting, save bookmarks, search topics and compare coverage from multiple outlets. Search uses a vector index, with streamed AI responses and a web-search fallback for some queries.
 
-Reference pages bring together information about politicians, organizations, bills and news outlets. Sources include public records and named external rating providers. Source links let readers check individual claims. Outlet ratings are attributed to their providers rather than presented as Sift's own assessments.
+Reference pages bring together available information about matched politicians, organizations, bills and news outlets. Not every article entity has a page, and fields and citations vary. The curated outlet registry also does not establish which outlets are actively ingesting at a given time.
+
+Sources include public records and named external rating providers. Outlet ratings are attributed to their providers rather than presented as Sift's own assessments. Source links help readers check claims, but their presence does not independently verify generated explanations.
 
 ## Background and live processing
 
 The background pipeline extracts entities, links reference pages and prepares summaries and context before browsing. The frontend reads that prepared material from Postgres. Comparison and topic-search requests can require additional live AI work, so they stream results as processing proceeds.
 
 Preparing content in advance reduces the work required when a reader opens the feed.
+
+The companion [MCP server](https://github.com/kristenmartino/sift-mcp) exposes article search and civic profiles to AI clients. Semantic search calls Voyage before querying the database. Its organization-field gate withholds selected values when required source metadata is missing; it does not read the linked page or verify that it supports the claim. Response times depend on these database and provider calls; a current end-to-end benchmark remains unmeasured.
 
 ## Limits and next checks
 

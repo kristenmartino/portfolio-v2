@@ -22,7 +22,7 @@ export const featuredProject: FeaturedProject = {
     "Three CMS sources from calendar year 2023, modeled in Snowflake with dbt. A public data app supports provider review, and the dbt documentation shows model lineage and tests.",
   metrics: [
     "43.7M rows · 3 CMS sources",
-    "dbt star schema · 48/48 tests",
+    "59 defined dbt checks",
     "9,490 peer groups · MAD + z-score",
     "Live data app + dbt docs",
   ],
@@ -131,7 +131,7 @@ export const projects: Project[] = [
     metrics: [
       "9 lease sections",
       "Review queue + saved corrections",
-      "PDF source links + OCR highlights",
+      "Source links + highlights when available",
       "6 MCP tools · shared backend",
     ],
   },
@@ -165,7 +165,7 @@ export const projects: Project[] = [
     title: "Quantization Study",
     category: "Applied LLM Research",
     summary:
-      "A study comparing 16-bit, 8-bit, and 4-bit versions of Llama 3.1 8B for output quality, processing speed, and memory use. Tests cover knowledge questions and extracting names, organizations, and locations from text.",
+      "A local study comparing FP16, Q8_0, and Q4_K_M versions of Llama 3.1 8B on knowledge questions and entity extraction. Reports task quality, throughput, and model file size on one M4 Max setup.",
     href: "/work/llm-quantization-study",
     slug: "llm-quantization-study",
     codeHref: "https://github.com/kristenmartino/llm-quantization-study",
@@ -175,11 +175,11 @@ export const projects: Project[] = [
     shape: "data-viz",
     image: "/work/quantization-pareto-4x3.png",
     imageAlt:
-      "Quantization Study — paired cost/quality plots for FP16, Q8_0, and Q4_K_M on MMLU accuracy and CoNLL NER micro-F1, with bootstrap confidence intervals.",
+      "Quantization Study — recorded throughput against MMLU accuracy and custom entity-text/type-set micro-F1, with 95% intervals for FP16, Q8_0, and Q4_K_M.",
     metrics: [
-      "3 arms × 800 examples (n=2,400)",
+      "2,400 raw outputs · 2,397 analyzed",
       "Paired bootstrap + Holm correction",
-      "Q8_0 within ±1pp on tested measures",
+      "Q8_0 meets exploratory ±1pp margin",
       "Q4_K_M: −3.2pp micro-F1 on NER (p_adj=0.032)",
     ],
     },
@@ -250,7 +250,7 @@ export const projects: Project[] = [
     imageAlt:
       "Sift — its 'The news, with footnotes' headline beside a summarized story card that links to structured dossiers.",
     metrics: [
-      "10 categories · ~50 outlets · AI summaries",
+      "10 categories · curated outlet registry",
       "Topic search + multi-source compare",
       "Dossiers · primer · inline glossary",
       "FastAPI + LangGraph + Anthropic",

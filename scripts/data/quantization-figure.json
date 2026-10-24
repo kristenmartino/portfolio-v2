@@ -1,0 +1,63 @@
+{
+  "source": "https://github.com/kristenmartino/llm-quantization-study/blob/ed03b5df717e9e2266bb9316e6fab67f1b744a86/results/summary.json",
+  "source_sha256": "95d4cb2e14f0d914fb11de7a7b6bc55ff1946bbb818b4b88d837f4dc7627955d",
+  "scope": "Llama 3.1 8B Instruct; Apple M4 Max; recorded local run; no inference cost or peak-memory measurement",
+  "tasks": [
+    {
+      "task": "mmlu",
+      "metric": "Accuracy",
+      "n_per_arm": 499,
+      "points": [
+        {
+          "arm": "fp16",
+          "mean": 0.5851703406813628,
+          "lower": 0.5414505284419446,
+          "upper": 0.6275887873187245,
+          "tokens_per_second": 40.85449663488989
+        },
+        {
+          "arm": "q8_0",
+          "mean": 0.5871743486973948,
+          "lower": 0.5434696354681325,
+          "upper": 0.6295470759574935,
+          "tokens_per_second": 72.65757311348337
+        },
+        {
+          "arm": "q4_K_M",
+          "mean": 0.5691382765531062,
+          "lower": 0.5253237556131402,
+          "upper": 0.6118963948278734,
+          "tokens_per_second": 102.88676523371565
+        }
+      ]
+    },
+    {
+      "task": "extraction",
+      "metric": "Micro-F1 (normalized text/type sets)",
+      "n_per_arm": 300,
+      "points": [
+        {
+          "arm": "fp16",
+          "mean": 0.6489459211732356,
+          "lower": 0.6003935107773691,
+          "upper": 0.6954891909474185,
+          "tokens_per_second": 20.694125730086903
+        },
+        {
+          "arm": "q8_0",
+          "mean": 0.6519337016574586,
+          "lower": 0.6036725541757612,
+          "upper": 0.6982150689223057,
+          "tokens_per_second": 38.840367232679014
+        },
+        {
+          "arm": "q4_K_M",
+          "mean": 0.6172839506172839,
+          "lower": 0.5672163677949639,
+          "upper": 0.6644851132630419,
+          "tokens_per_second": 51.34635006369794
+        }
+      ]
+    }
+  ]
+}

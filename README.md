@@ -66,6 +66,15 @@ adding an entry to `work.ts` and creating `src/content/work/<slug>.mdx` with the
 Site-wide copy (tagline, navigation, contact links) lives in
 [`src/content/site.ts`](src/content/site.ts).
 
+### Quantization figure provenance
+
+The case-study and card figures are generated from
+[`scripts/data/quantization-figure.json`](scripts/data/quantization-figure.json),
+which records a pinned study-summary URL and its SHA-256. With Python 3.11+
+and Matplotlib installed, run `python scripts/build-quantization-figure.py`.
+This redraws the recorded scores and intervals; it does not rerun models.
+The entity metric is normalized text/type-set micro-F1, not token-span scoring.
+
 > **Note:** This project tracks Next.js 16, whose App Router and config differ from
 > earlier versions. See [`AGENTS.md`](AGENTS.md) before making framework-level changes.
 

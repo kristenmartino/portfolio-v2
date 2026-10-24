@@ -34,7 +34,7 @@ The UI also needed to distinguish completed extraction from completed review. A 
 
 ## The current workflow
 
-The review queue now comes first, with blockers before warnings. Each item shows the extracted value or a missing-value description, a source-page link and three actions:
+The review queue now comes first, with blockers before warnings. Each item shows the extracted value or a missing-value description, a source-page link when available and three actions:
 
 - **Accept value** keeps the value and clears that review item.
 - **Edit value** saves a correction to the stored extraction.
@@ -48,9 +48,9 @@ The status badge says **Extraction complete** separately from the open-review co
 
 The service combines OCR text with page images to extract parties, property, term, rent, deposits, utilities, pets, special clauses and disclosures. Page images provide context for checkboxes and handwritten entries that OCR can misread.
 
-The backend matches source snippets to OCR word positions with pdfplumber and RapidFuzz, then returns a highlight box for each matched line. Field links open the source page and draw an overlay when coordinates are available. Checkbox and signature geometry is not highlighted.
+The backend matches source snippets to OCR word positions with pdfplumber and RapidFuzz, then returns a highlight box for each matched line. Source references are optional and can be wrong or absent. Field links open the source page and draw an overlay when coordinates are available. Checkbox and signature geometry is not highlighted.
 
-Questions use the stored extraction. Their citations open the cited PDF page without a highlight overlay. The same backend exposes six MCP tools for listing, retrieving and extracting leases, asking questions, and listing or resolving review items.
+Questions use the stored extraction. The model is prompted to cite field paths, but can return no citations; there is no independent check that a cited field supports the answer. Available citations open the cited PDF page without a highlight overlay. The same backend exposes six MCP tools for listing, retrieving and extracting leases, asking questions, and listing or resolving review items.
 
 Source: [frontend](https://github.com/kristenmartino/tenancy) and [backend / MCP](https://github.com/kristenmartino/tenancy-api).
 
@@ -59,5 +59,7 @@ Source: [frontend](https://github.com/kristenmartino/tenancy) and [backend / MCP
 The October 24 UI release was checked on the deployed app for queue order, note disclosures, source-page navigation, correction-form cancellation and mobile layout. Existing production lease data was unchanged. Saved corrections and recovery after a failed reload were tested with local fixtures.
 
 Ten automated checks cover review state, missing-value labels, formatting, source navigation and refresh behavior. They do not measure extraction accuracy. Highlight placement has been checked manually on sample documents; there is no formal extraction evaluation set.
+
+Extraction and exceptions are saved before human review. The readiness flag summarizes blocking review items; it does not gate the first database write or export to a property-management system. No such external integration is implemented. Validation uses deterministic heuristics, including a fixed deposit-to-rent check, rather than jurisdiction-specific legal rules. Model confidence is self-reported and has not been calibrated against labeled leases.
 
 Multi-tenant authentication and a feedback loop that uses review corrections to improve extraction are not implemented. Automated flags guide review; a person still needs to verify the extracted fields and complete the lease review.
