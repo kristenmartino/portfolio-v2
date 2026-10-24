@@ -212,7 +212,7 @@ export const projects: Project[] = [
     title: "Tarazu",
     category: "Product + AI",
     summary:
-      "A product-decision app that links scoring assumptions, evidence and saved reasoning. Its fictional Relay demo shows why a team chooses a checklist experiment before building approval reminders.",
+      "Tarazu lets users compare product options and save the evidence, assumptions and reasoning behind a decision. Its fictional Relay demo follows a team proposing a checklist test before building approval reminders.",
     href: "/work/tarazu",
     slug: "tarazu",
     liveHref: "https://tarazu.app/demo",

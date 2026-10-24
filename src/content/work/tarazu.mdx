@@ -1,6 +1,6 @@
 ## What I built
 
-Tarazu helps people compare product options, keep the evidence behind a choice, and revisit that choice later. I designed and built the scoring, evidence and decision-record workflows.
+I designed and built Tarazu’s scoring, evidence and decision-record workflows.
 
 The [Relay demo](https://tarazu.app/demo) follows a fictional team with one engineer and two weeks. Approval requests are delayed. Should the team build reminders, add a status dashboard, or test a readiness checklist?
 
@@ -13,13 +13,13 @@ The [Relay demo](https://tarazu.app/demo) follows a fictional team with one engi
 
 ## Follow the Relay decision
 
-1. **Inspect the assumption.** The initial case for reminders is that people overlook complete requests. The demo keeps that assumption beside the candidate and its scoring inputs so a reviewer can question what the ranking rests on.
+1. **Check the case for reminders.** The initial assumption is that people overlook complete approval requests. The demo shows that assumption beside the reminder option and the inputs used to score it.
 
 2. **Compare the evidence.** Fictional administrator notes support reminders, while approvers describe missing information. In the prepared example, four of five reviewed requests were waiting for documents. Those records challenge the original explanation; they do not establish how common either problem is.
 
 3. **Choose the next test.** The team proposes trying a paper readiness checklist with five requesters before committing engineering time. Reminders remain an option for complete requests that are overlooked. The decision is saved as a draft, with its reasoning and unknowns.
 
-4. **Reopen the reasoning.** The saved decision brings together the problem, supporting and challenging evidence, the choice, and the next test. A reviewer can compare the two demo decision rounds and see why the proposed direction changed.
+4. **Review the saved decision.** The record includes the problem, the choice, evidence for and against it, and the next test. Users can compare the two demo decision rounds to see what changed and why.
 
 <Diagram title="Relay: inspect conflicting evidence">
   <img src="/work/tarazu-relay.png" alt="The live Relay demo’s Evidence step: fictional administrator notes support reminders, while approvers report missing documents. The four-step story remains visible above the explanation." />
@@ -30,17 +30,15 @@ The [Relay demo](https://tarazu.app/demo) follows a fictional team with one engi
 
 Tarazu uses 1–100 bands for all four RICE inputs: reach, impact, confidence and effort. The priority index is reach × impact × confidence ÷ effort. The inputs are relative planning scores, not measured returns or calibrated probabilities.
 
-The candidate’s assumptions and linked notes help a reviewer examine the score. The Relay story shows why a team may choose a different next step after reviewing the evidence.
-
 ## Copy a decision brief
 
-**Copy decision brief** is available in the current app. It copies a Markdown brief containing the problem, choice, reasoning, evidence and next test for use in another document. If clipboard access is blocked, the app provides selectable text for manual copying.
+**Copy decision brief** copies the problem, choice, reasoning, evidence and next test as Markdown. If clipboard access is blocked, the app shows selectable text to copy manually.
 
-The decision also has review controls for recording an outcome and choosing whether to keep, revise or retire the direction. Earlier reasoning remains available alongside later reviews.
+Users can record an outcome and choose whether to keep, revise or retire the decision. Earlier reasoning remains available alongside later reviews.
 
 ## Guest work and optional AI
 
-The fictional demo and local browser work are available without an account. Sign-in is required for cloud saving and live AI analysis or score suggestions.
+Users can explore the fictional demo and work locally in their browser without an account. Cloud saving, live AI analysis and score suggestions require sign-in.
 
 An AI request sends the supplied workspace context, including linked evidence, to Tarazu and Anthropic. Users review the proposed scores and recommendations; the calculation and saved decision remain available for inspection.
 
