@@ -10,6 +10,11 @@
 
 A valuation can calculate correctly while relying on the wrong input. SEC filers use different XBRL concepts for similar figures, and some required values are available only in filing text. The product needs to expose those extraction choices so a reviewer can examine the inputs before relying on the estimate.
 
+<Diagram title="Company selection" fullSizeHref="/work/valuate.png" fullSizeLabel="View full-size screenshot ↗">
+  <img src="/work/valuate.png" alt="Valuate's company selector with a ticker field and sample companies. The entry screen explains that extraction can fail when required data is missing and that the default model may not fit every business." width={1280} height={960} className="h-auto w-full" />
+</Diagram>
+<Caption>Live company selector, captured October 24, 2026.</Caption>
+
 ## 1. Keep partial extraction results
 
 The first extraction stage queries SEC XBRL company facts using a concept map. Berkshire also needs dimensioned facts from the filing itself: a deterministic inline-XBRL reader selects annual equivalent shares for the requested class, insurance premiums, and cash across its two reported business groups. It returns the values it finds and leaves missing fields for Claude to extract from the filing's financial-statements section. Required fields still missing after the fallback and supported calculations produce an explicit error.
