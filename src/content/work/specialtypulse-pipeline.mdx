@@ -1,95 +1,32 @@
-## Overview
+## What I built
 
-SpecialtyPulse is a healthcare analytics project that uses Databricks and Airflow to process public Medicare data for reimbursement and procedure reporting.
-
-The project includes metric definitions, example access policies and verification scripts. The public dashboard uses bundled reimbursement samples, synthetic sales and usage data, and illustrative security-check results.
+I built SpecialtyPulse to compare Medicare payments across specialties, inspect procedure-level differences, and test example access policies. The public demo uses sample reimbursement data and synthetic sales and usage records.
 
 <Specs>
-  <Spec label="Role" value="Strategy, pipeline build, and BI governance" />
+  <Spec label="Role" value="Data modeling, pipeline development and dashboard build" />
   <Spec label="Year" value="2026" />
-  <Spec label="Domain" value="Healthcare GTM · executive reporting" />
-  <Spec label="Data" value="CMS Medicare PUF schema · bundled sample 2021–2023" />
-  <Spec label="Stack" value="Databricks (PySpark · Delta Lake) · Airflow (Astro CLI) · Domo (DataSets · SQL DataFlow · PDP) · React 18 · GitHub Actions" />
-  <Spec label="Status" value="Working portfolio demo" />
+  <Spec label="Data" value="CMS Medicare PUF schema · sample 2021–2023" />
+  <Spec label="Stack" value="PySpark · Delta Lake · Airflow · Domo · React" />
 </Specs>
 
-## Problem framing
+## A walkthrough
 
-Three reporting requirements shaped the project:
+In the [demo](https://specialtypulse.kristenmartino.ai), Dermatology has the highest pressure score at 62.8. Its synthetic sales pipeline contains 53 active deals worth $4.58M—11.4% of the total. The summary puts those observations together and links to the underlying views.
 
-1. **Metric definitions:** Document each metric’s calculation, source and aggregation so reports use consistent definitions.
-2. **Role-based access:** Apply access policies to the datasets used by the dashboard and verify the results for each role.
-3. **Data handoff:** Document expected columns, suppression rules and validation thresholds for pipeline outputs.
+Opening Dermatology's procedures shows the ten most-used services, ranked by service count. Each row includes the full procedure name, HCPCS code and average Medicare payment. Changing the specialty updates the procedure list, flagged rows and trend charts.
 
-## Architecture
+The pressure score is a project-defined comparison measure. Its weights have not been validated against sales outcomes.
 
-<Diagram title="Pipeline — Databricks → Airflow → Domo">
-  <div style={{ display: "flex", flexWrap: "wrap", alignItems: "stretch", gap: "8px", padding: "20px" }}>
-    <div style={{ flex: "1 1 130px", border: "1px solid var(--color-graphite-80)", padding: "12px" }}>
-      <Mono variant="caption" tone="muted">Source</Mono>
-      <p style={{ margin: "6px 0 0", fontSize: "13px" }}>CMS PUF schema and bundled sample CSVs, 2021–2023</p>
-    </div>
-    <div style={{ alignSelf: "center", color: "var(--color-graphite-60)" }}>→</div>
-    <div style={{ flex: "1 1 150px", border: "1px solid var(--color-graphite-80)", padding: "12px" }}>
-      <Mono variant="caption" tone="muted">Databricks · Delta Lake</Mono>
-      <p style={{ margin: "6px 0 0", fontSize: "13px" }}>raw (all-strings) → staging (typed, suppressed, normalized) → mart (specialty × procedure × year)</p>
-    </div>
-    <div style={{ alignSelf: "center", color: "var(--color-graphite-60)" }}>→</div>
-    <div style={{ flex: "1 1 130px", border: "1px solid var(--color-graphite-80)", padding: "12px" }}>
-      <Mono variant="caption" tone="muted">Airflow DAG</Mono>
-      <p style={{ margin: "6px 0 0", fontSize: "13px" }}>validate_inputs → ingest → staging → marts → push_to_domo → notify</p>
-    </div>
-    <div style={{ alignSelf: "center", color: "var(--color-graphite-60)" }}>→</div>
-    <div style={{ flex: "1 1 150px", border: "1px solid var(--color-graphite-80)", padding: "12px" }}>
-      <Mono variant="caption" tone="muted">Domo</Mono>
-      <p style={{ margin: "6px 0 0", fontSize: "13px" }}>DataSets → SQL DataFlows → 5-page dashboard · PDP on outputs only</p>
-    </div>
-  </div>
-</Diagram>
+## How the data moves
 
-PySpark notebooks process CMS files through raw, staging and reporting layers in Delta Lake. Raw values are loaded as text; staging converts types, handles suppression and normalizes specialty labels.
+PySpark notebooks load CSV values as text, cast and normalize them in staging, then aggregate a reporting table by specialty, procedure and year. Airflow sequences the notebooks with retries. A shared Python module defines columns, suppression rules and validation thresholds.
 
-Reporting tables aggregate results by specialty, procedure and year. New tables undergo row-count checks before replacing the previous version.
+The Domo integration uploads the reporting table and defines output access policies. The standalone React build calculates its benchmarks from a bundled sample, so the demo can run after the Domo trial ended.
 
-Airflow orchestrates the tasks and retries failed steps. A shared Python module defines columns, valid years, suppression rules and taxonomy mappings.
+## One implementation tradeoff
 
-## Metric definitions and access controls
+The notebooks validate a temporary reporting table before replacing the previous version. That catches bad output before publication, but the drop-and-rename step leaves a brief availability gap. An operational deployment would need an atomic replacement or a view switch.
 
-The project documents metric calculations, alternative definitions and reasons for the selected formulas.
+Metric definitions document the formulas and alternatives. Policy scripts check the example role configuration; CI runs live checks only with Domo credentials and otherwise checks syntax. The public demo displays illustrative policy results and does not enforce Domo access controls.
 
-It includes Domo access-policy configuration and verification scripts. Domo access was through a free trial that has since ended, so I can no longer run live policy checks.
-
-The public dashboard runs as a standalone React app using representative data.
-
-## The dashboard
-
-The [public React dashboard](https://specialtypulse.kristenmartino.ai) uses sample and synthetic data across five pages:
-
-- **Market Intelligence:** Reimbursement comparisons by specialty.
-- **Procedure Detail:** Payment and volume trends by procedure.
-- **Pipeline Intelligence:** Synthetic deals compared with reimbursement scores.
-- **Adoption Tracking:** Example dashboard-usage metrics.
-- **PDP Governance:** Example access policies and verification results.
-
-The dashboard includes specialty drill-downs and on-screen metric definitions. Chart callouts and summaries are computed from the displayed data. An optional AI selection suggests an evidence-linked review task when API access is configured.
-
-## Implementation notes
-
-- **Table replacement:** The drop-and-rename step can briefly leave the reporting table unavailable.
-- **Domo uploads:** The transfer script uses a single dataset upload. Chunked uploads are documented as a future extension.
-- **Access verification:** Live Domo checks require an active instance and credentials. Without credentials, CI checks script syntax. The public dashboard displays sample results.
-- **Scoring:** The pressure index uses project-defined weights that have not been validated against sales outcomes. Pressure-weighted pipeline is an illustrative comparison.
-
-## Summary behavior
-
-The dashboard summary computes observations directly from the displayed data, including every specialty's active pipeline amount and share. Its optional AI step chooses a review task from a fixed set of evidence-linked options. The app rejects responses that do not match an available task and its supporting observations; model-authored claims are not displayed.
-
-The governance summary is computed from the example policy matrix. Sample checks do not establish live security.
-
-## Relationship to GTM Healthcare Intelligence
-
-[GTM Healthcare Intelligence](/work/gtm-healthcare) explores reporting requirements and governance workflows. SpecialtyPulse implements a subset through pipeline notebooks, metric definitions, policy scripts and a dashboard.
-
-## What I would validate next
-
-Before using this approach for operational decisions, I would test complete source releases, verify access with each intended role, connect a real CRM dataset and evaluate the pressure score against outcomes. Stakeholder roles and approval workflows in the documentation are design examples, not recorded executive sign-off.
+Next I would validate the pipeline against complete source releases, test access as each intended role and evaluate the pressure score against actual CRM outcomes. [GTM Healthcare Intelligence](/work/gtm-healthcare) covers the related reporting-workflow prototype.

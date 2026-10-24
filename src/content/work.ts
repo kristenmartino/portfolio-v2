@@ -294,7 +294,7 @@ export const projects: Project[] = [
     title: "SpecialtyPulse Pipeline",
     category: "Healthcare Data Platform",
     summary:
-      "A healthcare analytics portfolio project with Databricks and Airflow pipeline code, reimbursement comparisons, and example access policies. The public dashboard uses sample and synthetic data.",
+      "A Medicare reporting pipeline with specialty rankings, procedure drill-downs and example access policies.",
     href: "/work/specialtypulse-pipeline",
     slug: "specialtypulse-pipeline",
     liveHref: "https://specialtypulse.kristenmartino.ai",
@@ -305,7 +305,7 @@ export const projects: Project[] = [
     shape: "pipeline",
     image: "/work/specialtypulse.png",
     imageAlt:
-      "SpecialtyPulse sample dashboard with specialty pressure scores and reimbursement comparisons",
+      "SpecialtyPulse procedure view with a specialty selector, service-count ranking, HCPCS codes and average payments",
     metrics: [
       "CMS PUF schema · sample 2021–2023",
       "Databricks PySpark · Airflow",
