@@ -1,71 +1,34 @@
-## Overview
+## What I built
 
-Most productivity applications externalize discipline. Lists, streaks, gamified habit chains, social accountability — the tools work by adding friction outside the user, expecting that friction to translate into focus. The empirical evidence is mixed: streak-based apps report high install counts and low long-term retention, and the "I broke my streak so I quit" failure mode is well-documented.
-
-FocusForge is a built-from-scratch iOS app testing a different hypothesis: focus tools work better when they translate effort into something the user values intrinsically, rather than tracking it as something the user must defend. Rather than adding friction, the app translates focus sessions into character development inside an RPG-style progression system. The character grows as the user does the work.
+FocusForge is an iPhone focus timer with character customization, cosmetic rewards and written prompts selected on the device. Completed sessions contribute to progression; streak milestones and earned coins unlock cosmetics.
 
 <Specs>
-  <Spec label="Role" value="Strategy, design, and engineering" />
+  <Spec label="Role" value="Product design and iOS development" />
   <Spec label="Year" value="2026" />
-  <Spec label="Domain" value="Mobile productivity / behavioral design" />
   <Spec label="Stack" value="Swift · SwiftUI · SwiftData · Firebase · Swift Charts" />
-  <Spec label="Status" value="MVP build · entering beta" />
+  <Spec label="Status" value="MVP build · beta and release checks remain" />
 </Specs>
 
-## Problem framing
+## Sessions and rewards
 
-Three observations underwrite the design:
+A user starts a focus session, records its completion and sees the resulting progression. The character has configurable appearance and equipment slots. Cosmetics unlock through streak milestones or the app's coin economy.
 
-1. **Streak-based gamification rewards consistency, not focus.** A user who completes a five-minute task to preserve a streak is being rewarded for the wrong behavior. The metric optimizes itself and decouples from the underlying goal.
-2. **External accountability erodes intrinsic motivation.** A growing literature in behavioral psychology — and the lived experience of anyone who has used a habit-tracking app — suggests that surfacing extrinsic rewards crowds out the intrinsic reward of doing the work itself.
-3. **AI coaching that uploads user data is increasingly unacceptable.** Productivity data — what you work on, when, for how long — is among the most sensitive behavioral data a user produces. Most AI productivity products handle this by sending the data to a server and analyzing it there. The privacy posture is incompatible with the user base most likely to benefit.
+The design goal is to make returning to a focus session appealing. Whether the rewards improve retention or encourage people to optimize for the reward system is a question for beta.
 
-## Solution
+## Written prompts on the device
 
-The build commits to three structural design decisions:
+The coach selects from written templates using signals such as completion rate, session length and streak risk. It offers a prompt before a session, a reflection afterward or a reminder near a streak deadline. Users can edit, accept, dismiss or rate the prompt.
 
-### Character progression as the meaning layer
+This is deterministic template selection. It does not run a language model or call a model API. Local prompt selection also does not mean that every part of the app is offline: Firebase is integrated for analytics, crash reporting and remote configuration.
 
-Each focus session feeds an RPG-style character that the user customizes during onboarding and continues to develop over time. The user is not tracking minutes — minutes are the input. The output is a character with a visible body, hair, eyes, and equipped cosmetics across three slots (horns, wings, weapon). Cosmetic items unlock at streak milestones (days 3, 7, 14, 30, 60) or via a coin economy earned through completed sessions. Rarity tiers (common, rare, animated rare) are visually distinct at thumbnail size — the animated rare items get a continuous shimmer effect that reads instantly even at the 72-pixel inventory grid.
+## Interface and implementation
 
-The deliberate move: the relationship is reframed from "did I keep my streak" to "what does my character become."
+SwiftData stores local application records. SwiftUI provides the timer, character views, quests and statistics. The visual design separates a restrained focus screen from the more detailed reward presentation.
 
-### On-device AI coaching, template-based
+The reward overlay has a staged reveal, a skip action and a reduced-motion alternative. Contrast checks informed changes to text and rarity colors. VoiceOver, Dynamic Type, hit targets and motion preferences are part of the release review; these implementation measures do not establish complete accessibility conformance.
 
-The AI coach is implemented as a deterministic template engine over computed behavior signals — completion rate, abandonment rate, average session length, streak risk score — selecting and rendering structured reflections without sending data to a server. Three coach moments are wired: intent framing before a focus session begins (only with task name + AI Coach enabled), a post-session reflective tip, and a streak rescue nudge near the loss window. The user can edit, accept, dismiss, or rate every coach output.
+## What remains
 
-The privacy commitment is structural, not policy-based. Inference is fully on-device by construction. Behavioral data never traverses the network. This constrains the coach's flexibility — the templates are deterministic — but the design philosophy welcomes that constraint. An LLM upgrade is reserved for when on-device models can do the job without uploading.
+Beta runtime checks, accessibility review and App Store submission remain. iPad layout and CloudKit sync were deferred so the initial release could concentrate on iPhone.
 
-### Progression that resists farming
-
-The system explicitly does not reward duration over depth. Cosmetic unlocks gate on streak days, not total minutes. Five minutes of deep work advances the character more than thirty minutes of shallow work. Combined with on-device AI nudges that surface honest reflection rather than dopamine hits, this eliminates the streak-preservation behavior that degrades existing tools.
-
-## Implementation
-
-The app is built natively in Swift and SwiftUI on iOS 17+, using SwiftData for local persistence. Firebase handles analytics, crash reporting (Crashlytics), and remote config. The design system establishes two emotional registers — focus mode (near-black canvas, minimal UI, restrained) and reward mode (deep purple atmosphere, layered radial glows, particles, dramatic character lighting) — implemented through a token system (`FFTheme`) that gates all colors, typography, and spacing.
-
-A few implementation notes worth documenting:
-
-- **Sprint structure.** Six sprints across timer/sessions, streaks/rewards, character cosmetics, quests/stats, AI coach, and release/QA. Sprints 1–5 are functionally complete on `main`; Sprint 6 is the current work — beta runtime, App Store submission, accessibility pass.
-
-- **Two-mode UI redesign mid-build.** The app underwent a design system overhaul partway through implementation — from default SwiftUI styling to a dark atmospheric system with explicit FFTheme tokens. The redesign replaced sheet-based reward presentation with a full-screen cinematic overlay that runs a five-beat staged reveal animation: ring pulse → background crossfade → checkmark + headline → reward card + count-up → CTA button. Tap anywhere skips to final state. Reduce-motion users get a cross-fade variant.
-
-- **Accessibility before App Store.** The app passes WCAG AA contrast on every text token. Computed contrast ratios drove two FFTheme adjustments — `Text.tertiary` from white(0.30) to white(0.50) (2.58:1 → 5.30:1) and `Rarity.rare` from #9B59B6 to #B07DCB (4.23:1 → 6.25:1). VoiceOver support, Dynamic Type semantic font scales, and Reduce Motion alternatives are wired across every animated surface. Hit targets meet HIG ≥44pt minimum.
-
-- **Strategic scope decisions.** iPad universal layout and CloudKit sync (originally Sprint 5 deliverables) were deferred to v1.1. The PRD's success metrics — D1/D30 retention, focus minutes per DAU, AI suggestion acceptance — are all measurable iPhone-only, and including iPad + sync would have pushed the launch by five-plus weeks for no measurable user benefit.
-
-## Reflections
-
-- **The template-based AI coach is the right move for v1.0.** Behavioral data is among the most sensitive categories users produce. Shipping a server-side LLM as the productivity coach would have been a stronger product on paper and a worse product in practice. The template engine is deterministic, on-device, and ships today; an LLM upgrade is reserved for when on-device models can do the job without uploading.
-
-- **Cosmetic unlocks tied to streak days, not minutes, defused the farming risk.** The concept-stage worry was that minutes-of-focus would dominate the reward calculus. Gating progression on consistency (streak days, milestone unlocks) rather than duration redirects the optimization pressure toward showing up daily — which is the actual behavior the product wants to reinforce.
-
-- **The dark atmospheric redesign was scope creep that paid off.** Adding a design system mid-build expanded the timeline, but the alternative — shipping default SwiftUI styling — would have undercut the "this is meaningful, not a checklist" promise. The two-mode philosophy (focus mode = restraint, reward mode = richness) is now load-bearing for the cinematic reward sequence; without the contrast, the reward moment lands as a normal sheet.
-
-- **Backlog hygiene matters more than features past a certain point.** At week 9 of a 12-week timeline, half the open issues described work that had already shipped. A simple commit-by-commit triage closed twenty issues in an hour and revealed the real remaining scope (mostly testing and submission, not code).
-
-## Closing observation
-
-The hypothesis being tested: **productivity tools work better when they translate effort into something the user values intrinsically, rather than tracking it as something the user must defend.** A character that grows when you work changes the question from "did I keep my streak" to "what does my character become." That is a different — and possibly more durable — relationship with focus.
-
-Whether the empirical retention data backs that up is the next thing to measure. The answer comes after beta.
+Beta evaluation should examine whether people return to the timer, how they use rewards and whether the prompts are useful. The privacy review also needs to confirm actual analytics payloads and opt-out behavior alongside the local prompt workflow.
