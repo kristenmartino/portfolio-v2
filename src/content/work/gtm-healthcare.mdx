@@ -1,29 +1,66 @@
+import Image from "next/image";
+
 ## What I built
 
-GTM Healthcare Intelligence explores two review tasks for specialty healthcare sales and operations: finding where a sales funnel loses momentum and resolving conflicting metric definitions. Five supporting demos cover market comparisons, practice measures and questions about the sample data.
+GTM Healthcare Intelligence contains two review workflows for specialty healthcare sales and reporting, plus five supporting demos. The public examples use synthetic records and embedded reference values. A separate Python pipeline can read locally supplied public-data files.
 
 <Specs>
   <Spec label="Work" value="Independent analytics demos" />
-  <Spec label="Data" value="Synthetic scenarios · embedded reference values" />
+  <Spec label="Default data" value="Synthetic records · embedded reference values" />
+  <Spec label="Optional input" value="Local NPPES and Census files for SpectrumIQ" />
   <Spec label="Tools" value="React · Next.js · Python · Claude API" />
 </Specs>
 
 ## Two review workflows
 
-**ConvertPath** compares conversion and sales-cycle measures by specialty, source and quarter. Its completed lead cohorts are simulated; the deal-health view uses a separate synthetic scoring sample. Changes shown in improvement scenarios are assumptions, with no measured revenue impact.
+**ConvertPath** compares funnel conversion and sales-cycle measures by specialty, source and quarter. Its completed lead cohorts are simulated. The deal-health view uses a separate synthetic scoring sample, so it should not be read as an explanation of what happened to the funnel’s individual deals. Improvement scenarios show assumed changes, not recovered revenue.
 
-**NorthStar** brings competing metric definitions, named owners and simulated reporting-adoption snapshots into one review. Statistical alerts include templated investigation steps. Those steps suggest checks; they do not establish the cause of a change.
+**NorthStar** lets a reviewer compare metric definitions, inspect named owners and review simulated reporting-adoption snapshots. Statistical alerts suggest investigation steps; they do not establish why a metric changed.
 
-## Supporting demos and question answering
+<figure className="my-10">
+  <Image
+    src="/work/gtm-hub-2026-10-24.png"
+    alt="GTM Healthcare Intelligence hub with entry points for ConvertPath pipeline analysis and NorthStar metric definitions, alongside a synthetic-data notice."
+    width={1440}
+    height={1200}
+    sizes="(max-width: 768px) 100vw, 768px"
+    className="h-auto w-full border border-[var(--color-graphite-80)]"
+  />
+  <Caption>GTM Healthcare Intelligence hub, showing entry points for pipeline conversion and metric definitions, with a note describing the synthetic data. Captured October 24, 2026.</Caption>
+  <a
+    href="/work/gtm-hub-2026-10-24.png"
+    target="_blank"
+    rel="noreferrer"
+    className="mt-3 inline-flex min-h-11 items-center text-sm font-medium text-[var(--color-signal-blue-soft)] underline underline-offset-4"
+  >
+    View full-size screenshot ↗
+  </a>
+</figure>
 
-SpectrumIQ compares metros using synthetic provider counts and embedded demographic reference values. PracticeFlow uses synthetic peer cohorts, and the GTM version of SpecialtyPulse uses hand-set procedure series.
+## Three distinct data paths
 
-**AskPractice** calculates answers from fictional practice aggregates, including provider and period filters, without a model call. **AskGTM** calculates supported questions from the same scenario as the sample quarterly review, then uses Claude over supplied scenario text for other questions. It does not execute SQL or query a warehouse. The [AskPractice route](https://github.com/kristenmartino/gtm-healthcare-intel/blob/9f175ded8846f79b72aa99d54df022974dd127b1/app/api/ask/route.js) and [AskGTM route](https://github.com/kristenmartino/gtm-healthcare-intel/blob/9f175ded8846f79b72aa99d54df022974dd127b1/app/api/askgtm/route.js) show that split.
+- **Synthetic demo records.** Sales cohorts, deal-scoring samples, practice benchmarks, procedure trends and governance examples are generated or hand-set for the exercises. The QBR and AskGTM share one invented sales scenario; the other demos use their own fixtures. No patient or company records are used.
 
-## Data provenance and scope
+- **Embedded references.** SpectrumIQ bundles demographic reference values and benchmark assumptions with the project. These values are read from the checked-in example, without a live Census query. A CMS, Census, MGMA or HFMA reference names an intended source or comparison context; it does not certify that a displayed value was imported from or validated against that source.
 
-The demos contain no patient or company records. SpectrumIQ's [checked-in run metadata](https://github.com/kristenmartino/gtm-healthcare-intel/blob/9f175ded8846f79b72aa99d54df022974dd127b1/data/output/pipeline_metadata.json) records synthetic providers and embedded reference values. CMS and Census references describe intended source families; they do not establish a live connection or a completed public-data import. The Python pipeline also supports local NPPES and Census input files.
+- **Optional public-data ingestion.** The SpectrumIQ Python pipeline accepts downloaded NPPES and Census files through local file paths. The NPPES path requires DuckDB. Re-running the pipeline can produce new JSON exports and records which input modes were used. This optional path is separate from the default public demo; the current snapshot does not demonstrate a completed public-data import.
 
-The [SpecialtyPulse Pipeline case study](/work/specialtypulse-pipeline) covers a separate Spark pipeline and dashboard. Its reporting tables do not feed the hand-set series in this GTM demo.
+The [checked-in run metadata](https://github.com/kristenmartino/gtm-healthcare-intel/blob/107662376acc001972b07e675cc00f18d654146c/data/output/pipeline_metadata.json) explicitly records `synthetic` providers and `embedded_reference` demographics. The [pipeline source](https://github.com/kristenmartino/gtm-healthcare-intel/blob/107662376acc001972b07e675cc00f18d654146c/data/pipeline/spectrumiq_pipeline.py) shows the optional local-file inputs.
 
-These exercises demonstrate review workflows. Team adoption, forecast accuracy and sales lift remain unmeasured; operational use would require source reconciliation and evaluation with the intended users.
+## Inspect a market comparison
+
+In [SpectrumIQ](https://gtm.kristenmartino.ai/spectrumiq), a reviewer chooses a specialty, compares metro rankings and inspects provider counts per 100,000 people. The composite score combines a provider-density gap, population growth, Medicare population share and income assumptions.
+
+The provider counts are synthetic; the demographic values are embedded references. Weights and opportunity tiers are analyst choices. The score does not measure existing EHR adoption, purchase intent or validated sales potential. Changing the input files would require checking those definitions and reconciling the resulting measures.
+
+## Ask questions about the examples
+
+AskGTM and AskPractice use Claude to interpret supported questions into tool inputs. Server code validates those inputs, calculates results from the synthetic records and formats the numerical answer. The response exposes its applied filters so the reviewer can check the interpretation.
+
+Question interpretation can still be wrong. Unsupported measures, scopes or missing denominators can require clarification. These tools do not query a live CRM, warehouse or SQL connection.
+
+## Keep the demonstrations separate
+
+PracticeFlow uses synthetic peer cohorts. The GTM version of SpecialtyPulse uses hand-set procedure series. The [SpecialtyPulse Pipeline case study](/work/specialtypulse-pipeline) covers a separate Spark pipeline and dashboard; its tables do not feed this GTM example.
+
+The exercises demonstrate calculations and review workflows. Real source accuracy, team adoption and sales outcomes need separate evaluation.
