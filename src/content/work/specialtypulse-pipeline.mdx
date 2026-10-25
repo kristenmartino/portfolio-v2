@@ -60,6 +60,14 @@ The proposed thresholds for proceeding to a larger pilot are:
 
 These thresholds are proposed, not achieved results. If accuracy or completeness fails, I would revise the workflow before testing speed again. Sessions and page views describe activity; they do not demonstrate usefulness. The [workflow and evaluation plan](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/docs/BUSINESS_REVIEW.md) documents the proposed process.
 
+## Deployment path
+
+The current stack is **Databricks → Airflow-validated export → React dashboard**. I archived the earlier Domo integration after trial access ended. The React interface and its review workflow remain in place.
+
+The serverless Databricks job uses the shared Spark transformations, writes raw, staging and mart Delta tables, and compares every mart business value with the reconciled baseline. Airflow checks the successful run's receipt and exported file, saves an immutable versioned copy, and selects it for the next React build. The build checks the selected export again. Creating a scheduled export and publishing a website release are separate steps.
+
+**Current verification:** the public dashboard uses the recorded local Spark artifact. The local Airflow runtime is healthy and its annual DAG is loaded but paused; a successful Databricks run and Airflow-triggered cloud refresh have not yet been recorded. The [deployment runbook](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/deployment/README.md) records the commands and verification boundaries. This deployment work is separate from the internal rehearsal and pending human comparison above.
+
 ## Decisions behind the workflow
 
 **Make the payment denominator explicit.** Average payment per billed service gives larger service volumes more weight. In the reconciled example, a simple average across 57 source rows is $103.80; weighting by their 3,777 services gives $104.91. Different denominators can lead reviewers to different conclusions.
@@ -95,14 +103,14 @@ A recorded local Spark run processes **29,982 raw records into 870 rows used by 
   <Spec label="Execution" value="Local Spark 4.0.1 · 29,982 raw records → 870 reporting rows" />
 </Specs>
 
-The first complete run exposed duplicate synthetic provider identifiers. I corrected them deterministically and retained duplicate-key rejection before aggregation. Policy tests [import the deployed builders directly](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/tests/test_pdp_policy_builders.py) and exercise the real configuration with a fake API client.
+The first complete run exposed duplicate synthetic provider identifiers. I corrected them deterministically and retained duplicate-key rejection before aggregation. Release tests check the export hash, every business value and the run receipt before selecting an artifact for the dashboard. They also reject changed artifacts for a previously recorded run. Earlier Domo policy code and its tests are archived; they are not evidence of active access enforcement.
 
 Open the [same Dermatology / 99213 comparison](https://specialtypulse.kristenmartino.ai/?view=procedure&specialty=Dermatology&hcpcs=99213&year=2023) to inspect the displayed payments and 2023 source trace. The [run receipt](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/pipeline_run.json), [input/output artifact](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/payment_verification.json) and [reproduction guide](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/docs/verification/payment-check.md) provide the technical detail. The brief's versioned links preserve its evidence snapshot when the live demo changes.
 
 ## Scope and next validation
 
-All records are synthetic. The 2021–2022 inputs are generated comparison scenarios, not historical CMS observations. The verified run uses local Spark and a Parquet staging round-trip. Databricks catalog/Delta operations, Airflow orchestration and Domo services remain separately unverified; public access rules and usage are illustrative.
+All records are synthetic. The 2021–2022 inputs are generated comparison scenarios, not historical CMS observations. The verified run uses local Spark and a Parquet staging round-trip. Databricks catalog/Delta execution and Airflow-triggered cloud orchestration remain unverified. Public access rules and usage are illustrative; the public dashboard serves the same synthetic data to all visitors.
 
-The Databricks mart adapter's drop-and-rename replacement also leaves an availability gap. Operational use would require an atomic replacement or view switch, tested recovery, real-source reconciliation and intended-user access checks.
+The current deployment job replaces each Delta table in a single table commit; the three tables are not one transaction. Operational use would still require tested recovery, real-source reconciliation and intended-user access checks.
 
 Next, I would confirm intended users' actual workflow and comparable task difficulty, then run the five-pair human comparison. External integrations still need verification before operational recommendations. [GTM Healthcare Intelligence](/work/gtm-healthcare) covers the related reporting-workflow prototype.
