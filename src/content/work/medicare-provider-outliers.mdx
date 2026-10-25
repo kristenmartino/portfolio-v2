@@ -27,7 +27,9 @@ The [provider profile model](https://github.com/kristenmartino/medicare-provider
 
 The model requires at least 30 peers and exposes coverage counts per metric. In this dataset, 9,490 taxonomy-by-state groups meet the floor. The threshold is a modeling choice; meeting it does not make every comparison clinically equivalent.
 
-The application exposes both a MAD modified z-score and a classical z-score. At the configured thresholds, their recorded overall flag rates are 5.23% and 2.01%. Both are available for comparison.
+The application exposes both a MAD modified z-score and a classical z-score. At the configured thresholds, their recorded overall flag rates are 5.23% and 2.01%. Those rates divide by all **7,062,726 registry providers in the mart**, including providers without observed Part B or Part D activity. The summary records **1,069,017 Part D prescribers** and **1,076,323 Part B providers**; these populations overlap. The rates are not the proportion flagged among Medicare-active or metric-eligible providers.
+
+The rules use different cutoffs: 3.5 for modified z and 2.0 for classical z. No labeled evaluation establishes false-positive rates, actionable-case recall or that the larger flagged set is better. The [committed summary](https://github.com/kristenmartino/medicare-provider-outliers/blob/48b862ff6b216187dbad3d418e0911f60389d515/reports/sources/medicare/tab1_overview_kpis.csv) and [extraction SQL](https://github.com/kristenmartino/medicare-provider-outliers/blob/48b862ff6b216187dbad3d418e0911f60389d515/setup/06_extract_hex_static.py) expose the denominator and coverage counts.
 
 ## Reviewing a flag
 
@@ -37,7 +39,9 @@ A statistical flag identifies a difference to investigate, not its cause or misc
 
 ## Public delivery and tradeoff
 
-The [data app](https://kristenmartino.github.io/medicare-provider-outliers/app/) serves committed extracts without requiring warehouse credentials. The [dbt documentation](https://kristenmartino.github.io/medicare-provider-outliers/) supplies model lineage, column definitions and tests. Updating the public app requires refreshing those extracts.
+The [data app](https://kristenmartino.github.io/medicare-provider-outliers/app/) serves committed extracts without requiring warehouse credentials. Its ranked table contains **the top 1,000 extracted rows per metric**, and its provider selector contains **six selected examples**. Searching those controls does not query the full mart; a missing provider is not evidence that they were unflagged. Full per-NPI lookup is not implemented in the public app.
+
+The [dbt documentation](https://kristenmartino.github.io/medicare-provider-outliers/) supplies model lineage, column definitions and tests. Updating the public app requires refreshing those extracts.
 
 A Hex specification documents a possible warehouse-querying version. The image below is a mockup of that version; the shipped interactive application uses Evidence.
 
