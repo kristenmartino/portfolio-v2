@@ -181,6 +181,12 @@ The [scheduling function](https://github.com/kristenmartino/cabana/blob/e03157be
 
 n8n updates the existing Airtable row with both visit bounds and sends a Telegram notification. The member app, Airtable date fields and Telegram messages display the window in `America/New_York`, including the applicable EST or EDT offset.
 
+## Visit completion
+
+Office staff check `mark_completed` on the Airtable booking. The [writeback handler](https://github.com/kristenmartino/cabana/blob/e03157be4cf2ce42cdedeecff463f41a2e311ae3/supabase/functions/airtable-writeback/index.ts) validates the allowed field and records the `confirmed` → `completed` transition with the actor `office:airtable`. The outbox then updates the existing Airtable row and sends the Telegram status notification.
+
+On refresh, the request page shows “Completed” and “This request is marked completed.” The visit appears in the dashboard’s Service history. Unchecking the Airtable box does not reopen a completed visit.
+
 ## The transactional outbox
 
 Booking status and visit-window changes are saved with their pending integration events in the same database transaction. This record of pending work is the transactional outbox.
@@ -212,5 +218,9 @@ Both buttons were then tested in a signed-in Telegram staff chat. Needs info lef
 A fresh fictional request then went through submission, a $75 Stripe test payment and Telegram approval. The owner assigned **October 27, 2026, 9–11 AM EDT** through the actual Telegram chat. The app changed to “Confirmed” and showed the same interval as the Airtable start/end fields and Telegram confirmation and notification. The app was checked on desktop and at a 375px mobile width.
 
 Repeating the scheduling command left one visit-window event and one Airtable row. Approval stayed confirmed and the test deposit stayed paid. Both delivery acknowledgments were recorded, with no pending or dead-lettered events at the check. The demo’s normal reset was restored after testing, so this QA request is temporary.
+
+Completion was tested separately with a labeled fictional plan visit that required no deposit. After approval through the actual Telegram button, staff checked the visit’s completion box in Airtable. The first attempt exposed an input-name mismatch: the automation passed `checked`, while its script read `markCompleted`. Correcting and publishing that mapping allowed the checkbox to complete the visit.
+
+The check recorded one `confirmed` → `completed` transition attributed to `office:airtable`, one completion event and one matching Airtable row. The request page showed “Completed,” the visit appeared in Service history, and Telegram received the completion notification with a recorded message receipt. Both delivery acknowledgments were present, with no pending or dead-lettered events. Normal demo cleanup was restored afterward; the test did not create or change a payment.
 
 Member email notifications are not implemented. The Telegram bot rejects and logs unauthorized chats; rate limiting and alerts for those attempts remain follow-up work.
