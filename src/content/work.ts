@@ -192,25 +192,24 @@ export const projects: Project[] = [
   {
     index: "07",
     title: "GridPulse",
-    category: "Electricity Demand Forecasting",
+    category: "Electricity Demand Forecast Review",
     summary:
-      "GridPulse forecasts U.S. electricity demand using public grid and weather data. Users can compare forecasts and model performance, review weather alerts, and explore temperature, wind, and solar scenarios.",
+      "I led product direction and delivery for GridPulse, a live tool for reviewing electricity demand forecasts, observed error, and data quality across 51 US balancing authorities.",
     href: "/work/gridpulse",
     slug: "gridpulse",
     liveHref: "https://gridpulse.kristenmartino.ai",
     codeHref: "https://github.com/kristenmartino/gridpulse",
     year: "2024",
     status: "Live application",
-    mode: "Solo build",
     shape: "data-viz",
-    image: "/work/gridpulse-overview-4x3.png",
+    image: "/work/gridpulse-overview-2026-10-25.jpg",
     imageAlt:
-      "GridPulse dashboard for Florida (FPL), showing reported electricity demand, forecasts, and model evaluation metrics.",
+      "GridPulse Overview for Florida (FPL), showing the published forecast, next demand peak, and source-specific error context.",
     metrics: [
       "51 balancing authorities",
-      "3 models + weighted ensemble",
-      "Holdout and live error tracking",
-      "Cloud Run + scheduled jobs",
+      "Published forecast + observed error",
+      "Separate training evaluations",
+      "Live dashboard + read-only API",
     ],
   },
   {
