@@ -2,7 +2,7 @@ import Image from "next/image";
 
 ## Overview
 
-GridPulse helps a forecast review analyst decide whether a published electricity demand forecast needs closer examination. The live dashboard brings forecast sources, observed error, demand, weather, and data-quality warnings into one review workflow across 51 US balancing authorities.
+GridPulse is intended for analysts examining regional electricity demand and forecast performance using public data. The live dashboard brings forecast sources, observed error, demand, weather, and data-quality warnings into one review workflow across 51 US balancing authorities.
 
 A forecast curve alone does not explain whether it needs attention. GridPulse puts the evidence behind that review alongside the forecast.
 
@@ -16,36 +16,36 @@ A forecast curve alone does not explain whether it needs attention. GridPulse pu
 
 ## My role
 
-I set the product scope and priorities, defined the review workflow, and directed how demand forecasts, accuracy, and data quality are presented.
+I took GridPulse from product scope to a deployed dashboard and read-only API. I set the priorities, defined the review workflow, and directed how forecast sources, accuracy evidence, and data quality are presented.
 
-I directed delivery of the live dashboard and read-only API, with scheduled forecast updates, model evaluation, and data-quality disclosures. The product decisions include making the published forecast identifiable, keeping observed error separate from training results, and showing when data or accuracy evidence is unavailable.
+The delivery includes scheduled forecast updates, model evaluation, and data-quality disclosures. An evidence audit shaped the current source labels, clock definitions, and scoring-coverage display, including keeping model comparisons separate from the published forecast.
 
 ## The review decision
 
 The primary question is: **Does this demand forecast need closer review?**
 
-1. Identify the forecast shown and whether it is the published default or a selected model comparison.
-2. Check the matching error evidence, forecast lead, measurement window, and data warnings.
+1. Identify the forecast shown and whether it is the GridPulse published forecast or a selected model comparison.
+2. Check its generation time, target window, matching error evidence, scoring coverage, and data warnings.
 3. Review the next demand peak, forecast curve, demand history, and weather to decide what to investigate.
 
 ## Demand and forecasts
 
-Overview starts with the next 24 hours of the published forecast, its next peak and time, and the latest reported demand. The published default can be a trained model or a seasonal baseline; the source is named beside the chart. Historical observations are available in an expandable section.
+Overview starts with the next 24 hours of the GridPulse published forecast, its next peak and time, and the latest reported demand. This is a rolling target window. The published forecast can be a trained model or a seasonal baseline; its source and recorded selection reason are disclosed. Historical demand observations are available in an expandable section.
 
-The error panel shows recent observed MAPE for the displayed series at the selected forecast lead when matching observations are available. It names the lead and measurement window and keeps the model's training holdout separate. When matching evidence is missing, the interface says so.
+The error panel identifies the series, scoring window, sample count, and available target-hour coverage. Its horizon offsets are measured from the first forecast target, rather than an exact lead from the publication clock. Training holdouts remain separate. Missing counts or timing evidence stay explicitly unknown.
 
 <figure className="my-10">
   <Image
-    src="/work/gridpulse-overview-2026-10-25.jpg"
-    alt="GridPulse Overview for Florida (FPL), showing the published forecast, next demand peak, forecast source, and observed-error context."
+    src="/work/gridpulse-evidence-2026-10-25.jpg"
+    alt="GridPulse Overview for Florida (FPL), showing the published baseline, target window, generation time, and observed error with scoring coverage."
     width={1280}
-    height={1376}
+    height={1612}
     sizes="(max-width: 768px) 100vw, 768px"
     className="h-auto w-full border border-[var(--color-graphite-80)]"
   />
-  <Caption>GridPulse Overview for Florida (FPL), with the published forecast, next demand peak, and source-specific error context. Captured October 25, 2026.</Caption>
+  <Caption>GridPulse Overview for Florida (FPL), with the published baseline, target window, generation time, and observed error with scoring coverage. Captured October 25, 2026.</Caption>
   <a
-    href="/work/gridpulse-overview-2026-10-25.jpg"
+    href="/work/gridpulse-evidence-2026-10-25.jpg"
     target="_blank"
     rel="noreferrer"
     className="mt-3 inline-flex min-h-11 items-center text-sm font-medium text-[var(--color-signal-blue-soft)] underline underline-offset-4"
@@ -78,9 +78,11 @@ Scheduled jobs fetch data, score forecasts, and retrain models. The Dash web ser
 
 The interface discloses stale forecasts, provisional EIA readings, and excluded reporting artifacts. A recent timestamp can still accompany incomplete or provisional inputs.
 
+A three-region pilot captures published-forecast evidence after successful persistence, preserving the series, generation time, target values, and recorded selection context. This prospective record is separate from legacy chart replay. A historical operating-day review remains planned while verified publication history accumulates.
+
 ## Project notes
 
-GridPulse is an independent project using public data.
+GridPulse is an independent project using public data. Published industry procedures informed the proposed analyst workflow.
 
 Developed with AI assistance.
 

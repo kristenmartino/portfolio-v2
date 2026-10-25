@@ -202,7 +202,7 @@ export const projects: Project[] = [
     year: "2024",
     status: "Live application",
     shape: "data-viz",
-    image: "/work/gridpulse-overview-2026-10-25.jpg",
+    image: "/work/gridpulse-evidence-2026-10-25.jpg",
     imageAlt:
       "GridPulse Overview for Florida (FPL), showing the published forecast, next demand peak, and source-specific error context.",
     metrics: [
