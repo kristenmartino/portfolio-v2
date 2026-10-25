@@ -31,6 +31,8 @@ The balance-sheet check keeps parent equity and noncontrolling interests separat
 
 CRM exposed a different coverage problem: debt including current maturities was treated as noncurrent debt, and fixed-asset D&A was treated as the cash-flow total. Filing-backed mappings now distinguish those amounts and label its combined payables/accruals line explicitly. The repair covers the historical inputs used by the model and preserves reviewed corrections. These targeted checks are separate from the historical extraction baseline.
 
+CRM's revenue display also needs complete coverage: its five subscription offerings exclude professional services. The workspace reads all six categories from tagged filing contexts, checks them against the subscription subtotal and consolidated total, and avoids adding the subtotal twice. It labels these as revenue categories because Salesforce reports one operating segment. This display does not change the consolidated valuation.
+
 A reviewer can replace a flagged value and optionally supply a supporting excerpt. Validation then runs again. The stored company record retains the current correction and its source label; it does not provide reviewer identity or a chronological edit history.
 
 ## 3. Make the model choice explicit
