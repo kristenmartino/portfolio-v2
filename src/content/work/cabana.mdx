@@ -12,9 +12,9 @@ AI classifies requests and drafts acknowledgments for staff. Eligible repair cla
   <Spec label="Status" value="Public demo · fictional data · Stripe test mode" />
 </Specs>
 
-## Walkthrough and full-flow verification
+## Walkthrough and verified results
 
-On **October 25, 2026**, one repair request went from member submission through a **$75 Stripe test deposit**, Telegram approval, scheduling, Airtable completion and a visit note in Service history.
+One repair booking was checked end to end on **October 25, 2026**: request, **$75 Stripe test deposit**, Telegram approval and scheduling, Airtable completion, and visit notes in Service history.
 
 <video
   controls
@@ -40,11 +40,11 @@ On **October 25, 2026**, one repair request went from member submission through 
 
 The run verified:
 
-- **Request, payment and approval:** One booking, one Airtable record and one paid test deposit. The processed Stripe sandbox webhook recorded payment; the actual Telegram Approve button recorded staff approval.
-- **Scheduling and completion:** The app, Airtable and Telegram showed the same **October 25, 2026, 2–3 PM EDT** window. Checking completion in Airtable changed the app to “Completed” and sent the Telegram notification.
-- **Visit notes and delivery:** The exact note saved in Airtable appeared in the app’s Service history after refresh. All six lifecycle and scheduling events had both Airtable and Telegram delivery receipts, with zero retries, pending deliveries or dead-lettered events at the final check.
+- **Payment and approval:** One booking, one Airtable record and one paid test deposit confirmed by Stripe’s sandbox webhook. Staff approved the request through the actual Telegram button.
+- **Scheduling and completion:** The app, Airtable and Telegram matched the **October 25, 2026, 2–3 PM EDT** window. Completing the visit in Airtable updated the app and sent the Telegram notification.
+- **Notes and delivery:** The exact Airtable note appeared in Service history. All six lifecycle and scheduling events reached Airtable and Telegram without retries. No deliveries were pending or dead-lettered at the final check.
 
-All **20 evidence checks** passed at **2:23 PM EDT**. These results cover this one successful demo run. The normal half-hour reset was restored after capture, so the test booking is temporary.
+All **20 evidence checks** passed in this single demo run.
 
 ## The system
 
@@ -245,22 +245,8 @@ These results come from one recorded run at demo volume.
 
 ## Demo scope
 
-The public demo uses fictional data, a shared demo member account and Stripe test mode. Requests and edits are saved to that shared account, so visitors should use sample details. Row-level security restricts the demo session to that member’s records.
+The public demo uses fictional data, a shared member account and Stripe test mode. Requests and edits are saved to that account, so visitors should use sample details. Row-level security restricts the session to that member’s records.
 
-The deposit screen includes a test card number and instructions for completing Stripe’s sandbox checkout. No real money is collected.
-
-**Live check — October 24, 2026:** Request submission, a $75 Stripe test payment, one matching Airtable record and all three Telegram notifications were verified. Telegram sends now run through Supabase after connection timeouts from Railway. The two previously failed notifications were retried successfully, with Telegram message receipts recorded and their failure history retained.
-
-Both buttons were then tested in a signed-in Telegram staff chat. Needs info left the booking unchanged. Approve recorded one transition from `scheduled` to `confirmed`, attributed to `owner:telegram`. The same Airtable row updated without a duplicate, the app showed “Approved · time pending,” and the $75 test deposit remained paid. The approval notification reached Telegram, and the live health check showed no pending or dead-lettered events.
-
-A fresh fictional request then went through submission, a $75 Stripe test payment and Telegram approval. The owner assigned **October 27, 2026, 9–11 AM EDT** through the actual Telegram chat. The app changed to “Confirmed” and showed the same interval as the Airtable start/end fields and Telegram confirmation and notification. The app was checked on desktop and at a 375px mobile width.
-
-Repeating the scheduling command left one visit-window event and one Airtable row. Approval stayed confirmed and the test deposit stayed paid. Both delivery acknowledgments were recorded, with no pending or dead-lettered events at the check. The demo’s normal reset was restored after testing, so this QA request is temporary.
-
-Completion was tested separately with a labeled fictional plan visit that required no deposit. After approval through the actual Telegram button, staff checked the visit’s completion box in Airtable. The first attempt exposed an input-name mismatch: the automation passed `checked`, while its script read `markCompleted`. Correcting and publishing that mapping allowed the checkbox to complete the visit.
-
-The check recorded one `confirmed` → `completed` transition attributed to `office:airtable`, one completion event and one matching Airtable row. The request page showed “Completed,” the visit appeared in Service history, and Telegram received the completion notification with a recorded message receipt. Both delivery acknowledgments were present, with no pending or dead-lettered events. Normal demo cleanup was restored afterward; the test did not create or change a payment.
-
-**Visit-notes check — October 25, 2026:** A separate fictional visit was created in the completed state to test notes only. A labeled demo note was entered and saved through the actual Airtable field. The text matched exactly in Airtable, Supabase and the app’s Service history after refresh. The sync log recorded `applied: visit_notes` on the same booking and Airtable row. The visit stayed completed, with no new status transition, outbox event or payment. The existing notes automation worked without changes, and normal demo cleanup remained enabled.
+The deposit step includes sandbox instructions; no real money is collected. The normal half-hour reset was restored after the walkthrough, so the test booking is temporary.
 
 Member email notifications are not implemented. The Telegram bot rejects and logs unauthorized chats; rate limiting and alerts for those attempts remain follow-up work.
