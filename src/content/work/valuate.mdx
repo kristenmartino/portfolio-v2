@@ -29,6 +29,8 @@ Automated checks flag extraction scores below 0.80 and balance-sheet discrepanci
 
 The balance-sheet check keeps parent equity and noncontrolling interests separate, adding them when required without counting the component twice for consolidated equity. This resolves Prologis's false reconciliation warning while preserving the reported figures and valuation inputs. A missing component is accepted only from matching annual-filing facts; unavailable or ambiguous coverage still needs review.
 
+CRM exposed a different coverage problem: debt including current maturities was treated as noncurrent debt, and fixed-asset D&A was treated as the cash-flow total. Filing-backed mappings now distinguish those amounts and label its combined payables/accruals line explicitly. The repair covers the historical inputs used by the model and preserves reviewed corrections. These targeted checks are separate from the historical extraction baseline.
+
 A reviewer can replace a flagged value and optionally supply a supporting excerpt. Validation then runs again. The stored company record retains the current correction and its source label; it does not provide reviewer identity or a chronological edit history.
 
 ## 3. Make the model choice explicit
