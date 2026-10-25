@@ -1,6 +1,6 @@
 ## Overview
 
-FocusForge is an iPhone focus timer with a customizable character, session history, and cosmetic rewards. I designed and built the app to test whether visible progress gives people a reason to return to a focus routine. That remains a product hypothesis; I don’t have retention results to report.
+FocusForge is an iPhone focus timer with a customizable character, session history and cosmetic rewards. I designed and built it to test whether visible progress encourages regular use.
 
 <Specs>
   <Spec label="Role" value="Product design and engineering" />
@@ -14,7 +14,7 @@ FocusForge is an iPhone focus timer with a customizable character, session histo
 
 A user names a task, chooses a focus duration, and starts the timer. Focus sessions alternate with short or long breaks. Completed sessions show earned XP and coins; the user can then review progress, equip cosmetics, or return to the timer.
 
-I kept the timer screen sparse and moved the character and reward animation to the completion screen. The reward sequence can be skipped and includes a Reduce Motion path. Those are implemented accommodations, not a claim that the whole app has passed an accessibility audit.
+I kept the timer screen sparse and moved the character and reward animation to the completion screen. The reward sequence can be skipped and supports Reduce Motion.
 
 ## What earns rewards
 
@@ -25,19 +25,17 @@ The app rewards completed time and consistency. It does not measure attention or
 - **Other progression:** daily and weekly quests offer additional XP and coins. Cosmetics can be bought with coins or unlocked at streak milestones of 3, 7, 14, 30, and 60 days.
 - **Breaks and abandoned sessions:** neither earns session XP or coins. Abandoned sessions remain in the local history with their actual duration.
 
-A longer completed session earns more base rewards than a shorter one. Whether these incentives encourage useful focus, or just more timer completions, needs user testing.
-
 ## Coaching from a written catalog
 
 The app labels this feature “AI Coach,” but it uses an on-device template engine, without a hosted language model. It selects written prompts using recent completion and abandonment rates, session length, and streak risk. Task keywords help select a pre-session prompt.
 
-With the relevant coaching settings enabled, users can edit, accept, or dismiss a suggested task framing before starting. After a completed focus session, they can mark a reflection helpful or not helpful. A streak nudge can be opened or dismissed. Each moment has its own controls.
+With the relevant coaching settings enabled, users can edit, accept, or dismiss a suggested task framing before starting. After a completed focus session, they can mark a reflection helpful or not helpful. A streak nudge can be opened or dismissed.
 
-The catalog keeps the wording reviewable and works without a server call for coaching. Its limitation is equally clear: it selects and fills in existing text rather than giving open-ended advice. The [coach engine source](https://github.com/kristenmartino/focusforge-coach-engine) shows the templates and selection logic.
+The [coach engine source](https://github.com/kristenmartino/focusforge-coach-engine) contains the written prompts and selection logic.
 
 ## Local coaching, with Firebase analytics
 
-SwiftData stores task names, session records, and progression on the device. Coaching uses those local records. This does **not** mean that all behavioral data stays on the phone.
+SwiftData stores task names, session records and progression on the device. Coaching uses those local records. Firebase handles usage analytics and crash reporting.
 
 Firebase Analytics is enabled by default. Session events include planned and actual duration, rewards, and streak information. The reviewed session events send the task name’s character count, rather than the task text. Firebase Crashlytics also provides crash diagnostics.
 
@@ -49,4 +47,4 @@ The MVP includes the timer, local session history, character customization, rewa
 
 Settings can export local progress as JSON, but v1.0 cannot import that file to restore progress. The [export implementation](https://github.com/kristenmartino/focusforge/blob/555f38fe153694bc22ba9fcb899de0f984d018e3/app/FocusForge/Services/DataExportService.swift) lists the included records.
 
-The next checks are beta use, native accessibility testing, and release preparation. I need to observe whether people return, whether the rewards help them work, and whether the coaching is useful. Retention and focus-quality improvements remain unmeasured.
+Beta testing will check whether people return to the app, whether rewards help them work and whether coaching is useful. Native accessibility testing and release preparation are also planned. Retention and focus-quality improvements remain unmeasured.
