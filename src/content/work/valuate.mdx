@@ -75,6 +75,8 @@ Berkshire's Class A and B workspaces use the simplified justified-price-to-book 
 
 The workspace pairs the estimate with its assumptions. Monte Carlo output shows the distribution produced by sampled inputs; its middle 80% is a simulation range, not a calibrated forecast of the stock price. Standard and energy models also show a sensitivity grid.
 
+The peer table provides Yahoo Finance market context separately from the selected model. Its median uses only positive values from returned peers, excluding missing, zero and negative multiples, along with the target and DCF-implied rows. Each metric shows how many peers contributed. Individual negative values remain visible. Market data is requested when the workspace loads, but the panel does not expose provider as-of timestamps, so a new request does not establish that every input is current.
+
 ## Evaluation and limits
 
 The [backend's recorded extraction baseline](https://github.com/kristenmartino/valuate-api#extraction-eval-baseline) was last refreshed on **May 30, 2026**. Values were compared with pinned reference figures using a ±0.5% tolerance.
