@@ -102,6 +102,17 @@ export default function WorkWithMe() {
             <p className="mt-4 text-base md:text-lg leading-relaxed text-[var(--color-graphite-40)]">
               {proofSub}
             </p>
+            <div className="mt-6">
+              <Link
+                href="/work-with-me/sample-assessment"
+                className="inline-flex min-h-11 items-center text-sm text-[var(--color-signal-blue-soft)] underline underline-offset-4 hover:text-[var(--color-bone)] transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--color-signal-blue-soft)]"
+              >
+                Read a sample assessment →
+              </Link>
+              <p className="mt-1 text-sm leading-relaxed text-[var(--color-graphite-40)]">
+                A self-initiated review of GTM Healthcare Intelligence, with findings, recommended fixes and supporting evidence.
+              </p>
+            </div>
           </div>
 
           <ul className="mt-12 border-t border-[var(--color-graphite-90)]">
