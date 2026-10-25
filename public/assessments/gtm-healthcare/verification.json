@@ -1,0 +1,1517 @@
+{
+  "assessment": "GTM Healthcare Intelligence — self-initiated sample assessment",
+  "label": "Self-initiated · review of my own demo",
+  "date": "October 25, 2026",
+  "scopeNotice": "This is a self-initiated review of a demo I own. It is not client work, independent assurance, or evidence of business impact. All sales and practice records used here are synthetic.",
+  "appRevision": "d80dd7d22a5eb1922518b37c561c7ca071fe7812",
+  "verificationWindow": {
+    "firstRequestUTC": "2026-10-25T18:53:03.163806+00:00",
+    "lastRequestUTC": "2026-10-25T18:53:24.955431+00:00"
+  },
+  "sources": [
+    {
+      "id": "E1",
+      "label": "Recorded portfolio wording — before",
+      "href": "https://github.com/kristenmartino/portfolio-v2/blob/d821267abc6ebda1f89bf65919e1e14732a9b7fb/src/content/work.ts",
+      "note": "Broad public-data summary and source badge in the historical project entry."
+    },
+    {
+      "id": "E2",
+      "label": "SpectrumIQ input-mode metadata",
+      "href": "https://github.com/kristenmartino/gtm-healthcare-intel/blob/107662376acc001972b07e675cc00f18d654146c/data/output/pipeline_metadata.json",
+      "note": "Records synthetic providers and embedded_reference demographics."
+    },
+    {
+      "id": "E3",
+      "label": "Published provenance correction",
+      "href": "https://github.com/kristenmartino/portfolio-v2/commit/43bdf1b95ef582cece0dfb14221879fb0c87cf39",
+      "note": "Case-study, project-entry and screenshot release. The correction changed publication content, not demo data."
+    },
+    {
+      "id": "E4",
+      "label": "Period-partition repair — PR #22",
+      "href": "https://github.com/kristenmartino/gtm-healthcare-intel/pull/22",
+      "note": "Accepts valid period partitions while preserving coverage and cohort restrictions."
+    },
+    {
+      "id": "E5",
+      "label": "Synthetic sales records and quota inputs",
+      "href": "https://github.com/kristenmartino/gtm-healthcare-intel/blob/d80dd7d22a5eb1922518b37c561c7ca071fe7812/lib/gtm-scenario.mjs",
+      "note": "Direct inputs for the combined-quota expectation."
+    },
+    {
+      "id": "E6",
+      "label": "Synthetic practice records",
+      "href": "https://github.com/kristenmartino/gtm-healthcare-intel/blob/d80dd7d22a5eb1922518b37c561c7ca071fe7812/lib/practice-scenario.mjs",
+      "note": "Direct inputs for quarterly denial winners and annual revenue thresholds."
+    },
+    {
+      "id": "E7",
+      "label": "Quota calculation and rendering",
+      "href": "https://github.com/kristenmartino/gtm-healthcare-intel/blob/d80dd7d22a5eb1922518b37c561c7ca071fe7812/lib/query-engine.mjs",
+      "note": "Reviewed source for the rep-level quota result."
+    },
+    {
+      "id": "E8",
+      "label": "Question normalization",
+      "href": "https://github.com/kristenmartino/gtm-healthcare-intel/blob/d80dd7d22a5eb1922518b37c561c7ca071fe7812/lib/query-language.mjs",
+      "note": "Reviewed source for the written-threshold limitation."
+    },
+    {
+      "id": "E9",
+      "label": "Verification packet",
+      "href": "/assessments/gtm-healthcare/verification.json",
+      "note": "Selected recorded-before responses, five fresh requests, expected values and observed results. Synthetic data only."
+    }
+  ],
+  "method": "Prepared with AI-assisted source review and report implementation. Numerical expectations were recomputed from the synthetic input records; this is not an independent third-party audit.",
+  "limits": [
+    "The requests were purpose-selected; they are not a random sample or a model-accuracy benchmark.",
+    "This review did not test every query, security controls, production scale, or source accuracy.",
+    "Historical before responses are retained records. Current observations were rechecked against the deployment identified here.",
+    "The app was not changed for this assessment. Two repairs came from prior work; two recommendations remain open.",
+    "No user study, patient-data review, clinical validation or measured commercial outcome is claimed."
+  ],
+  "independentExpectations": {
+    "combinedQuota": {
+      "quota": 800000,
+      "bookings": 754000,
+      "attainment": 94.25
+    },
+    "threshold": 1500000,
+    "thresholdProviders": {
+      "Dr. Maya Singh": 1592362
+    },
+    "quarterlyDenialWinners": [
+      {
+        "quarter": "Q1",
+        "providers": [
+          "Dr. Devon Brooks"
+        ],
+        "denials": 81
+      },
+      {
+        "quarter": "Q2",
+        "providers": [
+          "Dr. Maya Singh"
+        ],
+        "denials": 74
+      },
+      {
+        "quarter": "Q3",
+        "providers": [
+          "Dr. Devon Brooks"
+        ],
+        "denials": 65
+      },
+      {
+        "quarter": "Q4",
+        "providers": [
+          "Dr. Hana Yamamoto"
+        ],
+        "denials": 60
+      }
+    ]
+  },
+  "recordedBefore": {
+    "provenance": "Selected recorded production responses from October 25, 2026; synthetic scenario only. Original checks were performed before this sample assessment was assembled.",
+    "cases": [
+      {
+        "id": "each-quarter",
+        "question": "Who had the most denials in each quarter of 2025?",
+        "domain": "practice",
+        "passed": false,
+        "error": "The shared period must apply to every independent measure.\n+ actual - expected\n\n+ 'query-clarification'\n- 'validated-query'\n",
+        "response": {
+          "source": "query-clarification",
+          "content": [
+            {
+              "type": "text",
+              "text": "The shared period must apply to every independent measure."
+            }
+          ],
+          "appliedScope": [],
+          "toolCalls": []
+        },
+        "durationMs": 5950
+      },
+      {
+        "id": "combined-quota",
+        "domain": "gtm",
+        "question": "What is the combined quota and attainment for Sarah Chen and David Kim in Q1 2025?",
+        "response": {
+          "source": "validated-query",
+          "content": [
+            {
+              "type": "text",
+              "text": "Period: Q1 2025. Reps: Sarah Chen, David Kim.\nChen: Bookings (won ACV) $504,000; Full-quarter quota $450,000; Attainment 112.0%.\nKim: Bookings (won ACV) $250,000; Full-quarter quota $350,000; Attainment 71.4%."
+            }
+          ],
+          "appliedScope": [
+            "Query 1: quota.",
+            "Period: Q1 2025.",
+            "Report: quota.",
+            "reps: Sarah Chen, David Kim.",
+            "Grouping: rep."
+          ],
+          "calculationDetails": [
+            {
+              "title": "quota",
+              "notes": [
+                "Win rate = won / (won + lost). Cycle and mean ACV use won opportunities only. Open pipeline is a separate snapshot, not bookings or a forecast.",
+                "Displayed values are rounded; calculations, filters and ties use unrounded values."
+              ],
+              "rows": [
+                "Chen: Bookings (won ACV) $504,000; Open qualified pipeline $1,200,000; Full-quarter quota $450,000; Attainment 112.0%; Pipeline / full-quarter quota 2.67x; Quota shortfall $0.",
+                "Kim: Bookings (won ACV) $250,000; Open qualified pipeline $1,200,000; Full-quarter quota $350,000; Attainment 71.4%; Pipeline / full-quarter quota 3.43x; Quota shortfall $100,000."
+              ]
+            }
+          ],
+          "toolCalls": [
+            {
+              "id": "toolu_01JwHVARhQTG5FdZDB5U6eRT",
+              "name": "query_gtm",
+              "input": {
+                "queries": [
+                  {
+                    "report": "quota",
+                    "quarters": [
+                      "Q1 2025"
+                    ],
+                    "reps": [
+                      "Sarah Chen",
+                      "David Kim"
+                    ],
+                    "specialties": [],
+                    "sources": [],
+                    "groupBy": [
+                      "rep"
+                    ],
+                    "predicate": {
+                      "metric": "quota",
+                      "operator": "none",
+                      "value": null
+                    },
+                    "ranking": {
+                      "metric": "quota",
+                      "direction": "none",
+                      "limit": 1,
+                      "within": []
+                    }
+                  }
+                ],
+                "explain": false
+              },
+              "result": {
+                "domain": "gtm",
+                "results": [
+                  {
+                    "metrics": [
+                      "bookings",
+                      "pipeline",
+                      "quota",
+                      "attainment",
+                      "coverage",
+                      "shortfall"
+                    ],
+                    "rows": [
+                      {
+                        "name": "Chen",
+                        "wins": 8,
+                        "losses": 16,
+                        "closed": 24,
+                        "bookings": 504000,
+                        "pipeline": 1200000,
+                        "winRate": 33.33333333333333,
+                        "avgACV": 63000,
+                        "avgCycle": 41,
+                        "quota": 450000,
+                        "attainment": 112.00000000000001,
+                        "coverage": 2.6666666666666665,
+                        "shortfall": 0,
+                        "overperformance": 54000
+                      },
+                      {
+                        "name": "Kim",
+                        "wins": 2,
+                        "losses": 14,
+                        "closed": 16,
+                        "bookings": 250000,
+                        "pipeline": 1200000,
+                        "winRate": 12.5,
+                        "avgACV": 125000,
+                        "avgCycle": 68,
+                        "quota": 350000,
+                        "attainment": 71.42857142857143,
+                        "coverage": 3.4285714285714284,
+                        "shortfall": 100000,
+                        "overperformance": 0
+                      }
+                    ],
+                    "rankings": [],
+                    "query": {
+                      "report": "quota",
+                      "quarters": [
+                        "Q1 2025"
+                      ],
+                      "reps": [
+                        "Sarah Chen",
+                        "David Kim"
+                      ],
+                      "specialties": [],
+                      "sources": [],
+                      "groupBy": [
+                        "rep"
+                      ],
+                      "predicate": {
+                        "metric": "quota",
+                        "operator": "none",
+                        "value": null
+                      },
+                      "ranking": {
+                        "metric": "quota",
+                        "direction": "none",
+                        "limit": 1,
+                        "within": []
+                      }
+                    },
+                    "facts": null,
+                    "scope": [
+                      "Period: Q1 2025.",
+                      "Report: quota.",
+                      "reps: Sarah Chen, David Kim.",
+                      "Grouping: rep."
+                    ],
+                    "notes": [
+                      "Win rate = won / (won + lost). Cycle and mean ACV use won opportunities only. Open pipeline is a separate snapshot, not bookings or a forecast."
+                    ]
+                  }
+                ],
+                "explain": false,
+                "displayMetrics": [
+                  "quota",
+                  "attainment",
+                  "bookings"
+                ]
+              }
+            }
+          ]
+        },
+        "reproduced": true
+      },
+      {
+        "id": "practice-decimal-words",
+        "domain": "practice",
+        "question": "Which providers had at least one point five million in revenue in 2025?",
+        "response": {
+          "source": "query-clarification",
+          "content": [
+            {
+              "type": "text",
+              "text": "The numeric threshold was not preserved. Please clarify the comparison; no calculation was run."
+            }
+          ],
+          "appliedScope": [],
+          "toolCalls": []
+        },
+        "reproduced": true
+      },
+      {
+        "id": "numeric-decimal-control",
+        "domain": "practice",
+        "question": "Which providers had at least $1.5M in revenue in 2025?",
+        "response": {
+          "source": "validated-query",
+          "content": [
+            {
+              "type": "text",
+              "text": "Period: Jan–Dec 2025.\nRevenue:\nSingh: $1,592,362\nFilter after aggregation: Revenue ≥ $1,500,000."
+            }
+          ],
+          "appliedScope": [
+            "Query 1: Revenue.",
+            "Period: Jan–Dec 2025.",
+            "Providers: Lin, Shah, Singh, Brooks, Yamamoto.",
+            "Grouping: provider.",
+            "Filter after aggregation: Revenue ≥ $1,500,000."
+          ],
+          "calculationDetails": [
+            {
+              "title": "Revenue",
+              "notes": [
+                "Displayed values are rounded; calculations, filters and ties use unrounded values.",
+                "Scope total before group filter: $6,958,793."
+              ],
+              "rows": [
+                "Singh: $1,592,362"
+              ]
+            }
+          ],
+          "toolCalls": [
+            {
+              "id": "toolu_01Ms8zmGFrFh5VK2ZDQSpzdv",
+              "name": "query_practice",
+              "input": {
+                "queries": [
+                  {
+                    "metric": "revenue",
+                    "months": [
+                      0,
+                      1,
+                      2,
+                      3,
+                      4,
+                      5,
+                      6,
+                      7,
+                      8,
+                      9,
+                      10,
+                      11
+                    ],
+                    "providers": [],
+                    "payers": [],
+                    "procedures": [],
+                    "groupBy": [
+                      "provider"
+                    ],
+                    "predicate": {
+                      "metric": "revenue",
+                      "operator": "gte",
+                      "value": 1500000
+                    },
+                    "ranking": {
+                      "metric": "revenue",
+                      "direction": "none",
+                      "limit": 1,
+                      "within": []
+                    }
+                  }
+                ],
+                "explain": false
+              },
+              "result": {
+                "domain": "practice",
+                "results": [
+                  {
+                    "metric": "revenue",
+                    "scope": [
+                      "Period: Jan–Dec 2025.",
+                      "Providers: Lin, Shah, Singh, Brooks, Yamamoto.",
+                      "Grouping: provider.",
+                      "Filter after aggregation: Revenue ≥ $1,500,000."
+                    ],
+                    "rows": [
+                      {
+                        "name": "Singh",
+                        "dimensions": {
+                          "provider": "Singh"
+                        },
+                        "revenue": 1592362
+                      }
+                    ],
+                    "rankings": [],
+                    "scopeTotal": 6958793,
+                    "filtered": true,
+                    "notes": [],
+                    "query": {
+                      "metric": "revenue",
+                      "months": [
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8,
+                        9,
+                        10,
+                        11
+                      ],
+                      "providers": [],
+                      "payers": [],
+                      "procedures": [],
+                      "groupBy": [
+                        "provider"
+                      ],
+                      "predicate": {
+                        "metric": "revenue",
+                        "operator": "gte",
+                        "value": 1500000
+                      },
+                      "ranking": {
+                        "metric": "revenue",
+                        "direction": "none",
+                        "limit": 1,
+                        "within": []
+                      }
+                    }
+                  }
+                ],
+                "explain": false
+              }
+            }
+          ]
+        },
+        "passed": true
+      }
+    ]
+  },
+  "provenanceBefore": {
+    "capturedContext": "Recorded public portfolio review on October 24, 2026.",
+    "sourceRevision": "d821267abc6ebda1f89bf65919e1e14732a9b7fb",
+    "dataLabel": "Synthetic and public datasets",
+    "sourceBadge": "CMS NPPES · Medicare PUF · Census",
+    "text": "Skip to content\n← Back to work\nCASE STUDY / GTM HEALTHCARE INTELLIGENCE\nGTM Healthcare Intelligence\n\nA collection of seven analytics projects for specialty healthcare sales and marketing, using synthetic and public data. Includes sales-funnel analysis, market comparisons, practice benchmarks, shared metric definitions, and AI tools for asking questions about the data.\n\n7 demos · synthetic and public data\nCMS NPPES · Medicare PUF · Census\nL2 logistic regression\nReact · Next.js · Python · Claude API\nOpen ↗\nWhat I built\n\nGTM Healthcare Intelligence is a collection of seven analytics demos for specialty healthcare sales and marketing. The projects use synthetic and public data to explore metric definitions, practice comparisons, sales funnels, market scoring and natural-language data questions.\n\nWORK\nIndependent analytics demos\nDATA\nSynthetic and public datasets\nTOOLS\nReact · Next.js · Python · Claude API\nThe project set\n\nNorthStar explores a shared metric registry, definition conflicts and reporting use. PracticeFlow and SpecialtyPulse compare practice and specialty measures. ConvertPath examines where deals leave a sales funnel, while SpectrumIQ explores metro-level opportunity scoring. AskGTM and AskPractice provide natural-language interfaces for questions about the demonstration data.\n\nThe projects use different views for different review tasks while sharing definitions where appropriate. This is a proposed reporting approach, rather than evidence of adoption by Sales, Marketing or Finance teams.\n\nReviewing the demonstrations\n\nA reviewer can compare the funnel and market views, inspect metric definitions and follow the supporting reasoning in generated answers. The SpecialtyPulse case study documents its pipeline implementation, sample data and example access policies in more detail.\n\nMock review sessions and synthetic records demonstrate the workflows. Forecast accuracy, sales lift, customer adoption and return on investment need evaluation in real use. A real deployment would need source-system reconciliation, role-based access checks and evaluation with the intended users.\n"
+  },
+  "provenanceCurrent": {
+    "url": "https://kristenmartino.ai/work/gtm-healthcare",
+    "text": "Skip to content\n← Back to work\nCASE STUDY / GTM HEALTHCARE INTELLIGENCE\nGTM Healthcare Intelligence\n\nTwo sales and reporting review workflows, plus five supporting demos. The shipped examples use synthetic records and embedded references; a separate Python pipeline accepts local public-data files.\n\nSynthetic demo records\nEmbedded metro references\nOptional NPPES/Census files\nExplore the demos ↗\nSource ↗\nWhat I built\n\nGTM Healthcare Intelligence contains two review workflows for specialty healthcare sales and reporting, plus five supporting demos. The public examples use synthetic records and embedded reference values. A separate Python pipeline can read locally supplied public-data files.\n\nWORK\nIndependent analytics demos\nDEFAULT DATA\nSynthetic records · embedded reference values\nOPTIONAL INPUT\nLocal NPPES and Census files for SpectrumIQ\nTOOLS\nReact · Next.js · Python · Claude API\nTwo review workflows\n\nConvertPath compares funnel conversion and sales-cycle measures by specialty, source and quarter. Its completed lead cohorts are simulated. The deal-health view uses a separate synthetic scoring sample, so it should not be read as an explanation of what happened to the funnel’s individual deals. Improvement scenarios show assumed changes, not recovered revenue.\n\nNorthStar lets a reviewer compare metric definitions, inspect named owners and review simulated reporting-adoption snapshots. Statistical alerts suggest investigation steps; they do not establish why a metric changed.\n\nGTM Healthcare Intelligence hub, showing entry points for pipeline conversion and metric definitions, with a note describing the synthetic data. Captured October 24, 2026.\n\nView full-size screenshot ↗\n\nThree distinct data paths\n\nSynthetic demo records. Sales cohorts, deal-scoring samples, practice benchmarks, procedure trends and governance examples are generated or hand-set for the exercises. The QBR and AskGTM share one invented sales scenario; the other demos use their own fixtures. No patient or company records are used.\n\nEmbedded references. SpectrumIQ bundles demographic reference values and benchmark assumptions with the project. These values are read from the checked-in example, without a live Census query. A CMS, Census, MGMA or HFMA reference names an intended source or comparison context; it does not certify that a displayed value was imported from or validated against that source.\n\nOptional public-data ingestion. The SpectrumIQ Python pipeline accepts downloaded NPPES and Census files through local file paths. The NPPES path requires DuckDB. Re-running the pipeline can produce new JSON exports and records which input modes were used. This optional path is separate from the default public demo; the current snapshot does not demonstrate a completed public-data import.\n\nThe checked-in run metadata explicitly records synthetic providers and embedded_reference demographics. The pipeline source shows the optional local-file inputs.\n\nInspect a market comparison\n\nIn SpectrumIQ, a reviewer chooses a specialty, compares metro rankings and inspects provider counts per 100,000 people. The composite score combines a provider-density gap, population growth, Medicare population share and income assumptions.\n\nThe provider counts are synthetic; the demographic values are embedded references. Weights and opportunity tiers are analyst choices. The score does not measure existing EHR adoption, purchase intent or validated sales potential. Changing the input files would require checking those definitions and reconciling the resulting measures.\n\nAsk questions about the examples\n\nAskGTM and AskPractice use Claude to interpret supported questions into tool inputs. Server code validates those inputs, calculates results from the synthetic records and formats the numerical answer. The response exposes its applied filters so the reviewer can check the interpretation.\n\nQuestion interpretation can still be wrong. Unsupported measures, scopes or missing denominators can require clarification. These tools do not query a live CRM, warehouse or SQL connection.\n\nKeep the demonstrations separate\n\nPracticeFlow uses synthetic peer cohorts. The GTM version of SpecialtyPulse uses hand-set procedure series. The SpecialtyPulse Pipeline case study covers a separate Spark pipeline and dashboard; its tables do not feed this GTM example.\n\nThe exercises demonstrate calculations and review workflows. Real source accuracy, team adoption and sales outcomes need separate evaluation.\n",
+    "dataLayers": [
+      "Synthetic demo records.",
+      "Embedded references.",
+      "Optional public-data ingestion."
+    ],
+    "width": 1280,
+    "documentWidth": 1280
+  },
+  "freshRequests": [
+    {
+      "id": "combined-quota",
+      "question": "What is the combined quota and attainment for Sarah Chen and David Kim in Q1 2025?",
+      "url": "https://gtm.kristenmartino.ai/api/askgtm",
+      "requestedAtUTC": "2026-10-25T18:53:03.163806+00:00",
+      "httpStatus": 200,
+      "response": {
+        "source": "validated-query",
+        "content": [
+          {
+            "type": "text",
+            "text": "Period: Q1 2025. Reps: Sarah Chen, David Kim.\nChen: Bookings (won ACV) $504,000; Full-quarter quota $450,000; Attainment 112.0%.\nKim: Bookings (won ACV) $250,000; Full-quarter quota $350,000; Attainment 71.4%."
+          }
+        ],
+        "appliedScope": [
+          "Query 1: quota.",
+          "Period: Q1 2025.",
+          "Report: quota.",
+          "reps: Sarah Chen, David Kim.",
+          "Grouping: rep."
+        ],
+        "calculationDetails": [
+          {
+            "title": "quota",
+            "notes": [
+              "Win rate = won / (won + lost). Cycle and mean ACV use won opportunities only. Open pipeline is a separate snapshot, not bookings or a forecast.",
+              "Displayed values are rounded; calculations, filters and ties use unrounded values."
+            ],
+            "rows": [
+              "Chen: Bookings (won ACV) $504,000; Open qualified pipeline $1,200,000; Full-quarter quota $450,000; Attainment 112.0%; Pipeline / full-quarter quota 2.67x; Quota shortfall $0.",
+              "Kim: Bookings (won ACV) $250,000; Open qualified pipeline $1,200,000; Full-quarter quota $350,000; Attainment 71.4%; Pipeline / full-quarter quota 3.43x; Quota shortfall $100,000."
+            ]
+          }
+        ],
+        "toolCalls": [
+          {
+            "id": "toolu_015bfcKvxDVUWVDw9vUMJ52i",
+            "name": "query_gtm",
+            "input": {
+              "queries": [
+                {
+                  "report": "quota",
+                  "quarters": [
+                    "Q1 2025"
+                  ],
+                  "reps": [
+                    "Sarah Chen",
+                    "David Kim"
+                  ],
+                  "specialties": [],
+                  "sources": [],
+                  "groupBy": [
+                    "rep"
+                  ],
+                  "predicate": {
+                    "metric": "quota",
+                    "operator": "none",
+                    "value": null
+                  },
+                  "ranking": {
+                    "metric": "quota",
+                    "direction": "none",
+                    "limit": 1,
+                    "within": []
+                  }
+                }
+              ],
+              "explain": false
+            },
+            "result": {
+              "domain": "gtm",
+              "results": [
+                {
+                  "metrics": [
+                    "bookings",
+                    "pipeline",
+                    "quota",
+                    "attainment",
+                    "coverage",
+                    "shortfall"
+                  ],
+                  "rows": [
+                    {
+                      "name": "Chen",
+                      "wins": 8,
+                      "losses": 16,
+                      "closed": 24,
+                      "bookings": 504000,
+                      "pipeline": 1200000,
+                      "winRate": 33.33333333333333,
+                      "avgACV": 63000,
+                      "avgCycle": 41,
+                      "quota": 450000,
+                      "attainment": 112.00000000000001,
+                      "coverage": 2.6666666666666665,
+                      "shortfall": 0,
+                      "overperformance": 54000
+                    },
+                    {
+                      "name": "Kim",
+                      "wins": 2,
+                      "losses": 14,
+                      "closed": 16,
+                      "bookings": 250000,
+                      "pipeline": 1200000,
+                      "winRate": 12.5,
+                      "avgACV": 125000,
+                      "avgCycle": 68,
+                      "quota": 350000,
+                      "attainment": 71.42857142857143,
+                      "coverage": 3.4285714285714284,
+                      "shortfall": 100000,
+                      "overperformance": 0
+                    }
+                  ],
+                  "rankings": [],
+                  "query": {
+                    "report": "quota",
+                    "quarters": [
+                      "Q1 2025"
+                    ],
+                    "reps": [
+                      "Sarah Chen",
+                      "David Kim"
+                    ],
+                    "specialties": [],
+                    "sources": [],
+                    "groupBy": [
+                      "rep"
+                    ],
+                    "predicate": {
+                      "metric": "quota",
+                      "operator": "none",
+                      "value": null
+                    },
+                    "ranking": {
+                      "metric": "quota",
+                      "direction": "none",
+                      "limit": 1,
+                      "within": []
+                    }
+                  },
+                  "facts": null,
+                  "scope": [
+                    "Period: Q1 2025.",
+                    "Report: quota.",
+                    "reps: Sarah Chen, David Kim.",
+                    "Grouping: rep."
+                  ],
+                  "notes": [
+                    "Win rate = won / (won + lost). Cycle and mean ACV use won opportunities only. Open pipeline is a separate snapshot, not bookings or a forecast."
+                  ]
+                }
+              ],
+              "explain": false,
+              "displayMetrics": [
+                "quota",
+                "attainment",
+                "bookings"
+              ]
+            }
+          }
+        ]
+      },
+      "durationSeconds": 4.07
+    },
+    {
+      "id": "quarterly-ranking",
+      "question": "Who had the most denials in each quarter of 2025?",
+      "url": "https://gtm.kristenmartino.ai/api/ask",
+      "requestedAtUTC": "2026-10-25T18:53:08.243412+00:00",
+      "httpStatus": 200,
+      "response": {
+        "source": "validated-query",
+        "content": [
+          {
+            "type": "text",
+            "text": "Period: Jan–Mar 2025.\nHighest Denial counts for Q1: Brooks (81).\n\nPeriod: Apr–Jun 2025.\nHighest Denial counts for Q2: Singh (74).\n\nPeriod: Jul–Sep 2025.\nHighest Denial counts for Q3: Brooks (65).\n\nPeriod: Oct–Dec 2025.\nHighest Denial counts for Q4: Yamamoto (60)."
+          }
+        ],
+        "appliedScope": [
+          "Query 1: Denial counts.",
+          "Period: Jan–Mar 2025.",
+          "Providers: Lin, Shah, Singh, Brooks, Yamamoto.",
+          "Grouping: quarter × provider.",
+          "Ranking: highest, Denial counts, limit 1 with ties within each quarter.",
+          "Query 2: Denial counts.",
+          "Period: Apr–Jun 2025.",
+          "Providers: Lin, Shah, Singh, Brooks, Yamamoto.",
+          "Grouping: quarter × provider.",
+          "Ranking: highest, Denial counts, limit 1 with ties within each quarter.",
+          "Query 3: Denial counts.",
+          "Period: Jul–Sep 2025.",
+          "Providers: Lin, Shah, Singh, Brooks, Yamamoto.",
+          "Grouping: quarter × provider.",
+          "Ranking: highest, Denial counts, limit 1 with ties within each quarter.",
+          "Query 4: Denial counts.",
+          "Period: Oct–Dec 2025.",
+          "Providers: Lin, Shah, Singh, Brooks, Yamamoto.",
+          "Grouping: quarter × provider.",
+          "Ranking: highest, Denial counts, limit 1 with ties within each quarter."
+        ],
+        "calculationDetails": [
+          {
+            "title": "Denial counts",
+            "notes": [
+              "Denial counts only. Claim denominators and denial reasons are not supplied; denial rates cannot be calculated.",
+              "Displayed values are rounded; calculations, filters and ties use unrounded values.",
+              "Scope total: 272."
+            ],
+            "rows": [
+              "Q1 · Lin: 49",
+              "Q1 · Shah: 47",
+              "Q1 · Singh: 48",
+              "Q1 · Brooks: 81",
+              "Q1 · Yamamoto: 47"
+            ]
+          },
+          {
+            "title": "Denial counts",
+            "notes": [
+              "Denial counts only. Claim denominators and denial reasons are not supplied; denial rates cannot be calculated.",
+              "Displayed values are rounded; calculations, filters and ties use unrounded values.",
+              "Scope total: 262."
+            ],
+            "rows": [
+              "Q2 · Lin: 40",
+              "Q2 · Shah: 40",
+              "Q2 · Singh: 74",
+              "Q2 · Brooks: 57",
+              "Q2 · Yamamoto: 51"
+            ]
+          },
+          {
+            "title": "Denial counts",
+            "notes": [
+              "Denial counts only. Claim denominators and denial reasons are not supplied; denial rates cannot be calculated.",
+              "Displayed values are rounded; calculations, filters and ties use unrounded values.",
+              "Scope total: 302."
+            ],
+            "rows": [
+              "Q3 · Lin: 64",
+              "Q3 · Shah: 52",
+              "Q3 · Singh: 61",
+              "Q3 · Brooks: 65",
+              "Q3 · Yamamoto: 60"
+            ]
+          },
+          {
+            "title": "Denial counts",
+            "notes": [
+              "Denial counts only. Claim denominators and denial reasons are not supplied; denial rates cannot be calculated.",
+              "Displayed values are rounded; calculations, filters and ties use unrounded values.",
+              "Scope total: 265."
+            ],
+            "rows": [
+              "Q4 · Lin: 47",
+              "Q4 · Shah: 55",
+              "Q4 · Singh: 48",
+              "Q4 · Brooks: 55",
+              "Q4 · Yamamoto: 60"
+            ]
+          }
+        ],
+        "toolCalls": [
+          {
+            "id": "toolu_012dkXXW2vmi8eYQ6yW71vBZ",
+            "name": "query_practice",
+            "input": {
+              "queries": [
+                {
+                  "metric": "denials",
+                  "months": [
+                    0,
+                    1,
+                    2
+                  ],
+                  "providers": [],
+                  "payers": [],
+                  "procedures": [],
+                  "groupBy": [
+                    "quarter",
+                    "provider"
+                  ],
+                  "predicate": {
+                    "metric": "denials",
+                    "operator": "none",
+                    "value": null
+                  },
+                  "ranking": {
+                    "metric": "denials",
+                    "direction": "highest",
+                    "limit": 1,
+                    "within": [
+                      "quarter"
+                    ]
+                  }
+                },
+                {
+                  "metric": "denials",
+                  "months": [
+                    3,
+                    4,
+                    5
+                  ],
+                  "providers": [],
+                  "payers": [],
+                  "procedures": [],
+                  "groupBy": [
+                    "quarter",
+                    "provider"
+                  ],
+                  "predicate": {
+                    "metric": "denials",
+                    "operator": "none",
+                    "value": null
+                  },
+                  "ranking": {
+                    "metric": "denials",
+                    "direction": "highest",
+                    "limit": 1,
+                    "within": [
+                      "quarter"
+                    ]
+                  }
+                },
+                {
+                  "metric": "denials",
+                  "months": [
+                    6,
+                    7,
+                    8
+                  ],
+                  "providers": [],
+                  "payers": [],
+                  "procedures": [],
+                  "groupBy": [
+                    "quarter",
+                    "provider"
+                  ],
+                  "predicate": {
+                    "metric": "denials",
+                    "operator": "none",
+                    "value": null
+                  },
+                  "ranking": {
+                    "metric": "denials",
+                    "direction": "highest",
+                    "limit": 1,
+                    "within": [
+                      "quarter"
+                    ]
+                  }
+                },
+                {
+                  "metric": "denials",
+                  "months": [
+                    9,
+                    10,
+                    11
+                  ],
+                  "providers": [],
+                  "payers": [],
+                  "procedures": [],
+                  "groupBy": [
+                    "quarter",
+                    "provider"
+                  ],
+                  "predicate": {
+                    "metric": "denials",
+                    "operator": "none",
+                    "value": null
+                  },
+                  "ranking": {
+                    "metric": "denials",
+                    "direction": "highest",
+                    "limit": 1,
+                    "within": [
+                      "quarter"
+                    ]
+                  }
+                }
+              ],
+              "explain": false
+            },
+            "result": {
+              "domain": "practice",
+              "results": [
+                {
+                  "metric": "denials",
+                  "scope": [
+                    "Period: Jan–Mar 2025.",
+                    "Providers: Lin, Shah, Singh, Brooks, Yamamoto.",
+                    "Grouping: quarter × provider.",
+                    "Ranking: highest, Denial counts, limit 1 with ties within each quarter."
+                  ],
+                  "rows": [
+                    {
+                      "name": "Q1 · Lin",
+                      "dimensions": {
+                        "quarter": "Q1",
+                        "provider": "Lin"
+                      },
+                      "denials": 49
+                    },
+                    {
+                      "name": "Q1 · Shah",
+                      "dimensions": {
+                        "quarter": "Q1",
+                        "provider": "Shah"
+                      },
+                      "denials": 47
+                    },
+                    {
+                      "name": "Q1 · Singh",
+                      "dimensions": {
+                        "quarter": "Q1",
+                        "provider": "Singh"
+                      },
+                      "denials": 48
+                    },
+                    {
+                      "name": "Q1 · Brooks",
+                      "dimensions": {
+                        "quarter": "Q1",
+                        "provider": "Brooks"
+                      },
+                      "denials": 81
+                    },
+                    {
+                      "name": "Q1 · Yamamoto",
+                      "dimensions": {
+                        "quarter": "Q1",
+                        "provider": "Yamamoto"
+                      },
+                      "denials": 47
+                    }
+                  ],
+                  "rankings": [
+                    {
+                      "direction": "highest",
+                      "rows": [
+                        {
+                          "name": "Q1 · Brooks",
+                          "dimensions": {
+                            "quarter": "Q1",
+                            "provider": "Brooks"
+                          },
+                          "denials": 81
+                        }
+                      ],
+                      "within": "Q1"
+                    }
+                  ],
+                  "scopeTotal": 272,
+                  "filtered": false,
+                  "notes": [
+                    "Denial counts only. Claim denominators and denial reasons are not supplied; denial rates cannot be calculated."
+                  ],
+                  "query": {
+                    "metric": "denials",
+                    "months": [
+                      0,
+                      1,
+                      2
+                    ],
+                    "providers": [],
+                    "payers": [],
+                    "procedures": [],
+                    "groupBy": [
+                      "quarter",
+                      "provider"
+                    ],
+                    "predicate": {
+                      "metric": "denials",
+                      "operator": "none",
+                      "value": null
+                    },
+                    "ranking": {
+                      "metric": "denials",
+                      "direction": "highest",
+                      "limit": 1,
+                      "within": [
+                        "quarter"
+                      ]
+                    }
+                  }
+                },
+                {
+                  "metric": "denials",
+                  "scope": [
+                    "Period: Apr–Jun 2025.",
+                    "Providers: Lin, Shah, Singh, Brooks, Yamamoto.",
+                    "Grouping: quarter × provider.",
+                    "Ranking: highest, Denial counts, limit 1 with ties within each quarter."
+                  ],
+                  "rows": [
+                    {
+                      "name": "Q2 · Lin",
+                      "dimensions": {
+                        "quarter": "Q2",
+                        "provider": "Lin"
+                      },
+                      "denials": 40
+                    },
+                    {
+                      "name": "Q2 · Shah",
+                      "dimensions": {
+                        "quarter": "Q2",
+                        "provider": "Shah"
+                      },
+                      "denials": 40
+                    },
+                    {
+                      "name": "Q2 · Singh",
+                      "dimensions": {
+                        "quarter": "Q2",
+                        "provider": "Singh"
+                      },
+                      "denials": 74
+                    },
+                    {
+                      "name": "Q2 · Brooks",
+                      "dimensions": {
+                        "quarter": "Q2",
+                        "provider": "Brooks"
+                      },
+                      "denials": 57
+                    },
+                    {
+                      "name": "Q2 · Yamamoto",
+                      "dimensions": {
+                        "quarter": "Q2",
+                        "provider": "Yamamoto"
+                      },
+                      "denials": 51
+                    }
+                  ],
+                  "rankings": [
+                    {
+                      "direction": "highest",
+                      "rows": [
+                        {
+                          "name": "Q2 · Singh",
+                          "dimensions": {
+                            "quarter": "Q2",
+                            "provider": "Singh"
+                          },
+                          "denials": 74
+                        }
+                      ],
+                      "within": "Q2"
+                    }
+                  ],
+                  "scopeTotal": 262,
+                  "filtered": false,
+                  "notes": [
+                    "Denial counts only. Claim denominators and denial reasons are not supplied; denial rates cannot be calculated."
+                  ],
+                  "query": {
+                    "metric": "denials",
+                    "months": [
+                      3,
+                      4,
+                      5
+                    ],
+                    "providers": [],
+                    "payers": [],
+                    "procedures": [],
+                    "groupBy": [
+                      "quarter",
+                      "provider"
+                    ],
+                    "predicate": {
+                      "metric": "denials",
+                      "operator": "none",
+                      "value": null
+                    },
+                    "ranking": {
+                      "metric": "denials",
+                      "direction": "highest",
+                      "limit": 1,
+                      "within": [
+                        "quarter"
+                      ]
+                    }
+                  }
+                },
+                {
+                  "metric": "denials",
+                  "scope": [
+                    "Period: Jul–Sep 2025.",
+                    "Providers: Lin, Shah, Singh, Brooks, Yamamoto.",
+                    "Grouping: quarter × provider.",
+                    "Ranking: highest, Denial counts, limit 1 with ties within each quarter."
+                  ],
+                  "rows": [
+                    {
+                      "name": "Q3 · Lin",
+                      "dimensions": {
+                        "quarter": "Q3",
+                        "provider": "Lin"
+                      },
+                      "denials": 64
+                    },
+                    {
+                      "name": "Q3 · Shah",
+                      "dimensions": {
+                        "quarter": "Q3",
+                        "provider": "Shah"
+                      },
+                      "denials": 52
+                    },
+                    {
+                      "name": "Q3 · Singh",
+                      "dimensions": {
+                        "quarter": "Q3",
+                        "provider": "Singh"
+                      },
+                      "denials": 61
+                    },
+                    {
+                      "name": "Q3 · Brooks",
+                      "dimensions": {
+                        "quarter": "Q3",
+                        "provider": "Brooks"
+                      },
+                      "denials": 65
+                    },
+                    {
+                      "name": "Q3 · Yamamoto",
+                      "dimensions": {
+                        "quarter": "Q3",
+                        "provider": "Yamamoto"
+                      },
+                      "denials": 60
+                    }
+                  ],
+                  "rankings": [
+                    {
+                      "direction": "highest",
+                      "rows": [
+                        {
+                          "name": "Q3 · Brooks",
+                          "dimensions": {
+                            "quarter": "Q3",
+                            "provider": "Brooks"
+                          },
+                          "denials": 65
+                        }
+                      ],
+                      "within": "Q3"
+                    }
+                  ],
+                  "scopeTotal": 302,
+                  "filtered": false,
+                  "notes": [
+                    "Denial counts only. Claim denominators and denial reasons are not supplied; denial rates cannot be calculated."
+                  ],
+                  "query": {
+                    "metric": "denials",
+                    "months": [
+                      6,
+                      7,
+                      8
+                    ],
+                    "providers": [],
+                    "payers": [],
+                    "procedures": [],
+                    "groupBy": [
+                      "quarter",
+                      "provider"
+                    ],
+                    "predicate": {
+                      "metric": "denials",
+                      "operator": "none",
+                      "value": null
+                    },
+                    "ranking": {
+                      "metric": "denials",
+                      "direction": "highest",
+                      "limit": 1,
+                      "within": [
+                        "quarter"
+                      ]
+                    }
+                  }
+                },
+                {
+                  "metric": "denials",
+                  "scope": [
+                    "Period: Oct–Dec 2025.",
+                    "Providers: Lin, Shah, Singh, Brooks, Yamamoto.",
+                    "Grouping: quarter × provider.",
+                    "Ranking: highest, Denial counts, limit 1 with ties within each quarter."
+                  ],
+                  "rows": [
+                    {
+                      "name": "Q4 · Lin",
+                      "dimensions": {
+                        "quarter": "Q4",
+                        "provider": "Lin"
+                      },
+                      "denials": 47
+                    },
+                    {
+                      "name": "Q4 · Shah",
+                      "dimensions": {
+                        "quarter": "Q4",
+                        "provider": "Shah"
+                      },
+                      "denials": 55
+                    },
+                    {
+                      "name": "Q4 · Singh",
+                      "dimensions": {
+                        "quarter": "Q4",
+                        "provider": "Singh"
+                      },
+                      "denials": 48
+                    },
+                    {
+                      "name": "Q4 · Brooks",
+                      "dimensions": {
+                        "quarter": "Q4",
+                        "provider": "Brooks"
+                      },
+                      "denials": 55
+                    },
+                    {
+                      "name": "Q4 · Yamamoto",
+                      "dimensions": {
+                        "quarter": "Q4",
+                        "provider": "Yamamoto"
+                      },
+                      "denials": 60
+                    }
+                  ],
+                  "rankings": [
+                    {
+                      "direction": "highest",
+                      "rows": [
+                        {
+                          "name": "Q4 · Yamamoto",
+                          "dimensions": {
+                            "quarter": "Q4",
+                            "provider": "Yamamoto"
+                          },
+                          "denials": 60
+                        }
+                      ],
+                      "within": "Q4"
+                    }
+                  ],
+                  "scopeTotal": 265,
+                  "filtered": false,
+                  "notes": [
+                    "Denial counts only. Claim denominators and denial reasons are not supplied; denial rates cannot be calculated."
+                  ],
+                  "query": {
+                    "metric": "denials",
+                    "months": [
+                      9,
+                      10,
+                      11
+                    ],
+                    "providers": [],
+                    "payers": [],
+                    "procedures": [],
+                    "groupBy": [
+                      "quarter",
+                      "provider"
+                    ],
+                    "predicate": {
+                      "metric": "denials",
+                      "operator": "none",
+                      "value": null
+                    },
+                    "ranking": {
+                      "metric": "denials",
+                      "direction": "highest",
+                      "limit": 1,
+                      "within": [
+                        "quarter"
+                      ]
+                    }
+                  }
+                }
+              ],
+              "explain": false
+            }
+          }
+        ]
+      },
+      "durationSeconds": 6.79
+    },
+    {
+      "id": "written-decimal",
+      "question": "Which providers had at least one point five million in revenue in 2025?",
+      "url": "https://gtm.kristenmartino.ai/api/ask",
+      "requestedAtUTC": "2026-10-25T18:53:16.042481+00:00",
+      "httpStatus": 200,
+      "response": {
+        "source": "query-clarification",
+        "content": [
+          {
+            "type": "text",
+            "text": "The numeric threshold was not preserved. Please clarify the comparison; no calculation was run."
+          }
+        ],
+        "appliedScope": [],
+        "toolCalls": []
+      },
+      "durationSeconds": 3.47
+    },
+    {
+      "id": "numeric-control",
+      "question": "Which providers had at least $1.5M in revenue in 2025?",
+      "url": "https://gtm.kristenmartino.ai/api/ask",
+      "requestedAtUTC": "2026-10-25T18:53:20.514882+00:00",
+      "httpStatus": 200,
+      "response": {
+        "source": "validated-query",
+        "content": [
+          {
+            "type": "text",
+            "text": "Period: Jan–Dec 2025.\nRevenue:\nSingh: $1,592,362\nFilter after aggregation: Revenue ≥ $1,500,000."
+          }
+        ],
+        "appliedScope": [
+          "Query 1: Revenue.",
+          "Period: Jan–Dec 2025.",
+          "Providers: Lin, Shah, Singh, Brooks, Yamamoto.",
+          "Grouping: provider.",
+          "Filter after aggregation: Revenue ≥ $1,500,000."
+        ],
+        "calculationDetails": [
+          {
+            "title": "Revenue",
+            "notes": [
+              "Displayed values are rounded; calculations, filters and ties use unrounded values.",
+              "Scope total before group filter: $6,958,793."
+            ],
+            "rows": [
+              "Singh: $1,592,362"
+            ]
+          }
+        ],
+        "toolCalls": [
+          {
+            "id": "toolu_01BaPXeay1HzwByfSmU6tKQY",
+            "name": "query_practice",
+            "input": {
+              "queries": [
+                {
+                  "metric": "revenue",
+                  "months": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11
+                  ],
+                  "providers": [],
+                  "payers": [],
+                  "procedures": [],
+                  "groupBy": [
+                    "provider"
+                  ],
+                  "predicate": {
+                    "metric": "revenue",
+                    "operator": "gte",
+                    "value": 1500000
+                  },
+                  "ranking": {
+                    "metric": "revenue",
+                    "direction": "none",
+                    "limit": 1,
+                    "within": []
+                  }
+                }
+              ],
+              "explain": false
+            },
+            "result": {
+              "domain": "practice",
+              "results": [
+                {
+                  "metric": "revenue",
+                  "scope": [
+                    "Period: Jan–Dec 2025.",
+                    "Providers: Lin, Shah, Singh, Brooks, Yamamoto.",
+                    "Grouping: provider.",
+                    "Filter after aggregation: Revenue ≥ $1,500,000."
+                  ],
+                  "rows": [
+                    {
+                      "name": "Singh",
+                      "dimensions": {
+                        "provider": "Singh"
+                      },
+                      "revenue": 1592362
+                    }
+                  ],
+                  "rankings": [],
+                  "scopeTotal": 6958793,
+                  "filtered": true,
+                  "notes": [],
+                  "query": {
+                    "metric": "revenue",
+                    "months": [
+                      0,
+                      1,
+                      2,
+                      3,
+                      4,
+                      5,
+                      6,
+                      7,
+                      8,
+                      9,
+                      10,
+                      11
+                    ],
+                    "providers": [],
+                    "payers": [],
+                    "procedures": [],
+                    "groupBy": [
+                      "provider"
+                    ],
+                    "predicate": {
+                      "metric": "revenue",
+                      "operator": "gte",
+                      "value": 1500000
+                    },
+                    "ranking": {
+                      "metric": "revenue",
+                      "direction": "none",
+                      "limit": 1,
+                      "within": []
+                    }
+                  }
+                }
+              ],
+              "explain": false
+            }
+          }
+        ]
+      },
+      "durationSeconds": 3.44
+    },
+    {
+      "id": "missing-denominator",
+      "question": "Show no-show percentage by provider for 2025.",
+      "url": "https://gtm.kristenmartino.ai/api/ask",
+      "requestedAtUTC": "2026-10-25T18:53:24.955431+00:00",
+      "httpStatus": 200,
+      "response": {
+        "source": "query-clarification",
+        "content": [
+          {
+            "type": "text",
+            "text": "That rate cannot be calculated because its required denominator is not supplied."
+          }
+        ],
+        "appliedScope": [],
+        "calculationDetails": [],
+        "toolCalls": [
+          {
+            "id": "toolu_018N3Xu54RYJVaeiSa75Hj3n",
+            "name": "request_clarification",
+            "input": {
+              "reason": "missing_denominator"
+            },
+            "result": {
+              "clarification": "missing_denominator"
+            }
+          }
+        ]
+      },
+      "durationSeconds": 1.46
+    }
+  ],
+  "checkOutcomes": [
+    {
+      "id": "combined-quota",
+      "outcome": "Open: no combined result",
+      "expected": "$800,000 quota; $754,000 bookings; 94.25% attainment",
+      "observed": "Period: Q1 2025. Reps: Sarah Chen, David Kim.\nChen: Bookings (won ACV) $504,000; Full-quarter quota $450,000; Attainment 112.0%.\nKim: Bookings (won ACV) $250,000; Full-quarter quota $350,000; Attainment 71.4%."
+    },
+    {
+      "id": "quarterly-ranking",
+      "outcome": "Verified correction",
+      "expected": "Q1 Brooks 81; Q2 Singh 74; Q3 Brooks 65; Q4 Yamamoto 60",
+      "observed": "Period: Jan–Mar 2025.\nHighest Denial counts for Q1: Brooks (81).\n\nPeriod: Apr–Jun 2025.\nHighest Denial counts for Q2: Singh (74).\n\nPeriod: Jul–Sep 2025.\nHighest Denial counts for Q3: Brooks (65).\n\nPeriod: Oct–Dec 2025.\nHighest Denial counts for Q4: Yamamoto (60)."
+    },
+    {
+      "id": "written-decimal",
+      "outcome": "Open usability limitation; safe clarification",
+      "expected": "Interpret the complete 1,500,000 threshold, or clearly state the supported numeric form",
+      "observed": "The numeric threshold was not preserved. Please clarify the comparison; no calculation was run."
+    },
+    {
+      "id": "numeric-control",
+      "outcome": "Control passed",
+      "expected": "Singh $1,592,362 at threshold ≥ $1,500,000",
+      "observed": "Period: Jan–Dec 2025.\nRevenue:\nSingh: $1,592,362\nFilter after aggregation: Revenue ≥ $1,500,000."
+    },
+    {
+      "id": "missing-denominator",
+      "outcome": "Safe refusal observed",
+      "expected": "Do not calculate no-show percentages without an appointment denominator",
+      "observed": "That rate cannot be calculated because its required denominator is not supplied."
+    }
+  ],
+  "deploymentContext": {
+    "sha": "d80dd7d22a5eb1922518b37c561c7ca071fe7812",
+    "state": "success",
+    "statuses": [
+      {
+        "context": "Vercel",
+        "description": "Deployment has completed",
+        "state": "success",
+        "target_url": "https://vercel.com/kristenmartinos-projects/gtm-healthcare-intel/9661QdsfaFnsyz48K4PCRfVGaR8X",
+        "updated_at": "2026-10-25T18:19:54Z"
+      }
+    ],
+    "note": "GitHub reported this production revision as successful before and after the fresh request window. Requests used the public custom domain."
+  }
+}
