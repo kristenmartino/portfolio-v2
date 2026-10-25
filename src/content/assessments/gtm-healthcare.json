@@ -1,0 +1,318 @@
+{
+  "title": "GTM Healthcare Intelligence",
+  "subtitle": "Data provenance and query completeness",
+  "eyebrow": "Sample product assessment",
+  "label": "Self-initiated · review of my own demo",
+  "draftLabel": "Draft for review · not published",
+  "author": "Kristen Martino",
+  "date": "October 25, 2026",
+  "checkedAt": "2:53 p.m. Eastern · October 25, 2026",
+  "appRevision": "d80dd7d22a5eb1922518b37c561c7ca071fe7812",
+  "appRevisionShort": "d80dd7d",
+  "downloadHref": "/assessments/gtm-healthcare/verification.json",
+  "summary": "The source disclosure is now explicit, and a quarterly-ranking repair passed a targeted recheck. Two query limitations remain: combined quota totals are omitted, and written decimal amounts require clarification.",
+  "provenance": "This is a self-initiated review of a demo I own. It is not client work, independent assurance, or evidence of business impact. All sales and practice records used here are synthetic.",
+  "counts": {
+    "findings": 4,
+    "verifiedCorrections": 2,
+    "openFindings": 2,
+    "freshRequests": 5
+  },
+  "scope": [
+    "Public GTM demo and portfolio data disclosures.",
+    "Selected source snapshots and recorded before-fix responses.",
+    "Five targeted requests to the production query endpoints.",
+    "Expected numbers recalculated directly from fixture rows without the query engine."
+  ],
+  "limits": [
+    "The requests were purpose-selected; they are not a random sample or a model-accuracy benchmark.",
+    "This review did not test every query, security controls, production scale, or source accuracy.",
+    "Historical before responses are retained records. Current observations were rechecked against the deployment identified here.",
+    "The app was not changed for this assessment. Two repairs came from prior work; two recommendations remain open.",
+    "No user study, patient-data review, clinical validation or measured commercial outcome is claimed."
+  ],
+  "methodNote": "AI tools supported implementation, testing and analysis. Numerical expectations were recomputed from the synthetic input records; this is not an independent third-party audit.",
+  "priorities": [
+    {
+      "level": "P1",
+      "meaning": "A published claim can give a materially wrong impression of the data in the example."
+    },
+    {
+      "level": "P2",
+      "meaning": "The requested task is incomplete or unnecessarily blocked. Scope is this demo, not a clinical severity rating."
+    }
+  ],
+  "findings": [
+    {
+      "id": "F01",
+      "priority": "P1",
+      "kind": "Data provenance",
+      "title": "The public-data label was broader than the shipped snapshot.",
+      "status": "Verified correction",
+      "state": "closed",
+      "risk": "A reader could infer that the displayed provider counts came from a completed CMS import. This is a review risk; no user misunderstanding was measured.",
+      "observation": "The earlier project summary described “synthetic and public data” beside a “CMS NPPES · Medicare PUF · Census” badge. The recorded SpectrumIQ input modes were synthetic providers and embedded demographic references.",
+      "before": "…using synthetic and public data.\nCMS NPPES · Medicare PUF · Census",
+      "after": "Synthetic demo records.\nEmbedded references.\nOptional public-data ingestion.",
+      "fix": "Publish separate disclosures for generated records, bundled references and the optional local-file loader. Avoid using a source name as evidence that ingestion occurred.",
+      "verification": "Verified on the public case-study page. All three labels are present and agree with the recorded input modes. Publication correction 43bdf1b; no data or calculation change is claimed.",
+      "acceptance": [
+        "Display the three data paths distinctly.",
+        "Name the default snapshot’s actual input modes.",
+        "Describe public-file ingestion as optional, not a completed live import."
+      ],
+      "evidence": [
+        "E1",
+        "E2",
+        "E3",
+        "E9"
+      ]
+    },
+    {
+      "id": "F02",
+      "priority": "P2",
+      "kind": "Query completeness",
+      "title": "A combined-quota request still returns separate rep results.",
+      "status": "Open · reproduced",
+      "state": "open",
+      "risk": "The response supplies correct individual figures but omits the requested combined result. A reviewer must reconstruct the denominator and weighted percentage.",
+      "observation": "The same combined-quota question returned Chen and Kim rows in the recorded run and in the fresh production check. Neither answer supplied the combined total.",
+      "question": "What is the combined quota and attainment for Sarah Chen and David Kim in Q1 2025?",
+      "before": "Chen: $504,000 bookings / $450,000 quota / 112.0%\nKim: $250,000 bookings / $350,000 quota / 71.4%\nNo combined result.",
+      "after": "Fresh production response: the same two rep rows.\nNo combined quota, bookings or attainment was returned.",
+      "fix": "Honor the requested aggregate grain. Sum the selected quotas and bookings, then calculate attainment from those sums. If that grain is unsupported, state the limitation rather than giving only separate rows.",
+      "verification": "Open at the tested app revision. Direct fixture calculation gives $800,000 quota, $754,000 bookings and 94.25% attainment. This assessment did not change the app.",
+      "acceptance": [
+        "Return one combined result with $800,000 quota and $754,000 bookings.",
+        "Calculate attainment as 754,000 ÷ 800,000 = 94.25% (94.3% at one decimal).",
+        "Preserve correct per-rep results and supported cohort restrictions."
+      ],
+      "evidence": [
+        "E5",
+        "E7",
+        "E9"
+      ]
+    },
+    {
+      "id": "F03",
+      "priority": "P2",
+      "kind": "Scope validation",
+      "title": "A valid quarterly ranking was rejected by the scope guard.",
+      "status": "Verified correction",
+      "state": "closed",
+      "risk": "A supported question could be blocked even when the supplied tool queries covered the requested year. The observed failure was a clarification, not an incorrect number.",
+      "observation": "A recorded production response rejected an annual quarterly ranking. PR #22 changed coverage checks to accept valid period partitions per measure.",
+      "question": "Who had the most denials in each quarter of 2025?",
+      "before": "The shared period must apply to every independent measure.",
+      "after": "Q1: Brooks — 81\nQ2: Singh — 74\nQ3: Brooks — 65\nQ4: Yamamoto — 60",
+      "fix": "Accept complete quarterly partitions without accepting missing periods, swapped ranges or unsupported cohort links. This repair was implemented before the current assessment.",
+      "verification": "One fresh production request returned all four expected winners and counts. Expected values were recalculated directly from monthly fixture rows. This is a targeted recheck, not proof of every possible phrasing or tool plan.",
+      "acceptance": [
+        "Return all four requested quarters with their own winners.",
+        "Match the direct fixture sums.",
+        "Continue rejecting genuinely incomplete or unsupported scopes."
+      ],
+      "evidence": [
+        "E4",
+        "E6",
+        "E9"
+      ]
+    },
+    {
+      "id": "F04",
+      "priority": "P2",
+      "kind": "Input usability",
+      "title": "A written decimal threshold is safely rejected.",
+      "status": "Open · safe limitation",
+      "state": "open",
+      "risk": "A supported numeric comparison becomes unusable when the amount is written in words. The guard prevents a misleading partial-number answer.",
+      "observation": "“At least one point five million” asks for clarification. The equivalent “at least $1.5M” query succeeds and selects Singh. Both behaviors were rechecked.",
+      "question": "Which providers had at least one point five million in revenue in 2025?",
+      "before": "The numeric threshold was not preserved. Please clarify the comparison; no calculation was run.",
+      "after": "Written amount: clarification again.\nNumeric control (≥ $1.5M): Singh — $1,592,362.",
+      "fix": "Parse the complete written quantity and scale, or offer an explicit numeric rephrasing. Keep the existing stop behavior when the full amount cannot be preserved.",
+      "verification": "Open at the tested revision. No incorrect numerical answer was returned for the written version. The direct annual revenue sums confirm the numeric-control result.",
+      "acceptance": [
+        "Interpret one point five million as 1,500,000, or clearly ask for the supported numeric form.",
+        "Match the $1.5M control when calculation proceeds.",
+        "Never silently accept only the leading “one.”"
+      ],
+      "evidence": [
+        "E6",
+        "E8",
+        "E9"
+      ]
+    }
+  ],
+  "plan": [
+    {
+      "order": "01",
+      "title": "Add combined quota output",
+      "status": "Recommended · open",
+      "text": "Return the requested total and weighted attainment, with separate regression checks for total and per-rep questions.",
+      "finding": "F02"
+    },
+    {
+      "order": "02",
+      "title": "Handle written decimal quantities",
+      "status": "Recommended · open",
+      "text": "Preserve the complete amount or supply a clear numeric rephrasing. Keep the fail-closed threshold check.",
+      "finding": "F04"
+    },
+    {
+      "order": "03",
+      "title": "Retain the provenance and period checks",
+      "status": "Already implemented · rechecked",
+      "text": "Keep the three data disclosures and the quarterly coverage regression. Their verified scope should travel with future changes.",
+      "finding": "F01 / F03"
+    }
+  ],
+  "futureOpportunity": {
+    "title": "A separate enhancement: one reconciled public-data slice",
+    "text": "A small NPPES/Census ingestion run with source vintage, transformations and reconciliation would demonstrate the optional loader. This is an expansion opportunity, not a defect in a demo that deliberately uses synthetic data."
+  },
+  "checks": [
+    {
+      "id": "combined-quota",
+      "outcome": "Open: no combined result",
+      "expected": "$800,000 quota; $754,000 bookings; 94.25% attainment",
+      "observed": "Period: Q1 2025. Reps: Sarah Chen, David Kim.\nChen: Bookings (won ACV) $504,000; Full-quarter quota $450,000; Attainment 112.0%.\nKim: Bookings (won ACV) $250,000; Full-quarter quota $350,000; Attainment 71.4%."
+    },
+    {
+      "id": "quarterly-ranking",
+      "outcome": "Verified correction",
+      "expected": "Q1 Brooks 81; Q2 Singh 74; Q3 Brooks 65; Q4 Yamamoto 60",
+      "observed": "Period: Jan–Mar 2025.\nHighest Denial counts for Q1: Brooks (81).\n\nPeriod: Apr–Jun 2025.\nHighest Denial counts for Q2: Singh (74).\n\nPeriod: Jul–Sep 2025.\nHighest Denial counts for Q3: Brooks (65).\n\nPeriod: Oct–Dec 2025.\nHighest Denial counts for Q4: Yamamoto (60)."
+    },
+    {
+      "id": "written-decimal",
+      "outcome": "Open usability limitation; safe clarification",
+      "expected": "Interpret the complete 1,500,000 threshold, or clearly state the supported numeric form",
+      "observed": "The numeric threshold was not preserved. Please clarify the comparison; no calculation was run."
+    },
+    {
+      "id": "numeric-control",
+      "outcome": "Control passed",
+      "expected": "Singh $1,592,362 at threshold ≥ $1,500,000",
+      "observed": "Period: Jan–Dec 2025.\nRevenue:\nSingh: $1,592,362\nFilter after aggregation: Revenue ≥ $1,500,000."
+    },
+    {
+      "id": "missing-denominator",
+      "outcome": "Safe refusal observed",
+      "expected": "Do not calculate no-show percentages without an appointment denominator",
+      "observed": "That rate cannot be calculated because its required denominator is not supplied."
+    }
+  ],
+  "safeControl": {
+    "title": "A boundary that behaved correctly",
+    "text": "“Show no-show percentage by provider for 2025” asked for clarification because the required denominator is not supplied. No numerical rate was fabricated."
+  },
+  "sources": [
+    {
+      "id": "E1",
+      "label": "Recorded portfolio wording — before",
+      "href": "https://github.com/kristenmartino/portfolio-v2/blob/d821267abc6ebda1f89bf65919e1e14732a9b7fb/src/content/work.ts",
+      "note": "Broad public-data summary and source badge in the historical project entry."
+    },
+    {
+      "id": "E2",
+      "label": "SpectrumIQ input-mode metadata",
+      "href": "https://github.com/kristenmartino/gtm-healthcare-intel/blob/107662376acc001972b07e675cc00f18d654146c/data/output/pipeline_metadata.json",
+      "note": "Records synthetic providers and embedded_reference demographics."
+    },
+    {
+      "id": "E3",
+      "label": "Published provenance correction",
+      "href": "https://github.com/kristenmartino/portfolio-v2/commit/43bdf1b95ef582cece0dfb14221879fb0c87cf39",
+      "note": "Case-study, project-entry and screenshot release. The correction changed publication content, not demo data."
+    },
+    {
+      "id": "E4",
+      "label": "Period-partition repair — PR #22",
+      "href": "https://github.com/kristenmartino/gtm-healthcare-intel/pull/22",
+      "note": "Accepts valid period partitions while preserving coverage and cohort restrictions."
+    },
+    {
+      "id": "E5",
+      "label": "Synthetic sales records and quota inputs",
+      "href": "https://github.com/kristenmartino/gtm-healthcare-intel/blob/d80dd7d22a5eb1922518b37c561c7ca071fe7812/lib/gtm-scenario.mjs",
+      "note": "Direct inputs for the combined-quota expectation."
+    },
+    {
+      "id": "E6",
+      "label": "Synthetic practice records",
+      "href": "https://github.com/kristenmartino/gtm-healthcare-intel/blob/d80dd7d22a5eb1922518b37c561c7ca071fe7812/lib/practice-scenario.mjs",
+      "note": "Direct inputs for quarterly denial winners and annual revenue thresholds."
+    },
+    {
+      "id": "E7",
+      "label": "Quota calculation and rendering",
+      "href": "https://github.com/kristenmartino/gtm-healthcare-intel/blob/d80dd7d22a5eb1922518b37c561c7ca071fe7812/lib/query-engine.mjs",
+      "note": "Reviewed source for the rep-level quota result."
+    },
+    {
+      "id": "E8",
+      "label": "Question normalization",
+      "href": "https://github.com/kristenmartino/gtm-healthcare-intel/blob/d80dd7d22a5eb1922518b37c561c7ca071fe7812/lib/query-language.mjs",
+      "note": "Reviewed source for the written-threshold limitation."
+    },
+    {
+      "id": "E9",
+      "label": "Verification packet",
+      "href": "/assessments/gtm-healthcare/verification.json",
+      "note": "Selected recorded-before responses, five fresh requests, expected values and observed results. Synthetic data only."
+    }
+  ],
+  "hiringNarrative": {
+    "eyebrow": "Review work sample",
+    "label": "Self-initiated review of my own demo",
+    "title": "Correct figures, missing combined total",
+    "context": "GTM Healthcare Intelligence",
+    "opening": "Asked for combined quota and attainment, the demo returned correct figures for two sales reps but omitted their combined result. Completing that answer is the first recommended fix.",
+    "role": "",
+    "decisions": [
+      {
+        "id": "requested-result",
+        "number": "01",
+        "title": "Combined result omitted",
+        "paragraphs": [
+          "Combined attainment needs total bookings divided by total quota, not averaged rep percentages. Keep the individual figures and add the total, or explain the unsupported calculation."
+        ],
+        "status": "Open at reviewed revision",
+        "state": "open",
+        "supportLabel": "F02",
+        "supportHref": "#F02"
+      },
+      {
+        "id": "claims",
+        "number": "02",
+        "title": "Source labels corrected",
+        "paragraphs": [
+          "Public labels named CMS sources. The snapshot used synthetic provider records and embedded demographic references. Corrected wording distinguishes both from optional public-file ingestion; the wording repair changed no data or calculations."
+        ],
+        "status": "Disclosure corrected and checked",
+        "state": "closed",
+        "supportLabel": "F01",
+        "supportHref": "#F01"
+      },
+      {
+        "id": "safe-stops",
+        "number": "03",
+        "title": "Amounts in words need clarification",
+        "paragraphs": [
+          "“One point five million” asks for clarification; “$1.5M” returns Singh with $1,592,362 revenue. No incorrect number was returned for the written form. Offer the numeric form when words cannot be interpreted. No-show percentages also stopped when the required appointment count was missing. Preserve that safeguard."
+        ],
+        "status": "Amounts in words: open",
+        "state": "open",
+        "supportLabel": "F03–F04 / controls",
+        "supportHref": "#verification"
+      }
+    ],
+    "verification": [
+      "Five selected questions were checked on October 25, 2026. Expected answers were recalculated separately from the app using synthetic sample records, including monthly denial totals and annual revenue sums. A previously repaired quarterly ranking matched Brooks (81), Singh (74), Brooks (65) and Yamamoto (60), in Q1 through Q4 respectively. These checks do not establish overall accuracy."
+    ],
+    "next": "Fix combined totals first, then amounts in words. Retain checks for dates and missing inputs.",
+    "supportTitle": "Full findings and verification evidence",
+    "supportDescription": "Comparisons, acceptance checks, method, limitations and sources."
+  }
+}
