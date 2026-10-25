@@ -13,9 +13,11 @@ I started with a categorized news feed and comparison tools. I then added an int
 
 ## Reading and comparing
 
-The feed organizes stories into ten categories. Readers can open source reporting, save bookmarks, search topics and compare coverage from multiple outlets. Search uses a vector index, with streamed AI responses and a web-search fallback for some queries.
+The feed organizes stories into ten categories. Readers can open source reporting, save bookmarks, search topics and compare coverage from multiple outlets. Topic search retrieves stored articles through a vector index and can supplement sparse results with AI-assisted web search. Results stream as they become available.
 
 Guests can browse the feed, search topics and inspect a dated saved comparison. Running a new comparison requires sign-in. The guest example is stored output, not a fresh query; when its source availability was not recorded, the app hides its summary and marks claim agreement as unverified.
+
+Search can return older reporting. The web-search fallback does not establish publisher dates; those results show **Date unavailable**, including cached fallback records whose older timestamps came from search time. Missing or invalid dates also remain unavailable, and future dates are identified explicitly.
 
 Reference pages bring together available information about matched politicians, organizations, bills and news outlets. Not every article entity has a page, and fields and citations vary. The curated outlet registry also does not establish which outlets are actively ingesting at a given time.
 
