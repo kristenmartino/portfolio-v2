@@ -9,7 +9,7 @@ export const featuredProjectCardCopy = {
   summary:
     "A data app that flags Medicare providers with unusually high costs or service volumes relative to peers in the same specialty and state.",
   description:
-    "Built with public CMS data, Snowflake, and dbt. Includes provider drill-downs, source documentation, and the outlier-detection methodology.",
+    "Uses 2023 Medicare Part B/D data with an April 2026 provider-registry snapshot. Built with Snowflake and dbt, with source and methodology documentation.",
 } as const;
 
 export const featuredProject: FeaturedProject = {
@@ -17,14 +17,14 @@ export const featuredProject: FeaturedProject = {
   title: "Medicare Provider Outliers",
   eyebrow: "Case Study / Medicare Provider Outliers",
   summary:
-    "Provider cost and volume outlier detection across 43.7M rows of public CMS Medicare data — modeled as a dbt star schema on Snowflake, scored within 9,490 specialty-by-state peer groups, and published as a live interactive data app.",
+    "Provider cost and volume comparisons using 2023 Medicare Part B/D data and the April 2026 NPPES registry, modeled in Snowflake/dbt across 43.7M source rows.",
   description:
-    "Three CMS sources from calendar year 2023, modeled in Snowflake with dbt. A public data app supports provider review, and the dbt documentation shows model lineage and tests.",
+    "2023 Medicare Part B and D data joined to the April 2026 NPPES registry, modeled in Snowflake with dbt. A public data app supports provider review, with model lineage and tests in the dbt documentation.",
   metrics: [
+    "2023 Part B/D · April 2026 NPPES",
     "43.7M rows · 3 CMS sources",
     "59 defined dbt checks",
     "9,490 peer groups · MAD + z-score",
-    "Live data app + dbt docs",
   ],
   liveHref: "https://kristenmartino.github.io/medicare-provider-outliers/app/",
   codeHref: "https://github.com/kristenmartino/medicare-provider-outliers",
