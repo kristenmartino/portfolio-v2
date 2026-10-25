@@ -1,0 +1,41 @@
+{
+  "cohort": "internal_rehearsal",
+  "run_id": "02",
+  "source_revision": "7cd9592e01f24cdfe77612ca97dc0852a5753877",
+  "sales_csv_url": "https://github.com/kristenmartino/specialtypulse_pipeline/blob/7cd9592e01f24cdfe77612ca97dc0852a5753877/data/sample_sfdc_pipeline.csv",
+  "sales_csv_sha256": "d882b3f8a3b08649cc89db5ab76f240e58c13bd8850ca83c0088a8a4c3d0fa49",
+  "csv_rows": 500,
+  "retrieved_from_release": true,
+  "pinned_definitions_retrieved": true,
+  "definitions_sha256": "1a2fea08a43accac52e9c0286111f4718aef308d11fab3c10a5aaee240a24f42",
+  "scenario_snapshot": "2026-08-31",
+  "specialty_checks": [
+    {
+      "scenario": "A",
+      "specialty": "Dermatology",
+      "open_count": 53,
+      "overdue_count": 53,
+      "open_acv": "4579800.00",
+      "overdue_acv": "4579800.00",
+      "share_denominator_acv": "40178200.00",
+      "share_pct": "11.4",
+      "minimum_days_overdue": 25,
+      "maximum_days_overdue": 291,
+      "export_claims_match": true
+    },
+    {
+      "scenario": "B",
+      "specialty": "Orthopedic Surgery",
+      "open_count": 47,
+      "overdue_count": 47,
+      "open_acv": "6272200.00",
+      "overdue_acv": "6272200.00",
+      "share_denominator_acv": "40178200.00",
+      "share_pct": "15.6",
+      "minimum_days_overdue": 45,
+      "maximum_days_overdue": 315,
+      "export_claims_match": true
+    }
+  ],
+  "all_sales_claims_reconciled": true
+}

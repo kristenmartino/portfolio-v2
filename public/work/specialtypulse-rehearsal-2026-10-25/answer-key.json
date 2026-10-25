@@ -1,0 +1,36 @@
+{
+  "A": {
+    "specialty": "Dermatology",
+    "code": "99213",
+    "previous_payment": "108.05",
+    "payment": "104.91",
+    "previous_services": 3626,
+    "services": 3777,
+    "payment_delta": "-3.14",
+    "payment_change_pct": "-2.9",
+    "service_delta": 151,
+    "service_change_pct": "4.2",
+    "open_count": 53,
+    "overdue_count": 53,
+    "overdue_acv": "4579800.00",
+    "min_days_overdue": 25,
+    "max_days_overdue": 291
+  },
+  "B": {
+    "specialty": "Orthopedic Surgery",
+    "code": "27130",
+    "previous_payment": "222.06",
+    "payment": "213.47",
+    "previous_services": 2990,
+    "services": 3117,
+    "payment_delta": "-8.59",
+    "payment_change_pct": "-3.9",
+    "service_delta": 127,
+    "service_change_pct": "4.2",
+    "open_count": 47,
+    "overdue_count": 47,
+    "overdue_acv": "6272200.00",
+    "min_days_overdue": 45,
+    "max_days_overdue": 315
+  }
+}

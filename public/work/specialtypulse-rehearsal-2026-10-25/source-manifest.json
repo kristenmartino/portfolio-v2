@@ -1,0 +1,16 @@
+{
+  "source_revision": "7cd9592e01f24cdfe77612ca97dc0852a5753877",
+  "scenario_snapshot": "2026-08-31",
+  "source_sha256": {
+    "data/sample_2022_puf_10k.csv": "7b3d6572f14560b813092700369be6f8acab6b6b02b6239b1fe69a778c730d9f",
+    "data/sample_2023_puf_10k.csv": "7ce9441204f55d8a9a9273f9d21d5e862a58ece27a053054ca8d6a950b44f0e5",
+    "data/sample_mart_reimbursement_trends.csv": "98c53448e2d18a842a40167517300f4ad83bf51d640ba6432bfd71761be7c893",
+    "data/sample_sfdc_pipeline.csv": "d882b3f8a3b08649cc89db5ab76f240e58c13bd8850ca83c0088a8a4c3d0fa49"
+  },
+  "methods": {
+    "reference": "Scripted reference-report rehearsal; not an observed human spreadsheet workflow",
+    "specialtypulse": "Live browser workflow and actual saved Markdown download"
+  },
+  "human_participants": 0,
+  "independent_reviewers": 0
+}

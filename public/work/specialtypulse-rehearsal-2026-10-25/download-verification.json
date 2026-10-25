@@ -1,0 +1,20 @@
+[
+  {
+    "scenario": "A",
+    "study_artifact": "specialtypulse-A.md",
+    "bytes": 8323,
+    "sha256": "f49d86c733181d58d60a883cccf2acad34f6675509658d1ba8cd5f13c8febf9d",
+    "byte_for_byte_match": true,
+    "pinned_sales_csv_url": "https://github.com/kristenmartino/specialtypulse_pipeline/blob/7cd9592e01f24cdfe77612ca97dc0852a5753877/data/sample_sfdc_pipeline.csv",
+    "pinned_definitions_url": "https://github.com/kristenmartino/specialtypulse_pipeline/blob/7cd9592e01f24cdfe77612ca97dc0852a5753877/docs/METRIC_CERTIFICATION_LOG.md"
+  },
+  {
+    "scenario": "B",
+    "study_artifact": "specialtypulse-B.md",
+    "bytes": 8135,
+    "sha256": "8561da27cb4f64730c6512a979359ebd27117b35c06ed9f18d768ac5622cd06d",
+    "byte_for_byte_match": true,
+    "pinned_sales_csv_url": "https://github.com/kristenmartino/specialtypulse_pipeline/blob/7cd9592e01f24cdfe77612ca97dc0852a5753877/data/sample_sfdc_pipeline.csv",
+    "pinned_definitions_url": "https://github.com/kristenmartino/specialtypulse_pipeline/blob/7cd9592e01f24cdfe77612ca97dc0852a5753877/docs/METRIC_CERTIFICATION_LOG.md"
+  }
+]

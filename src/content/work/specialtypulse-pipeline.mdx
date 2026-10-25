@@ -18,7 +18,7 @@ These are assumptions, not research findings. Before a pilot, I would ask intend
 
 The [demo](https://specialtypulse.kristenmartino.ai/?view=market) includes “Prepare a specialty review · sample handoff.” A shared specialty selection connects the handoff and Procedure Detail. Analysts can compare the same procedure across two consecutive years, add that comparison to the brief, then write an observation and its limits, an open question, a next reviewer and a requested check.
 
-The Markdown download includes both years' payments and service counts, calculated changes, the analyst's draft notes and a link that reopens the selected comparison. Verification links point to the reporting mart, synthetic raw inputs and local Spark receipt at the build's repository revision; hashes identify the recorded data snapshot. Each specialty keeps a separate draft as the analyst switches tabs. Drafts last until the page reloads; downloading keeps a copy and does not send or assign it. Missing fields remain explicitly marked. A four-element completeness check measures presence, not accuracy or approval.
+The Markdown download includes both years' payments and service counts, calculated changes, the analyst's draft notes and a link that reopens the selected comparison. Verification links point to the reporting mart, synthetic raw inputs, sales CSV, metric definitions and local Spark receipt at the build's repository revision; hashes identify the recorded data snapshot. Each specialty keeps a separate draft as the analyst switches tabs. Drafts last until the page reloads; downloading keeps a copy and does not send or assign it. Missing fields remain explicitly marked. A four-element completeness check measures presence, not accuracy or approval.
 
 ## Worked example: a completed illustrative brief
 
@@ -35,9 +35,17 @@ Open [Dermatology / HCPCS 99213 / CY2023](https://specialtypulse.kristenmartino.
 
 The first sales action is to reconcile opportunity stages and close dates before using the pipeline balance for planning. The analyst also verifies the payment evidence and reports unresolved issues before a commercial recommendation. A specialty-level score does not establish an account's need or justify outreach by itself.
 
-## How usefulness would be evaluated
+## Internal rehearsal results
 
-This workflow and its evaluation criteria are proposed. No stakeholder validation, user evaluation or business outcomes have been recorded. The criteria are also visible in the demo.
+On October 25, 2026, **one AI assistant with prior project knowledge prepared and self-checked four briefs**: Dermatology / HCPCS 99213 and Orthopedic Surgery / HCPCS 27130, each through a scripted CSV-report comparator and the live app. The payment/service comparisons and overdue sales figures matched raw-input calculations. Both live app downloads saved and matched their generated content byte for byte.
+
+The first rehearsal found that app exports lacked a direct pinned sales CSV link. That gap was fixed. A rerun against [release 7cd9592](https://github.com/kristenmartino/specialtypulse_pipeline/commit/7cd9592e01f24cdfe77612ca97dc0852a5753877) confirmed the link and reproduction filters in **both tested app exports**; the linked CSV reproduced each specialty's overdue count, ACV, pipeline share and overdue ages. The [rehearsal report and saved briefs](/work/specialtypulse-rehearsal-2026-10-25/results.md) document these artifact checks.
+
+**Human validation remains pending: 0 of 5 planned analyst–reviewer pairs have participated.** The same assistant knew the answers and checked its own outputs; the review was not blinded. The scripted comparator was not an observed analyst's usual workflow. Human preparation time, independent recipient understanding, clarification rates, user preference and business outcomes were not measured. The rehearsal does not establish that the proposed usefulness thresholds below have been met.
+
+## Planned human comparison
+
+The five-pair human comparison has not started. Its evaluation criteria remain proposed and are also visible in the demo. No stakeholder validation or human user-evaluation results have been recorded.
 
 I would recruit **five analyst–reviewer pairs for an exploratory comparison**. Each analyst would prepare two briefs from matched data: one with their usual report or spreadsheet and one with SpecialtyPulse. I would alternate the order and scenario assigned to each method, confirming the existing workflow and comparable task difficulty first.
 
@@ -97,4 +105,4 @@ All records are synthetic. The 2021–2022 inputs are generated comparison scena
 
 The Databricks mart adapter's drop-and-rename replacement also leaves an availability gap. Operational use would require an atomic replacement or view switch, tested recovery, real-source reconciliation and intended-user access checks.
 
-Next, I would validate the assumed workflow and run the comparison study, then verify external integrations before operational recommendations. [GTM Healthcare Intelligence](/work/gtm-healthcare) covers the related reporting-workflow prototype.
+Next, I would confirm intended users' actual workflow and comparable task difficulty, then run the five-pair human comparison. External integrations still need verification before operational recommendations. [GTM Healthcare Intelligence](/work/gtm-healthcare) covers the related reporting-workflow prototype.
