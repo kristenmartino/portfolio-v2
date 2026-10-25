@@ -1,0 +1,53 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:05.000
+1. Submit a repair request
+The live member form creates this booking. Triage routes the pump repair to the $75 test deposit.
+
+00:00:05.000 --> 00:00:09.000
+2. Deposit required
+The app shows Awaiting deposit. No visit time has been assigned.
+
+00:00:09.000 --> 00:00:14.000
+3. Pay in Stripe sandbox
+Submitted sample test-card details through hosted Checkout. No real funds or saved payment method.
+
+00:00:14.000 --> 00:00:19.000
+4. Verify the payment result
+Stripe sends checkout.session.completed with livemode=false. The app shows the $75 deposit receipt.
+
+00:00:19.000 --> 00:00:24.000
+5. Approve in Telegram
+Pressed the actual Approve button on this booking. Audit actor: owner:telegram.
+
+00:00:24.000 --> 00:00:28.000
+6. Approval is separate from scheduling
+The app shows Approved · time pending and keeps the paid test-deposit receipt.
+
+00:00:28.000 --> 00:00:33.000
+7. Assign the visit window
+Sent /schedule for October 25, 2026, 2–3 PM EDT. Telegram confirms the saved window.
+
+00:00:33.000 --> 00:00:38.000
+8. Verify the scheduled app
+The app shows Confirmed and the same 2–3 PM EDT visit window. Airtable holds the same UTC bounds.
+
+00:00:38.000 --> 00:00:43.000
+9. Complete the visit in Airtable
+Checked mark_completed on the same record. The writeback changes confirmed to completed.
+
+00:00:43.000 --> 00:00:47.000
+10. Verify completion in the app
+The app now shows Completed. The $75 Stripe test payment remains recorded.
+
+00:00:47.000 --> 00:00:51.000
+11. Verify the completion notification
+Telegram receives confirmed → completed for the same booking and visit window.
+
+00:00:51.000 --> 00:00:56.000
+12. Save a completion note
+Entered a fictional completion note in Airtable. The visit_notes writeback is logged as applied.
+
+00:00:56.000 --> 00:01:02.000
+13. Verify Service history
+The exact note appears under Repair in Service history. This completed request is no longer open.

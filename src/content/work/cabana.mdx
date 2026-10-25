@@ -12,6 +12,40 @@ AI classifies requests and drafts acknowledgments for staff. Eligible repair cla
   <Spec label="Status" value="Public demo · fictional data · Stripe test mode" />
 </Specs>
 
+## Walkthrough and full-flow verification
+
+On **October 25, 2026**, one repair request went from member submission through a **$75 Stripe test deposit**, Telegram approval, scheduling, Airtable completion and a visit note in Service history.
+
+<video
+  controls
+  playsInline
+  preload="none"
+  poster="/work/cabana/full-flow-2026-10-25.webp"
+  width="1920"
+  height="1080"
+  aria-label="Cabana demo walkthrough: request through visit notes"
+  aria-describedby="cabana-walkthrough-caption"
+  className="my-6 block h-auto w-full max-w-full border border-[var(--color-graphite-80)] bg-[var(--color-soot)]"
+>
+  <source src="/work/cabana/full-flow-2026-10-25.mp4" type="video/mp4" />
+  <track src="/work/cabana/full-flow-2026-10-25.vtt" kind="captions" srcLang="en" label="English" />
+  Your browser does not support embedded video. Open the MP4 using the link below.
+</video>
+
+<div id="cabana-walkthrough-caption" className="mb-5 text-sm leading-relaxed text-[var(--color-graphite-40)]">
+  {"62 seconds · captioned live checkpoints · fictional service data · Stripe test mode. No real money moved."}
+</div>
+
+[Open the walkthrough full size](/work/cabana/full-flow-2026-10-25.mp4) · [Read the verification record](/work/cabana/full-flow-verification-2026-10-25.txt)
+
+The run verified:
+
+- **Request, payment and approval:** One booking, one Airtable record and one paid test deposit. The processed Stripe sandbox webhook recorded payment; the actual Telegram Approve button recorded staff approval.
+- **Scheduling and completion:** The app, Airtable and Telegram showed the same **October 25, 2026, 2–3 PM EDT** window. Checking completion in Airtable changed the app to “Completed” and sent the Telegram notification.
+- **Visit notes and delivery:** The exact note saved in Airtable appeared in the app’s Service history after refresh. All six lifecycle and scheduling events had both Airtable and Telegram delivery receipts, with zero retries, pending deliveries or dead-lettered events at the final check.
+
+All **20 evidence checks** passed at **2:23 PM EDT**. These results cover this one successful demo run. The normal half-hour reset was restored after capture, so the test booking is temporary.
+
 ## The system
 
 <Diagram title="System architecture" scrollOnMobile fullSizeHref="/work/cabana-architecture-dark.png">

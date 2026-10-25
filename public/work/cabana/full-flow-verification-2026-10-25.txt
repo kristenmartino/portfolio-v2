@@ -1,0 +1,67 @@
+CABANA — FULL-FLOW DEMO VERIFICATION
+October 25, 2026 | Final state and health check: 2:23:27 PM EDT
+
+RESULT: PASS — 20 of 20 evidence checks.
+Scope: one successful repair-booking approval path in the live public demo.
+All service data is fictional. Stripe was in test mode; no real money moved.
+The walkthrough is a 62-second captioned sequence of actual live checkpoints.
+
+WHAT WAS DONE
+1. Submitted a pump repair through the member form. AI triage routed it to the fixed $75 test deposit step.
+2. Completed hosted Stripe sandbox Checkout with sample details. The real checkout.session.completed webhook was processed with livemode=false and payment_status=paid.
+3. Pressed the actual Telegram Approve button. The app showed Approved · time pending; the deposit stayed paid.
+4. Assigned October 25, 2026, 2–3 PM EDT through Telegram /schedule. The app, Airtable, and Telegram showed the same window (18:00–19:00 UTC).
+5. Checked mark_completed in the same Airtable record. The app showed Completed, and Telegram received the completion notification.
+6. Saved the completion note in Airtable. The exact text matched Supabase and the app's Service history after refresh. The completed booking left Open requests.
+
+COMPLETION NOTE
+Demo completion note — checked circulation and cleaned the skimmer basket. Fictional QA visit; no real service was performed.
+
+AUDIT TRAIL (EDT)
+2:15:21 PM — requested — member
+2:15:23 PM — awaiting_deposit — system
+2:16:47 PM — scheduled — system:stripe
+2:17:48 PM — confirmed — owner:telegram
+2:19:17 PM — completed — office:airtable
+2:20:07 PM — visit_notes writeback applied
+
+DELIVERY CHECKS
+One booking and the same single Airtable record throughout the five saved checkpoints.
+One paid $75 test payment and one processed sandbox checkout completion event.
+Six lifecycle/scheduling events delivered to both Airtable and Telegram.
+Zero retries, zero pending deliveries, and zero dead-lettered events at the final check.
+The full successful run used the app, Stripe Checkout, Telegram, and Airtable controls; booking/payment states were not changed directly.
+
+INDIVIDUAL EVIDENCE CHECKS
+01. PASS — same booking all five checkpoints
+02. PASS — same single airtable record all checkpoints
+03. PASS — triage repair without manual override
+04. PASS — single paid 75 dollar test payment
+05. PASS — processed real stripe sandbox webhook
+06. PASS — full status sequence
+07. PASS — correct transition actors
+08. PASS — app and airtable completed
+09. PASS — airtable deposit paid
+10. PASS — same scheduled 2 to 3 pm edt window
+11. PASS — one telegram scheduling event
+12. PASS — all six events delivered to both destinations
+13. PASS — no retries or duplicate event keys
+14. PASS — completion writeback applied
+15. PASS — note writeback applied
+16. PASS — notes match exactly in app database and airtable
+17. PASS — note visible in service history
+18. PASS — completed booking absent from open requests
+19. PASS — healthy after restoration
+20. PASS — demo reset restored and all six workflows active
+
+FINDINGS AND LIMITS
+The successful full run required no source or workflow-logic fixes.
+An earlier intake said “No real service is requested” and correctly went to low-confidence review. It was not forced through the deposit path. The successful run used a realistic fictional repair description and followed one booking through every stage.
+This compressed QA visit does not represent real service or a technician assignment. These results cover one successful approval path; the walkthrough does not exercise Needs info or every retry/failure condition.
+The normal half-hour demo reset was paused during capture, restored afterward, and confirmed active with all six workflows at 2:23:04 PM EDT. QA data is temporary.
+
+CASE STUDY
+https://kristenmartino.ai/work/cabana
+
+WALKTHROUGH
+https://kristenmartino.ai/work/cabana/full-flow-2026-10-25.mp4
