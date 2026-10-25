@@ -185,6 +185,12 @@ A repair classification with a score of at least 0.8 can open the fixed $75 Stri
 
 The [20-case golden suite](https://github.com/kristenmartino/cabana/blob/e9c447e029d50faaf14206a8a48cb5650f2d5e7f/tests/golden/golden.test.ts) checks expected routes and forbidden phrases in draft acknowledgments, including prompt-injection cases. It is a regression sample, rather than a general accuracy or containment result.
 
+## Member sign-in
+
+Registered members request an email link, open it, then select **Sign in** to confirm. The shared demo needs no email.
+
+Live checks with two real emails confirmed sign-in on desktop and in a separate browser at mobile widths (emulated). Sessions survived reload, used links were rejected, and the QA account stayed isolated.
+
 ## Member status
 
 The dashboard shows the regular service day from the member’s plan. The request page shows the stored booking status, payment receipt and any assigned visit window separately. AI triage and Dana’s review are separate steps.
