@@ -1,6 +1,4 @@
-## What I built
-
-Sift is a news app with AI summaries, topic search and side-by-side coverage comparisons. It also supplies background explainers, term definitions and reference pages for people, organizations and legislation mentioned in stories.
+import Image from "next/image";
 
 <Specs>
   <Spec label="Role" value="Product design and frontend/backend development" />
@@ -11,9 +9,7 @@ Sift is a news app with AI summaries, topic search and side-by-side coverage com
 
 ## From summaries to supporting context
 
-I began with a categorized news feed and comparison tools, then added ways to look up the people and terms in an article. The design question was whether a reader could find relevant background without leaving the reading flow.
-
-That led to an introductory primer, inline glossary entries and reference pages.
+I started with a categorized news feed and comparison tools. I then added an introductory primer, inline glossary entries and linked reference pages to make background information available alongside articles.
 
 ## Reading and comparing
 
@@ -23,11 +19,29 @@ Reference pages bring together available information about matched politicians, 
 
 Sources include public records and named external rating providers. Outlet ratings are attributed to their providers rather than presented as Sift's own assessments. Source links help readers check claims, but their presence does not independently verify generated explanations.
 
+<figure className="my-10">
+  <Image
+    src="/work/sift-news-feed-2026-10-24.png"
+    alt="Sift news feed with a grouped Top Stories item, links to original articles and attributed outlet ratings."
+    width={1440}
+    height={1000}
+    sizes="(max-width: 768px) 100vw, 768px"
+    className="h-auto w-full border border-[var(--color-graphite-80)]"
+  />
+  <Caption>Sift’s news feed, showing grouped coverage, links to original reporting and attributed outlet ratings. Captured October 24, 2026.</Caption>
+  <a
+    href="/work/sift-news-feed-2026-10-24.png"
+    target="_blank"
+    rel="noreferrer"
+    className="mt-3 inline-flex min-h-11 items-center text-sm font-medium text-[var(--color-signal-blue-soft)] underline underline-offset-4"
+  >
+    View full-size screenshot ↗
+  </a>
+</figure>
+
 ## Background and live processing
 
 The background pipeline extracts entities, links reference pages and prepares summaries and context before browsing. The frontend reads that prepared material from Postgres. Comparison and topic-search requests can require additional live AI work, so they stream results as processing proceeds.
-
-Preparing content in advance reduces the work required when a reader opens the feed.
 
 The companion [MCP server](https://github.com/kristenmartino/sift-mcp) exposes article search and civic profiles to AI clients. Semantic search calls Voyage before querying the database. Its organization-field gate withholds selected values when required source metadata is missing; it does not read the linked page or verify that it supports the claim. Response times depend on these database and provider calls; a current end-to-end benchmark remains unmeasured.
 
@@ -36,5 +50,3 @@ The companion [MCP server](https://github.com/kristenmartino/sift-mcp) exposes a
 Generated summaries, comparisons and entity links can be wrong or incomplete. Readers still need to check the generated interpretation against its source.
 
 I would test whether readers can identify which source made a claim, find a relevant definition and distinguish a generated summary from original reporting. Broader claims about civic understanding or daily use would need a separate user study.
-
-The next product work is to improve when background context appears and how easily a reader can inspect its sources.
