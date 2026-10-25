@@ -58,10 +58,10 @@ export const projects: Project[] = [
     imageAlt:
       "Cabana system architecture: Next.js, Supabase Postgres and four edge functions. n8n updates Airtable and calls the private telegram-notify function; Resend supplies operational alert fallback.",
     metrics: [
-      "8 services · transactional outbox",
-      "Webhook-authoritative payments · RLS",
-      "Test run: 50/50 Airtable records · no duplicates",
-      "Next.js 15 · Supabase · Claude Haiku · n8n",
+      "$75 Stripe test deposits",
+      "Telegram approval and scheduling",
+      "Airtable completion and visit notes",
+      "20 evidence checks · one demo run",
     ],
   },
   {
