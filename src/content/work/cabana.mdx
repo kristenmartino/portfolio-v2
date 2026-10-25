@@ -187,6 +187,10 @@ Office staff check `mark_completed` on the Airtable booking. The [writeback hand
 
 On refresh, the request page shows “Completed” and “This request is marked completed.” The visit appears in the dashboard’s Service history. Unchecking the Airtable box does not reopen a completed visit.
 
+## Visit notes
+
+Office staff enter the completion note in Airtable’s `visit_notes` field. The writeback handler saves the text to the booking and records `applied: visit_notes` in the sync log. After the member dashboard is refreshed, Service history displays the saved note in place of the request description, as defined in the [member read layer](https://github.com/kristenmartino/cabana/blob/e03157be4cf2ce42cdedeecff463f41a2e311ae3/lib/portal/data.ts). Editing the note leaves the booking status and payment records unchanged.
+
 ## The transactional outbox
 
 Booking status and visit-window changes are saved with their pending integration events in the same database transaction. This record of pending work is the transactional outbox.
@@ -222,5 +226,7 @@ Repeating the scheduling command left one visit-window event and one Airtable ro
 Completion was tested separately with a labeled fictional plan visit that required no deposit. After approval through the actual Telegram button, staff checked the visit’s completion box in Airtable. The first attempt exposed an input-name mismatch: the automation passed `checked`, while its script read `markCompleted`. Correcting and publishing that mapping allowed the checkbox to complete the visit.
 
 The check recorded one `confirmed` → `completed` transition attributed to `office:airtable`, one completion event and one matching Airtable row. The request page showed “Completed,” the visit appeared in Service history, and Telegram received the completion notification with a recorded message receipt. Both delivery acknowledgments were present, with no pending or dead-lettered events. Normal demo cleanup was restored afterward; the test did not create or change a payment.
+
+**Visit-notes check — October 25, 2026:** A separate fictional visit was created in the completed state to test notes only. A labeled demo note was entered and saved through the actual Airtable field. The text matched exactly in Airtable, Supabase and the app’s Service history after refresh. The sync log recorded `applied: visit_notes` on the same booking and Airtable row. The visit stayed completed, with no new status transition, outbox event or payment. The existing notes automation worked without changes, and normal demo cleanup remained enabled.
 
 Member email notifications are not implemented. The Telegram bot rejects and logs unauthorized chats; rate limiting and alerts for those attempts remain follow-up work.
