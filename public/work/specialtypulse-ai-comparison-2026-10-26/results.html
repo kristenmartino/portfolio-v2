@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>SpecialtyPulse: five AI analyst–reviewer pairs</title><style>body{margin:0;background:#151515;color:#ddd;font:17px/1.65 system-ui,sans-serif}main{max-width:78ch;margin:0 auto;padding:32px 24px 64px;overflow-wrap:anywhere}a{color:#a5c8ff;text-underline-offset:3px}h1,h2,h3,strong{color:#fafafa}h1{font-size:2rem;line-height:1.2}h2{margin-top:2em;font-size:1.4rem}nav,.note{font-size:.85rem;color:#aaa}table{display:block;max-width:100%;overflow-x:auto;border-collapse:collapse;font-size:.9rem}th,td{border:1px solid #555;padding:8px 12px;text-align:left;vertical-align:top}pre{max-width:100%;overflow:auto;background:#222;padding:16px}code{font-size:.9em}li{margin:.4em 0}hr{border:0;border-top:1px solid #555;margin:2em 0}</style></head><body><main><nav><a href="/work/specialtypulse-pipeline">← SpecialtyPulse case study</a> · <a href="results.md" download>Markdown source</a></nav><p class="note">Study archive · AI simulation with synthetic data · Human validation pending</p><h1>SpecialtyPulse: five AI analyst–reviewer pairs</h1>
+<p>Completed October 26, 2026 (2026-10-26T19:35:37.974557+00:00). Source revision <code>d628a13592a5d0f5cc0ca93f6cce5f0c265258ca</code>.</p>
+<p><strong>Result: both methods produced complete, numerically correct handoffs that the simulated reviewers could interpret. This run did not demonstrate an advantage for SpecialtyPulse.</strong></p>
+<p><strong>This was an AI simulation with fictional identities. Actual intended-user workflows remain unconfirmed, and the planned human study remains 0 of 5 pairs.</strong> No customer adoption, stakeholder approval, human time savings or business impact was measured.</p>
+<h2>What ran</h2>
+<p>Ten fresh-context agents were used: five analysts and five separate receiving reviewers. Each analyst first documented an assumed existing workflow, then prepared two briefs in its assigned order. One used constructed CSV report extracts; the other started from an untouched draft captured from the live app. Both had matching kinds of optional raw inputs, definitions and pinned source references. There were ten completed briefs and ten initial recipient judgments.</p>
+<p>The comparison is artifact-based. The coordinator captured the app drafts; analysts did not navigate the browser. The CSV comparator was constructed from the same fixture and reporting transformations, rather than obtained from real users. Different specialty/procedure scenarios were matched in scope, not proven equal in difficulty. Three pairs used CSV first and two used the app artifact first.</p>
+<p>Reviewers received common-format packets with neutral labels and no method key or numeric answer key. They stated next actions before any clarification reply. Source/wording cues remained in some packets, including explicit app references and product URLs, so full method blinding was not achieved. No clarification exchanges were triggered because all ten initial reviews requested none.</p>
+<h2>Fictional identities and workflow elicitation</h2>
+<p>The five workflow descriptions were generated before case work from the supplied role contexts. They are persona assumptions, not confirmed customer research. Historical preparation times were left unknown. Agreement with the assigned report-to-memo pattern demonstrates instruction following, not independent evidence that intended users have this workflow.</p>
+<table>
+<thead>
+<tr>
+<th>Pair</th>
+<th>Analyst → receiving reviewer</th>
+<th>Assumed existing workflow and context</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P01</td>
+<td><strong>Maya Chen</strong>, Revenue operations analyst → <strong>Jordan Ellis</strong>, Regional sales director</td>
+<td>Midmarket EHR/PM/RCM vendor; weekly specialty pipeline review. Analyst assembles CSV report extracts and a short sales-operations handoff. Reviewer needs an owner and next check before using exposure for planning. <a href="analyst_outputs/P01/workflow.html">Workflow</a></td>
+</tr>
+<tr>
+<td>P02</td>
+<td><strong>Luis Ortega</strong>, Finance analytics analyst → <strong>Priya Nair</strong>, Finance business partner</td>
+<td>Healthcare-software vendor; monthly commercial planning input. Existing assumed workflow joins a reimbursement report with a CRM export in a workbook and writes a planning-data caveat. Reviewer distinguishes assumed ACV, forecasts and recognized revenue. <a href="analyst_outputs/P02/workflow.html">Workflow</a></td>
+</tr>
+<tr>
+<td>P03</td>
+<td><strong>Avery Brooks</strong>, BI analyst → <strong>Morgan Reed</strong>, Commercial analytics lead</td>
+<td>Analytics team at a specialty-software vendor; weekly certified-metric review. Existing assumed workflow verifies the specialty/procedure/year grain in CSV reports, checks source snapshots and sends a concise evidence memo. Reviewer values reproducibility and explicit missing inputs. <a href="analyst_outputs/P03/workflow.html">Workflow</a></td>
+</tr>
+<tr>
+<td>P04</td>
+<td><strong>Samira Patel</strong>, Market analysis specialist → <strong>Theo Grant</strong>, Product manager</td>
+<td>Specialty-software product team; fortnightly market-signal triage. Existing assumed workflow compares a payment report and a sales report, then drafts discovery questions. Reviewer decides which questions need evidence before discussing a product or commercial recommendation. <a href="analyst_outputs/P04/workflow.html">Workflow</a></td>
+</tr>
+<tr>
+<td>P05</td>
+<td><strong>Noah Williams</strong>, Business systems analyst → <strong>Riley Park</strong>, Sales operations manager</td>
+<td>CRM/reporting team at a healthcare-software vendor; weekly data-quality triage. Existing assumed workflow checks a reimbursement extract against CRM CSV coverage, records missing feeds and sends a systems follow-up memo. Reviewer needs to distinguish absent coverage from a measured zero. <a href="analyst_outputs/P05/workflow.html">Workflow</a></td>
+</tr>
+</tbody>
+</table>
+<p>All five profiles identify report preparation, calculation/coverage checks and a written handoff as assumed steps. Actual frequency, tools, source access, effort, pain points, ownership, decision authority and usefulness still require confirmation with real intended users.</p>
+<h2>Cases and order</h2>
+<table>
+<thead>
+<tr>
+<th>Pair</th>
+<th>First method</th>
+<th>CSV report case</th>
+<th>App-artifact case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P01</td>
+<td>csv</td>
+<td>Dermatology / 99213</td>
+<td>Orthopedic Surgery / 27130</td>
+</tr>
+<tr>
+<td>P02</td>
+<td>app</td>
+<td>Urology / 51798</td>
+<td>Ophthalmology / 92014</td>
+</tr>
+<tr>
+<td>P03</td>
+<td>csv</td>
+<td>Gastroenterology / 45378</td>
+<td>Pain Management / 64483</td>
+</tr>
+<tr>
+<td>P04</td>
+<td>app</td>
+<td>Podiatry / 11721</td>
+<td>Plastic Surgery / 19318</td>
+</tr>
+<tr>
+<td>P05</td>
+<td>csv</td>
+<td>Cardiology / 99213</td>
+<td>Neurology / 99213</td>
+</tr>
+</tbody>
+</table>
+<p>Each case compared generated CY2022 with the synthetic CY2023 base and checked sales coverage, exposure and overdue status at the invented August 31, 2026 scenario date. Pair 5 tested absent sales coverage; the other pairs tested supplied overdue opportunities.</p>
+<h2>Results against the prespecified criteria</h2>
+<table>
+<thead>
+<tr>
+<th>Measure</th>
+<th>CSV reports</th>
+<th>App artifacts</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Four brief elements complete</td>
+<td>5/5</td>
+<td>5/5</td>
+<td>Both meet the simulated ≥4/5 quality criterion; no completeness advantage observed</td>
+</tr>
+<tr>
+<td>Structured field reconciliation</td>
+<td>100/100 checks correct</td>
+<td>100/100 checks correct</td>
+<td>200 comparison/sales field checks matched the independent raw-input answer key</td>
+</tr>
+<tr>
+<td>Critical interpretation errors found</td>
+<td>0</td>
+<td>0</td>
+<td>Coordinator review and initial reviewer judgments found none; this is not blinded human assessment</td>
+</tr>
+<tr>
+<td>Recipient can state next action before clarification</td>
+<td>5/5</td>
+<td>5/5</td>
+<td>Both meet the simulated ≥4/5 clarity criterion</td>
+</tr>
+<tr>
+<td>Clarification questions required to understand next action</td>
+<td>0</td>
+<td>0</td>
+<td>No clarification exchanges triggered; business investigation questions remained</td>
+</tr>
+<tr>
+<td>≥20% median human preparation-time improvement</td>
+<td>Not assessed</td>
+<td>Not assessed</td>
+<td>Human preparation and browser interaction were not measured</td>
+</tr>
+</tbody>
+</table>
+<p>Completeness required procedure evidence, an observation with limits, an open question, and a next reviewer with a concrete check. Critical errors included synthetic-as-history, score-as-account-need, ACV-as-revenue/forecast, missing coverage as confirmed zero, unsupported commercial approval or materially wrong calculations. All ten authored briefs were also screened by the method-aware coordinator.</p>
+<p>Numeric checks used Decimal arithmetic on raw specialty/procedure rows with at least 11 services, service-weighted payment rounded to cents, displayed-cent year changes and prior-year denominators. Sales checks used the full CSV for the all-specialty denominator, excluded closed stages, retained overdue open deals and left missing coverage unavailable. Percentage fields allowed one-decimal display rounding; counts/years/nulls were exact.</p>
+<h2>Descriptive AI runtime — not human efficiency</h2>
+<table>
+<thead>
+<tr>
+<th>Pair</th>
+<th style="text-align:right">CSV artifact work, seconds</th>
+<th style="text-align:right">App artifact work, seconds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P01</td>
+<td style="text-align:right">33.00</td>
+<td style="text-align:right">30.00</td>
+</tr>
+<tr>
+<td>P02</td>
+<td style="text-align:right">22.00</td>
+<td style="text-align:right">32.00</td>
+</tr>
+<tr>
+<td>P03</td>
+<td style="text-align:right">30.97</td>
+<td style="text-align:right">31.78</td>
+</tr>
+<tr>
+<td>P04</td>
+<td style="text-align:right">29.00</td>
+<td style="text-align:right">40.00</td>
+</tr>
+<tr>
+<td>P05</td>
+<td style="text-align:right">31.00</td>
+<td style="text-align:right">20.00</td>
+</tr>
+<tr>
+<td>Median across cases</td>
+<td style="text-align:right">30.97</td>
+<td style="text-align:right">31.78</td>
+</tr>
+</tbody>
+</table>
+<p>The app artifact was faster in 2 of 5 pairs and slower in 3. Median paired AI runtime reduction was -2.60% (a small increase in runtime, not a saving). This is descriptive only: runtimes include model generation and tool latency, use different scenarios, and exclude coordinator preparation/app capture, reviewer work and browser interaction. They cannot be used as a human productivity estimate or an assessment of the proposed 20% human threshold.</p>
+<h2>What the reviewers still needed</h2>
+<p>The reviewers understood who should perform the next check. They also consistently distinguished understanding the assignment from having the evidence to complete it:</p>
+<ul>
+<li>Sales and finance reviewers wanted opportunity IDs/owner rosters, supported stage/date changes, capture timestamps and a reconciled exposure result before planning use.</li>
+<li>The BI reviewer wanted the calculation/provenance audit trail and confirmed source timing in addition to readable links.</li>
+<li>The product reviewer wanted source/service-mix explanations and account-level workflow evidence before connecting a payment pattern to a product or commercial question.</li>
+<li>The systems reviewer wanted full-source coverage and mapping/feed-completeness evidence before treating absent specialty rows as a zero.</li>
+</ul>
+<p>These were business evidence requests for the next investigation, not clarification barriers in this simulation. A candidate design experiment is an optional recipient packet containing the affected opportunity IDs/owners and a compact calculation audit trail. This is an AI-generated design hypothesis, not validated user demand or a reason to expand the product automatically.</p>
+<h2>Limits and conclusion</h2>
+<p>The personas share an inherited model family/configuration; the collaboration tool did not expose the exact resolved model. Fresh contexts and explicit input scopes reduce conversational carryover but do not create independent human participants or an enforced filesystem sandbox. One analyst completed both methods, so learning/order effects remain. Rich metric notes and required output fields prime correctness in both conditions. Reviewer formatting was normalized, and method cues remained. Qualitative coordinator adjudication was not blinded. Synthetic, highly regular data and five pairs limit generalization.</p>
+<p>The useful result is a documented stress test: ten briefs preserved the key metric and coverage distinctions, and ten simulated recipient reviews identified the next check. The quality and clarity outcomes tied. Actual workflow fit, preference, usability, preparation time, clarification burden and business value remain open for the human study.</p>
+<h2>Selected audit records</h2>
+<p>This publication includes the protocol, role assignments, authored briefs and scoring records. Detailed agent timing is descriptive only; it is not a human efficiency result.</p>
+<ul>
+<li>
+<p><a href="protocol.html">Protocol</a> and <a href="personas-and-assignment.json">fictional identities and assignments</a></p>
+</li>
+<li>
+<p><a href="summary.json">Machine-readable summary</a></p>
+</li>
+<li>
+<p><a href="evaluator/numeric-and-completeness-scores.json">Numeric and completeness checks</a>, <a href="evaluator/critical-error-adjudication.json">critical-error review</a>, <a href="evaluator/answer-key.json">raw-input answer key</a> and <a href="evaluator/normalized-review-results.json">normalized recipient results</a></p>
+</li>
+<li>
+<p>P01: <a href="analyst_outputs/P01/csv-brief.html">CSV brief</a>, <a href="analyst_outputs/P01/app-brief.html">app-artifact brief</a>, <a href="reviewer_outputs/P01/initial-review.html">recipient review</a></p>
+</li>
+<li>
+<p>P02: <a href="analyst_outputs/P02/csv-brief.html">CSV brief</a>, <a href="analyst_outputs/P02/app-brief.html">app-artifact brief</a>, <a href="reviewer_outputs/P02/initial-review.html">recipient review</a></p>
+</li>
+<li>
+<p>P03: <a href="analyst_outputs/P03/csv-brief.html">CSV brief</a>, <a href="analyst_outputs/P03/app-brief.html">app-artifact brief</a>, <a href="reviewer_outputs/P03/initial-review.html">recipient review</a></p>
+</li>
+<li>
+<p>P04: <a href="analyst_outputs/P04/csv-brief.html">CSV brief</a>, <a href="analyst_outputs/P04/app-brief.html">app-artifact brief</a>, <a href="reviewer_outputs/P04/initial-review.html">recipient review</a></p>
+</li>
+<li>
+<p>P05: <a href="analyst_outputs/P05/csv-brief.html">CSV brief</a>, <a href="analyst_outputs/P05/app-brief.html">app-artifact brief</a>, <a href="reviewer_outputs/P05/initial-review.html">recipient review</a></p>
+</li>
+</ul>
+</main></body></html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Sample specialty-review handoff</title><style>body{margin:0;background:#151515;color:#ddd;font:17px/1.65 system-ui,sans-serif}main{max-width:78ch;margin:0 auto;padding:32px 24px 64px;overflow-wrap:anywhere}a{color:#a5c8ff;text-underline-offset:3px}h1,h2,h3,strong{color:#fafafa}h1{font-size:2rem;line-height:1.2}h2{margin-top:2em;font-size:1.4rem}nav,.note{font-size:.85rem;color:#aaa}table{display:block;max-width:100%;overflow-x:auto;border-collapse:collapse;font-size:.9rem}th,td{border:1px solid #555;padding:8px 12px;text-align:left;vertical-align:top}pre{max-width:100%;overflow:auto;background:#222;padding:16px}code{font-size:.9em}li{margin:.4em 0}hr{border:0;border-top:1px solid #555;margin:2em 0}</style></head><body><main><nav><a href="/work/specialtypulse-pipeline">← SpecialtyPulse case study</a> · <a href="specialtypulse-A.md" download>Markdown source</a></nav><p class="note">Study archive · AI simulation with synthetic data · Human validation pending</p><h1>Sample specialty-review handoff</h1>
+<p>Focus: Dermatology · CY2023
+Prepared for: Sales or operations lead
+Status: Sample only — source and account validation pending.</p>
+<p>Purpose: Identify a payment pattern to investigate and prepare questions for the next reviewer.
+Data: Synthetic CMS-schema records; 2021–2022 are generated comparison scenarios. Sales are synthetic.
+Assumed setting: a specialty analyst supports a healthcare-software sales team selling electronic health record (EHR), practice management (PM) and revenue cycle management (RCM) software. The sales or operations lead decides which questions need analyst verification or account discovery before a commercial recommendation.
+Demo assumption: amount represents annual contract value (ACV) in USD. Open-stage pipeline sums unweighted opportunity amounts, excluding Closed Won and Closed Lost, and includes overdue open opportunities. Closed-won ACV is a separate stage total, not recognized revenue or a sales forecast.
+Static sales fixture: 500 opportunities; created dates 2025-09-02–2026-02-24; close dates 2025-10-11–2026-08-14. All supplied rows are included without a reporting-period filter. Scenario snapshot: 2026-08-31, an invented demo assumption. The source capture date was not recorded; stages are shown as supplied.</p>
+<h2>Supporting observations</h2>
+<ul>
+<li>Scenario pressure score: 66.6/100. Project-defined and unvalidated against sales outcomes.</li>
+<li>Average procedure-level payment change: -2.9%; a constructed scenario comparison.</li>
+<li>Synthetic open-stage pipeline: $4,579,800 across 53 deals (11.4% of open-stage pipeline). Includes overdue open opportunities.</li>
+</ul>
+<h2>Sales follow-up first</h2>
+<p>At the invented 2026-08-31 scenario snapshot, 53 of 53 open deals (100.0% of open deals) have close dates before the snapshot: $4,579,800.00 in assumed USD ACV; 25–291 days overdue. The open-stage total includes these overdue opportunities.
+First sales follow-up: reconcile opportunity stages and close dates with the sales operations lead before using the open-stage total for planning. Record confirmed changes; past-due dates alone do not close or remove opportunities.</p>
+<h2>Sales evidence and reproduction</h2>
+<p><a href="https://github.com/kristenmartino/specialtypulse_pipeline/blob/7cd9592e01f24cdfe77612ca97dc0852a5753877/data/sample_sfdc_pipeline.csv">Synthetic sales CSV snapshot</a> — repository revision: 7cd9592e01f24cdfe77612ca97dc0852a5753877.
+Specialty filter: account_specialty = &quot;Dermatology&quot;. Open-stage filter: exclude stage = &quot;Closed Won&quot; and &quot;Closed Lost&quot;. Count the remaining opportunities and sum amount for the specialty open-stage total.
+Overdue filter: within those open opportunities, require a valid close_date strictly before 2026-08-31, the invented scenario snapshot date. Count those rows and sum amount for overdue ACV; missing or invalid close dates are excluded from the overdue count.
+Open-stage totals retain overdue opportunities. The specialty share denominator is the open-stage amount across all specialties in this CSV. No created-date or close-date reporting-period filter is applied.
+<a href="https://github.com/kristenmartino/specialtypulse_pipeline/blob/7cd9592e01f24cdfe77612ca97dc0852a5753877/docs/METRIC_CERTIFICATION_LOG.md">Sales metric definitions</a> — amount is assumed annual contract value in USD; these are unweighted scenario amounts, not recognized revenue or a forecast.</p>
+<h2>Analyst draft — unverified</h2>
+<p>Completeness: 4/4 brief elements. This checks presence, not accuracy or approval.</p>
+<h3>Selected procedure evidence</h3>
+<ul>
+<li>Dermatology / HCPCS 99213 / CY2023: Office visit, est patient; average payment per service $104.91; 3,777 services. Source: synthetic reporting mart.
+Same-procedure comparison: CY2022 $108.05 / 3,626 services → CY2023 $104.91 / 3,777 services.
+Payment change: −$3.14 (−2.9%). Service change: +151 (+4.2%).
+Calculation: (CY2023 − CY2022) ÷ CY2022, for this specialty and HCPCS code. Payment differences use displayed mart values rounded to cents. Percentages are unavailable when inputs are missing or the prior value is zero.
+2021–2022 are generated comparison scenarios; 2023 is a synthetic base. These are not historical CMS comparisons.
+<a href="https://specialtypulse.kristenmartino.ai/?view=procedure&amp;specialty=Dermatology&amp;hcpcs=99213&amp;year=2023">Reopen live comparison</a>
+<a href="https://github.com/kristenmartino/specialtypulse_pipeline/blob/7cd9592e01f24cdfe77612ca97dc0852a5753877/data/sample_mart_reimbursement_trends.csv">Reporting mart snapshot</a> — filter provider_specialty=Dermatology, hcpcs_code=99213, years=2022,2023.
+Snapshot SHA-256: 98c53448e2d18a842a40167517300f4ad83bf51d640ba6432bfd71761be7c893. Repository revision: 7cd9592e01f24cdfe77612ca97dc0852a5753877.
+<a href="https://github.com/kristenmartino/specialtypulse_pipeline/blob/7cd9592e01f24cdfe77612ca97dc0852a5753877/data/pipeline_run.json">Local Spark run receipt</a> — recorded execution 2026-10-24T16:33:01.946977+00:00.
+<a href="https://github.com/kristenmartino/specialtypulse_pipeline/blob/7cd9592e01f24cdfe77612ca97dc0852a5753877/data/sample_2022_puf_10k.csv">CY2022 synthetic raw inputs</a> — SHA-256 7b3d6572f14560b813092700369be6f8acab6b6b02b6239b1fe69a778c730d9f. Filter provider_type=Dermatology, hcpcs_cd=99213, tot_srvcs&gt;=11; payment is weighted by services.
+<a href="https://github.com/kristenmartino/specialtypulse_pipeline/blob/7cd9592e01f24cdfe77612ca97dc0852a5753877/data/sample_2023_puf_10k.csv">CY2023 synthetic raw inputs</a> — SHA-256 7ce9441204f55d8a9a9273f9d21d5e862a58ece27a053054ca8d6a950b44f0e5. Filter provider_type=Dermatology, hcpcs_cd=99213, tot_srvcs&gt;=11; payment is weighted by services.
+<a href="https://github.com/kristenmartino/specialtypulse_pipeline/blob/7cd9592e01f24cdfe77612ca97dc0852a5753877/data/payment_verification.json">CY2023 Dermatology / 99213 raw-to-mart calculation</a> — this trace covers that specific year and procedure.
+<a href="https://github.com/kristenmartino/specialtypulse_pipeline/blob/7cd9592e01f24cdfe77612ca97dc0852a5753877/docs/verification/payment-check.md">Reproduction method</a>. The live link uses the current demo; pinned files preserve this evidence snapshot.</li>
+</ul>
+<p>Observation: INTERNAL REHEARSAL RUN 02 A — no human participant. In the constructed Dermatology / HCPCS 99213 comparison, payment per service falls $3.14 (2.9%) while services rise by 151 (4.2%). The 2022 scenario is generated and 2023 is synthetic. These figures do not establish observed history, cause, practice profitability or account need. The pressure score is unvalidated against sales outcomes.
+Open question: Which source rows explain this constructed comparison, and which supplied opportunity stages and close dates need confirmation before planning?
+Next reviewer: Sales operations lead; specialty analyst — internal rehearsal roles only
+Requested next check: First reconcile the 53 Dermatology open opportunities and their close dates with sales operations before planning. Keep overdue deals in the supplied unweighted open-stage balance until reviewed; assumed USD ACV is not recognized revenue or a forecast. Then reproduce the CY2022/CY2023 HCPCS 99213 values from pinned inputs and record unresolved issues. Establish customer needs through account discovery before a commercial recommendation.</p>
+<h2>Suggested follow-up checks</h2>
+<ul>
+<li>Sales operations lead: Which open opportunities need their stages and close dates corrected before planning?
+Next check: First sales follow-up: reconcile opportunity stages and close dates with the sales operations lead before using the open-stage total for planning. Record confirmed changes; past-due dates alone do not close or remove opportunities.</li>
+<li>Specialty analyst: Do the source records, service mix and calculation explain the payment comparison?
+Next check: Trace a procedure to its inputs and record any unresolved data or interpretation issue.</li>
+<li>Sales operations lead: What do account notes say about the customer’s needs?
+Next check: Confirm account context; a specialty-level score does not establish account need.</li>
+<li>Sales or operations lead: What evidence is needed before a commercial recommendation?
+Next check: Confirm the next reviewer and the evidence to request. Source and account validation remain pending.</li>
+</ul>
+<p>This is an example work product. No stakeholder review, account validation, approved shortlist or business outcome is recorded.</p>
+</main></body></html>

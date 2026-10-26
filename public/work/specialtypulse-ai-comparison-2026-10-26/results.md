@@ -31,7 +31,7 @@ All five profiles identify report preparation, calculation/coverage checks and a
 ## Cases and order
 
 | Pair | First method | CSV report case | App-artifact case |
-|---|---|---|
+|---|---|---|---|
 | P01 | csv | Dermatology / 99213 | Orthopedic Surgery / 27130 |
 | P02 | app | Urology / 51798 | Ophthalmology / 92014 |
 | P03 | csv | Gastroenterology / 45378 | Pain Management / 64483 |
@@ -43,7 +43,7 @@ Each case compared generated CY2022 with the synthetic CY2023 base and checked s
 ## Results against the prespecified criteria
 
 | Measure | CSV reports | App artifacts | Interpretation |
-|---|---|---|
+|---|---|---|---|
 | Four brief elements complete | 5/5 | 5/5 | Both meet the simulated ≥4/5 quality criterion; no completeness advantage observed |
 | Structured field reconciliation | 100/100 checks correct | 100/100 checks correct | 200 comparison/sales field checks matched the independent raw-input answer key |
 | Critical interpretation errors found | 0 | 0 | Coordinator review and initial reviewer judgments found none; this is not blinded human assessment |
