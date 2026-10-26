@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>SpecialtyPulse internal rehearsal — run 02</title><style>body{margin:0;background:#151515;color:#ddd;font:17px/1.65 system-ui,sans-serif}main{max-width:78ch;margin:0 auto;padding:32px 24px 64px;overflow-wrap:anywhere}a{color:#a5c8ff;text-underline-offset:3px}h1,h2,h3,strong{color:#fafafa}h1{font-size:2rem;line-height:1.2}h2{margin-top:2em;font-size:1.4rem}nav,.note{font-size:.85rem;color:#aaa}table{display:block;max-width:100%;overflow-x:auto;border-collapse:collapse;font-size:.9rem}th,td{border:1px solid #555;padding:8px 12px;text-align:left;vertical-align:top}pre{max-width:100%;overflow:auto;background:#222;padding:16px}code{font-size:.9em}li{margin:.4em 0}hr{border:0;border-top:1px solid #555;margin:2em 0}</style></head><body><main><nav><a href="/work/specialtypulse-pipeline">← SpecialtyPulse case study</a> · <a href="results.md" download>Markdown source</a></nav><p class="note">Study archive · AI simulation with synthetic data · Human validation pending</p><h1>SpecialtyPulse internal rehearsal — run 02</h1>
+<p>October 25, 2026. Fixed app release:
+<code>7cd9592e01f24cdfe77612ca97dc0852a5753877</code>.</p>
+<p><strong>Human participants: 0. Independent reviewers: 0. Planned human study: 0/5 pairs.</strong>
+One AI assistant with prior project knowledge prepared and self-checked all four
+outputs. The reference comparator was scripted from CSV reports, the answers
+were known, and the review was not blinded. This is an artifact and process
+rehearsal. It does not establish human time savings, comprehension, preference,
+clarification rates, adoption, ROI or sales outcomes.</p>
+<h2>Tasks and checks</h2>
+<p>Two candidate tasks were run through the reference-report comparator and the
+live app: Dermatology / HCPCS 99213, and Orthopedic Surgery / HCPCS 27130.
+Both compare generated 2022 and synthetic 2023 inputs. The sales scenario date
+is an invented August 31, 2026. Raw-input Decimal calculations checked the
+payment/service pairs, and a separate sales-CSV calculation reproduced overdue
+counts, amounts, shares and ages.</p>
+<table>
+<thead>
+<tr>
+<th>Scenario</th>
+<th>Payment / services, 2022 → 2023</th>
+<th>Changes</th>
+<th>Overdue specialty exposure</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dermatology / 99213</td>
+<td>$108.05 / 3,626 → $104.91 / 3,777</td>
+<td>−$3.14 (−2.9%); +151 services (+4.2%)</td>
+<td>53/53 open deals; $4,579,800 assumed USD ACV; 25–291 days overdue</td>
+</tr>
+<tr>
+<td>Orthopedic Surgery / 27130</td>
+<td>$222.06 / 2,990 → $213.47 / 3,117</td>
+<td>−$8.59 (−3.9%); +127 services (+4.2%)</td>
+<td>47/47 open deals; $6,272,200 assumed USD ACV; 45–315 days overdue</td>
+</tr>
+</tbody>
+</table>
+<p>All four briefs contained the required sections and matched the checked numerical
+values. The two actual browser-saved app files matched the generated export text
+byte for byte: A was 8,323 bytes; B was 8,135 bytes. These are mechanical checks,
+not human completeness or interpretation scores. Tool-session timestamps were not
+used as preparation times.</p>
+<h2>Finding and fix</h2>
+<p>Run 01, at release <code>7b3d18e2298c4b158586a80ac01d28d2811485ed</code>, found that both
+app briefs lacked a direct pinned sales CSV link. The fixed exports include that
+link, metric definitions, the selected specialty, open-stage exclusions, overdue
+date rule and all-specialty pipeline-share denominator. Both linked files were
+retrieved successfully. The input-file hashes were unchanged from run 01.</p>
+<p>The pinned sales CSV reproduces Dermatology's 53 overdue deals / $4,579,800 and
+Orthopedic Surgery's 47 / $6,272,200. Their shares of the $40,178,200 open-stage
+total are 11.4% and 15.6%. <strong>R1 is resolved for both tested exports at the fixed
+release.</strong> No additional discrepancy was observed within this defined artifact
+audit.</p>
+<h2>Saved evidence</h2>
+<ul>
+<li><a href="reference-A.html">Reference brief A</a> and <a href="reference-B.html">reference brief B</a></li>
+<li><a href="specialtypulse-A.html">Live app export A</a> and <a href="specialtypulse-B.html">live app export B</a></li>
+<li><a href="download-verification.json">Download verification and file hashes</a></li>
+<li><a href="observations.json">Artifact observations</a></li>
+<li><a href="sales-source-verification.json">Sales-source reconciliation</a></li>
+<li><a href="answer-key.json">Raw-input-checked answer key</a></li>
+<li><a href="source-manifest.json">Pinned source revision and input hashes</a></li>
+</ul>
+<p>Local computer paths have been removed from this public evidence extract. The
+saved brief bytes are unchanged and retain the hashes in the verification files.</p>
+<h2>Human validation remains pending</h2>
+<p>No intended analyst or independent reviewer has participated. The reference
+method has not been confirmed as an analyst's actual usual workflow. Similar
+generated tasks may cause learning effects, and export formatting or links may
+reveal the preparation method.</p>
+<p>The proposed five-pair study's completeness, critical-error, preparation-time and
+clarification thresholds remain unevaluated. In particular, no 20% human time
+reduction has been measured. The next step is to confirm intended users' baseline
+workflow and comparable task difficulty, recruit participants, and collect actual
+sessions. Passing artifact checks does not establish product usefulness.</p>
+</main></body></html>
