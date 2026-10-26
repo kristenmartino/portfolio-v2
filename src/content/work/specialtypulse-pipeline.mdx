@@ -1,10 +1,24 @@
 ## A specialty review for sales or operations
 
-SpecialtyPulse is a prototype for a **specialty analyst supporting a healthcare-software sales team**. The assumed employer sells electronic health record (EHR), practice management (PM) and revenue cycle management (RCM) subscriptions to specialty practices. A sales or operations lead uses the brief to decide which questions need analyst verification or account discovery before a software recommendation.
+SpecialtyPulse is an independent prototype for a **specialty analyst supporting a healthcare-software sales team**. The assumed employer sells electronic health record (EHR), practice management (PM) and revenue cycle management (RCM) subscriptions to specialty practices. A sales or operations lead uses the brief to decide which questions need analyst verification or account discovery before a software recommendation.
 
 Medicare payment comparisons describe practice-side signals; pipeline dollars represent hypothetical software contracts for the vendor. Account conversations must establish customer needs before recommending software or prioritizing outreach. This business setting is a design assumption, not a finding from customer research.
 
-I designed SpecialtyPulse around that review task: compare specialty measures, inspect procedure detail, and prepare a handoff that states the supporting observations, open questions and who should review them next. It is an independent prototype using synthetic records and comparison scenarios.
+## My role and delivered result
+
+<Specs>
+  <Spec label="My role" value="Workflow design, metric definitions, pipeline development and validation" />
+  <Spec label="Year" value="2026" />
+  <Spec label="Data" value="Synthetic 2023 base · generated 2021–2022 comparison scenarios" />
+  <Spec label="Execution" value="Databricks Spark 4.2.0 · local Airflow 3.1.8 · 870 reporting rows" />
+</Specs>
+
+**Delivered:** a specialty and procedure review, a specialty-scoped overdue opportunity list, and an editable Markdown brief with pinned evidence links. The sales list shows opportunity, account, owner, stage, assumed ACV, close date and overdue age, with a return path to the selected specialty's brief.
+
+**Verified October 26, 2026:** Databricks processed **29,982 synthetic records into 870 reporting rows**, matching the reconciled baseline. All four tasks in the clean Airflow run passed on their first attempt; the public React dashboard uses that run's export. [Execution evidence](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/deployment_verification.json) records the run results. Airflow runs on a local Mac, and new exports require a separate website release.
+
+**Human validation pending: 0 of 5 planned analyst–reviewer pairs completed.** The internal AI rehearsal checked artifacts and calculations. Human usefulness, time savings and business outcomes have not been measured.
+
 
 ## Problem hypothesis to validate
 
@@ -16,7 +30,7 @@ These are assumptions, not research findings. Before a pilot, I would ask intend
 
 ## What the reviewer hands off
 
-The [demo](https://specialtypulse.kristenmartino.ai/?view=market) includes “Prepare a specialty review · sample handoff.” A shared specialty selection connects the handoff and Procedure Detail. Analysts can compare the same procedure across two consecutive years, add that comparison to the brief, then write an observation and its limits, an open question, a next reviewer and a requested check.
+The [demo](https://specialtypulse.kristenmartino.ai/?view=market) includes “Prepare a specialty review · sample handoff.” A shared specialty selection connects the handoff, Procedure Detail and Pipeline Intelligence. The pipeline review keeps that specialty’s totals, owner amounts and overdue opportunity list together. A separately labeled chart compares all specialties; “Return to brief” reopens the current specialty’s draft. Analysts can compare the same procedure across two consecutive years, add that comparison to the brief, then write an observation and its limits, an open question, a next reviewer and a requested check.
 
 The Markdown download includes both years' payments and service counts, calculated changes, the analyst's draft notes and a link that reopens the selected comparison. Verification links point to the reporting mart, synthetic raw inputs, sales CSV, metric definitions and the selected run receipt at the build's repository revision; hashes identify the recorded data snapshot. Each specialty keeps a separate draft as the analyst switches tabs. Drafts last until the page reloads; downloading keeps a copy and does not send or assign it. Missing fields remain explicitly marked. A four-element completeness check measures presence, not accuracy or approval.
 
@@ -34,6 +48,48 @@ Open [Dermatology / HCPCS 99213 / CY2023](https://specialtypulse.kristenmartino.
 - **Status:** illustrative draft; source and account validation remain pending. Naming a reviewer does not send or assign the brief. No shortlist or stakeholder approval has been recorded.
 
 The first sales action is to reconcile opportunity stages and close dates before using the pipeline balance for planning. The analyst also verifies the payment evidence and reports unresolved issues before a commercial recommendation. A specialty-level score does not establish an account's need or justify outreach by itself.
+
+## Deployment path
+
+The current stack is **Databricks → Airflow-validated export → React dashboard**. I archived the earlier Domo integration after trial access ended. The React interface and its review workflow remain in place.
+
+The serverless Databricks job uses the shared Spark transformations, writes raw, staging and mart Delta tables, and compares every mart business value with the reconciled baseline. Airflow checks the successful run's receipt and exported file, saves an immutable versioned copy, and selects it for the next React build. The build checks the selected export again. Creating a scheduled export and publishing a website release are separate steps.
+
+**Verified October 26, 2026:** Databricks Spark 4.2.0 processed **29,982 raw records into 870 mart rows** in Unity Catalog Delta tables. The persisted output matched every business value in the reconciled baseline. Airflow 3.1.8 completed both an initial scheduled refresh and a separate clean manual run; all four tasks in the clean run passed on their first attempt. The public dashboard now uses that run's versioned export. [Run receipts and schedule verification](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/deployment_verification.json) record the executed steps and setup corrections.
+
+Airflow runs as a local macOS user service with CLI-managed OAuth. Its annual UTC schedule is enabled, with the next run due **December 31, 2026 at 7 p.m. Eastern**. The Mac must be awake and the user signed in; this is not managed cloud Airflow. New exports require a separate website release. The [deployment runbook](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/deployment/README.md) explains the setup. These infrastructure checks are separate from the internal rehearsal and pending human comparison.
+
+## Decisions behind the workflow
+
+**Make the payment denominator explicit.** Average payment per billed service gives larger service volumes more weight. In the reconciled example, a simple average across 57 source rows is $103.80; weighting by their 3,777 services gives $104.91. Different denominators can lead reviewers to different conclusions.
+
+**Keep procedure comparisons specific.** The comparison matches specialty, HCPCS code and consecutive years. Missing inputs or a zero prior value leave percentage changes unavailable. I also rank the most-used procedures by service count. A specialty's blended average combines different procedures, so a payment below that blend is not evidence that a particular procedure is underpaid. The ratio-based outlier definition is available beside the table.
+
+**Count providers at the decision grain.** A provider billing several procedures counts once within each specialty and year. Spark computes that distinct count from staged provider IDs before procedure aggregation; the dashboard and pressure index use it once. A regression with overlapping procedures checks this behavior, and independent raw-input reconciliation verifies every published specialty/year count.
+
+**Keep scores and sales dollars separate.** The index organizes comparison scenarios; pipeline amounts provide exposure context. The score prompts questions about payment, charge and volume inputs. Its weights have not been validated against purchase decisions or sales outcomes.
+
+**Define the sales dollar basis and date scope.** For this demo, opportunity amount is assumed annual contract value (ACV) in USD. Open-stage totals are unweighted, exclude Closed Won and Closed Lost, and include overdue open opportunities. Closed-won ACV is a separate stage total, not recognized revenue or a forecast.
+
+The **invented sales scenario snapshot is August 31, 2026**; the source capture date was not recorded. Stages remain as supplied. All 500 fixture opportunities are included without a reporting-period filter: created dates September 2, 2025–February 24, 2026; close dates October 11, 2025–August 14, 2026. These sales dates are separate from reimbursement CY2021–2023.
+
+**Surface the overdue backlog before planning.** At that scenario date, all **472 open opportunities, totaling $40,178,200 in assumed ACV**, have close dates in the past: **100% of open deals, 17–324 days overdue**. The dashboard shows the overdue count and ACV. Its specialty-scoped review list exposes the underlying opportunities and can be sorted by owner, stage, amount, close date or overdue age. Each specialty brief carries its own overdue exposure. The list is a review aid; it does not write changes to a CRM. The first sales follow-up is to reconcile stages and close dates with sales operations. The prototype retains the supplied opportunities in the open-stage total until reviewed; past-due dates alone do not close or remove a deal. Missing or invalid close dates are reported separately. No actual sales review or CRM update has been recorded.
+
+
+## Evidence supporting the review
+
+The public procedure list displays **$104.91 across 3,777 services** for Dermatology / HCPCS 99213. The 57 matching raw rows have a weighted payment sum of $396,247.22. The displayed value reconciles to those records, the exported reporting table and the browser data.
+
+<Diagram title="Procedure comparison" fullSizeHref="/work/specialtypulse.png" fullSizeLabel="View full-size screenshot ↗">
+  <img src="/work/specialtypulse.png" alt="SpecialtyPulse compares Dermatology / HCPCS 99213: the generated 2022 scenario has $108.05 across 3,626 services; the synthetic 2023 records have $104.91 across 3,777 services." width={1280} height={960} className="h-auto w-full" />
+</Diagram>
+<Caption>Live Procedure Detail, captured October 24, 2026 with Dermatology / HCPCS 99213 and the constructed CY2022–2023 comparison selected.</Caption>
+
+The local Spark baseline processes **29,982 raw records into 870 reporting rows**. The Databricks notebook adapters import the same transformation functions and produce the matching business values now served by the dashboard. Independent Decimal tests reconcile all 870 groups, and CI re-executes Spark to compare every business column. The build rejects source, transformation-code or output hashes that differ from the recorded run.
+
+The first complete run exposed duplicate synthetic provider identifiers. I corrected them deterministically and retained duplicate-key rejection before aggregation. Release tests check the export hash, every business value and the run receipt before selecting an artifact for the dashboard. They also reject changed artifacts for a previously recorded run. Earlier Domo policy code and its tests are archived; they are not evidence of active access enforcement.
+
+Open the [same Dermatology / 99213 comparison](https://specialtypulse.kristenmartino.ai/?view=procedure&specialty=Dermatology&hcpcs=99213&year=2023) to inspect the displayed payments and 2023 source trace. The [run receipt](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/releases/databricks-527988765998273/receipt.json), [input/output artifact](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/payment_verification.json) and [reproduction guide](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/docs/verification/payment-check.md) provide the technical detail. The brief's versioned links preserve its evidence snapshot when the live demo changes.
 
 ## Internal rehearsal results
 
@@ -59,55 +115,6 @@ The proposed thresholds for proceeding to a larger pilot are:
 4. **Clarification:** at least four of five recipients can explain the next action without clarification, with no more requests overall than for the comparison briefs.
 
 These thresholds are proposed, not achieved results. If accuracy or completeness fails, I would revise the workflow before testing speed again. Sessions and page views describe activity; they do not demonstrate usefulness. The [workflow and evaluation plan](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/docs/BUSINESS_REVIEW.md) documents the proposed process.
-
-## Deployment path
-
-The current stack is **Databricks → Airflow-validated export → React dashboard**. I archived the earlier Domo integration after trial access ended. The React interface and its review workflow remain in place.
-
-The serverless Databricks job uses the shared Spark transformations, writes raw, staging and mart Delta tables, and compares every mart business value with the reconciled baseline. Airflow checks the successful run's receipt and exported file, saves an immutable versioned copy, and selects it for the next React build. The build checks the selected export again. Creating a scheduled export and publishing a website release are separate steps.
-
-**Verified October 26, 2026:** Databricks Spark 4.2.0 processed **29,982 raw records into 870 mart rows** in Unity Catalog Delta tables. The persisted output matched every business value in the reconciled baseline. Airflow 3.1.8 completed both an initial scheduled refresh and a separate clean manual run; all four tasks in the clean run passed on their first attempt. The public dashboard now uses that run's versioned export. [Run receipts and schedule verification](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/deployment_verification.json) record the executed steps and setup corrections.
-
-Airflow runs as a local macOS user service with CLI-managed OAuth. Its annual UTC schedule is enabled, with the next run due **December 31, 2026 at 7 p.m. Eastern**. The Mac must be awake and the user signed in; this is not managed cloud Airflow. New exports require a separate website release. The [deployment runbook](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/deployment/README.md) explains the setup. These infrastructure checks are separate from the internal rehearsal and pending human comparison above.
-
-## Decisions behind the workflow
-
-**Make the payment denominator explicit.** Average payment per billed service gives larger service volumes more weight. In the reconciled example, a simple average across 57 source rows is $103.80; weighting by their 3,777 services gives $104.91. Different denominators can lead reviewers to different conclusions.
-
-**Keep procedure comparisons specific.** The comparison matches specialty, HCPCS code and consecutive years. Missing inputs or a zero prior value leave percentage changes unavailable. I also rank the most-used procedures by service count. A specialty's blended average combines different procedures, so a payment below that blend is not evidence that a particular procedure is underpaid. The ratio-based outlier definition is available beside the table.
-
-**Count providers at the decision grain.** A provider billing several procedures counts once within each specialty and year. Spark computes that distinct count from staged provider IDs before procedure aggregation; the dashboard and pressure index use it once. A regression with overlapping procedures checks this behavior, and independent raw-input reconciliation verifies every published specialty/year count.
-
-**Keep scores and sales dollars separate.** The index organizes comparison scenarios; pipeline amounts provide exposure context. The score prompts questions about payment, charge and volume inputs. Its weights have not been validated against purchase decisions or sales outcomes.
-
-**Define the sales dollar basis and date scope.** For this demo, opportunity amount is assumed annual contract value (ACV) in USD. Open-stage totals are unweighted, exclude Closed Won and Closed Lost, and include overdue open opportunities. Closed-won ACV is a separate stage total, not recognized revenue or a forecast.
-
-The **invented sales scenario snapshot is August 31, 2026**; the source capture date was not recorded. Stages remain as supplied. All 500 fixture opportunities are included without a reporting-period filter: created dates September 2, 2025–February 24, 2026; close dates October 11, 2025–August 14, 2026. These sales dates are separate from reimbursement CY2021–2023.
-
-**Surface the overdue backlog before planning.** At that scenario date, all **472 open opportunities, totaling $40,178,200 in assumed ACV**, have close dates in the past: **100% of open deals, 17–324 days overdue**. The dashboard shows the overdue count and ACV, and each specialty brief carries its own overdue exposure. The first sales follow-up is to reconcile stages and close dates with sales operations. The prototype retains the supplied opportunities in the open-stage total until reviewed; past-due dates alone do not close or remove a deal. Missing or invalid close dates are reported separately. No actual sales review or CRM update has been recorded.
-
-
-## Evidence supporting the review
-
-The public procedure list displays **$104.91 across 3,777 services** for Dermatology / HCPCS 99213. The 57 matching raw rows have a weighted payment sum of $396,247.22. The displayed value reconciles to those records, the exported reporting table and the browser data.
-
-<Diagram title="Procedure comparison" fullSizeHref="/work/specialtypulse.png" fullSizeLabel="View full-size screenshot ↗">
-  <img src="/work/specialtypulse.png" alt="SpecialtyPulse compares Dermatology / HCPCS 99213: the generated 2022 scenario has $108.05 across 3,626 services; the synthetic 2023 records have $104.91 across 3,777 services." width={1280} height={960} className="h-auto w-full" />
-</Diagram>
-<Caption>Live Procedure Detail, captured October 24, 2026 with Dermatology / HCPCS 99213 and the constructed CY2022–2023 comparison selected.</Caption>
-
-The local Spark baseline processes **29,982 raw records into 870 reporting rows**. The Databricks notebook adapters import the same transformation functions and produce the matching business values now served by the dashboard. Independent Decimal tests reconcile all 870 groups, and CI re-executes Spark to compare every business column. The build rejects source, transformation-code or output hashes that differ from the recorded run.
-
-<Specs>
-  <Spec label="My role" value="Workflow design, metric definitions, pipeline development and validation" />
-  <Spec label="Year" value="2026" />
-  <Spec label="Data" value="Synthetic 2023 base · generated 2021–2022 comparison scenarios" />
-  <Spec label="Execution" value="Databricks Spark 4.2.0 · local Airflow 3.1.8 · 870 reporting rows" />
-</Specs>
-
-The first complete run exposed duplicate synthetic provider identifiers. I corrected them deterministically and retained duplicate-key rejection before aggregation. Release tests check the export hash, every business value and the run receipt before selecting an artifact for the dashboard. They also reject changed artifacts for a previously recorded run. Earlier Domo policy code and its tests are archived; they are not evidence of active access enforcement.
-
-Open the [same Dermatology / 99213 comparison](https://specialtypulse.kristenmartino.ai/?view=procedure&specialty=Dermatology&hcpcs=99213&year=2023) to inspect the displayed payments and 2023 source trace. The [run receipt](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/releases/databricks-527988765998273/receipt.json), [input/output artifact](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/payment_verification.json) and [reproduction guide](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/docs/verification/payment-check.md) provide the technical detail. The brief's versioned links preserve its evidence snapshot when the live demo changes.
 
 ## Scope and next validation
 
