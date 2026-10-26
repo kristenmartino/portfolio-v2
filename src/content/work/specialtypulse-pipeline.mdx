@@ -25,7 +25,7 @@ Drafts survive tab changes until reload. Downloading saves a copy; it does not s
 
 For [Dermatology / HCPCS 99213](https://specialtypulse.kristenmartino.ai/?view=procedure&specialty=Dermatology&hcpcs=99213&year=2023), the generated 2022 scenario has **$108.05 per service across 3,626 services**. The synthetic 2023 base has **$104.91 across 3,777 services**: payment falls **$3.14 (2.9%)**, while service count rises **151 (4.2%)**.
 
-An illustrative brief records that change, asks which source rows and service mix explain it, and requests a calculation check from the analyst. Its separate sales context shows **53 open opportunities totaling $4,579,800 in assumed USD annual contract value (ACV)**. All 53 are overdue at the invented August 31, 2026 snapshot. Sales operations must reconcile stages and close dates before planning. These amounts are unweighted exposure, not recognized revenue or a forecast.
+An illustrative brief records that change, asks which source rows and service mix explain it, and requests a calculation check from the analyst. Its separate sales context shows **53 open opportunities totaling $4,579,800 in assumed USD annual contract value (ACV)**. At the constructed **March 31, 2026** snapshot, **25 are overdue, totaling $2,121,500**, while 28 are not yet overdue. Sales operations must reconcile stages and close dates before planning. These amounts are unweighted exposure, not recognized revenue or a forecast.
 
 This is an illustrative assignment, with source and account validation pending. The specialty score of 66.6 organizes scenarios; its weights have not been validated against account need, purchase decisions or sales outcomes.
 
@@ -36,7 +36,7 @@ This is an illustrative assignment, with source and account validation pending. 
 
 ## What was verified
 
-On October 26, Databricks Spark 4.2.0 processed **29,982 raw records into 870 reporting rows**, matching every business value in the reconciled baseline. All four tasks in the clean Airflow 3.1.8 run passed on their first attempt. The public React dashboard uses that run's versioned export. [Execution records](https://github.com/kristenmartino/specialtypulse_pipeline/blob/caf03eaae093d7af768ceb898c0dcb7b3683c5d5/data/deployment_verification.json) document the run.
+On October 26, Databricks Spark 4.2.0 processed **29,982 raw records into 870 reporting rows**, matching every business value in the reconciled baseline. All four tasks in the clean Airflow 3.1.8 run passed on their first attempt. The public React dashboard uses that run's versioned export. [Execution records](https://github.com/kristenmartino/specialtypulse_pipeline/blob/dcee05b9b85c50c0536ddb61cc5dffcefd2a0853/data/deployment_verification.json) document the run.
 
 The displayed $104.91 reconciles to **57 raw rows**, a weighted payment sum of **$396,247.22** and **3,777 services**. A simple row average would be $103.80. Spark counts distinct providers at specialty/year grain before procedure aggregation, so billing several procedures does not multiply the provider count. Independent Decimal checks cover all 870 groups; CI reruns the shared Spark transformations.
 
@@ -46,7 +46,7 @@ Airflow runs on a local Mac that must be awake and signed in with valid OAuth ac
 
 On October 26, **five fictional AI analysts and five separate AI reviewers** completed ten briefs using constructed CSV reports and captured app drafts. Both methods produced **5 of 5 complete briefs**, with **100 of 100 structured fields correct per method**. Reviewers could state the next action for all ten briefs without clarification; no critical interpretation errors were found. **No advantage for SpecialtyPulse was demonstrated.**
 
-This was an artifact simulation: agents did not navigate the browser, and timing excluded source gathering, coordinator preparation and reviewer work. Fresh contexts shared a model family, role-based workflows were assumed, and source cues prevented full method blinding. The test used an earlier release, before the UI cleanup and recipient packet. It cannot estimate human time savings.
+This was an artifact simulation: agents did not navigate the browser, and timing excluded source gathering, coordinator preparation and reviewer work. Fresh contexts shared a model family, role-based workflows were assumed, and source cues prevented full method blinding. The test remains pinned to **its original August 31, 2026 scenario and source revision d628a13**, before the UI cleanup, recipient packet and March sales scenario. It was not rerun for these changes and cannot estimate human time savings.
 
 **Human validation remains 0 of 5 planned pairs.** Usefulness, adoption and business outcomes are unmeasured. The [comparison report and audit records](/work/specialtypulse-ai-comparison-2026-10-26/results.html) include fictional role contexts, briefs, scoring and limitations. An [earlier single-assistant rehearsal](/work/specialtypulse-rehearsal-2026-10-25/results.html) found and verified a missing sales-source link.
 
@@ -61,11 +61,13 @@ Ask intended analysts and recipients to walk through a recent review: its freque
 
 **Provider grain.** A provider counts once per specialty/year across procedures. An overlapping-procedure regression and independent raw-input reconciliation check every published specialty/year count.
 
-**Sales basis.** Open-stage totals exclude Closed Won and Closed Lost and retain overdue opportunities. Closed-won ACV is a separate stage total. All 500 fixture opportunities are in scope, without a reporting-period filter; created dates span September 2, 2025–February 24, 2026 and close dates October 11, 2025–August 14, 2026. The source capture date is unknown, and stages remain as supplied.
+**Sales basis.** Open-stage totals exclude Closed Won and Closed Lost and retain overdue opportunities. Closed-won ACV is a separate stage total. All 500 fixture opportunities are in scope, without a reporting-period filter; created dates span September 2, 2025–February 24, 2026 and close dates October 11, 2025–August 14, 2026. Dates and stages are constructed to be consistent with March 31, not captured or reconstructed CRM history. Closed-stage dates represent completion within the synthetic scenario; open-stage dates are expected. No opportunity is created after the snapshot, closed after the snapshot, or assigned a stage age longer than its existence. The build checks those relationships and the recorded fixture hash.
 
-**Overdue scope.** At the invented August 31, 2026 snapshot, all 472 open deals total $40,178,200 in assumed ACV and are 17–324 days overdue. Only valid close dates strictly before that snapshot qualify; missing or invalid dates stay separate. Past-due dates alone do not close or remove deals. Owner ages use eligible overdue dates; an em dash means none. Sales records cover nine specialties, versus 29 in reimbursement reporting. No supplied specialty rows means unavailable coverage, not zero sales.
+**Overdue scope.** At March 31, the 472 open deals total $40,178,200 in assumed ACV. Of these, **278 are overdue by 1–171 days ($23,546,900)** and **194 are not yet overdue ($16,631,300)**. Only valid close dates strictly before that snapshot qualify; missing or invalid dates stay separate. Past-due dates alone do not close or remove deals. Owner ages use eligible overdue dates; an em dash means none. Sales records cover nine specialties, versus 29 in reimbursement reporting. No supplied specialty rows means unavailable coverage, not zero sales.
 
-The [metric definitions](https://github.com/kristenmartino/specialtypulse_pipeline/blob/caf03eaae093d7af768ceb898c0dcb7b3683c5d5/docs/METRIC_CERTIFICATION_LOG.md), [calculation trace](https://github.com/kristenmartino/specialtypulse_pipeline/blob/caf03eaae093d7af768ceb898c0dcb7b3683c5d5/data/payment_verification.json) and [reproduction guide](https://github.com/kristenmartino/specialtypulse_pipeline/blob/caf03eaae093d7af768ceb898c0dcb7b3683c5d5/docs/verification/payment-check.md) provide audit detail. Brief links pin raw inputs, reporting rows, sales records and run receipts to the build's repository revision.
+The [scenario record](https://github.com/kristenmartino/specialtypulse_pipeline/blob/dcee05b9b85c50c0536ddb61cc5dffcefd2a0853/data/sales_scenario.json) pins the fixture hash and adjustment policy. The revision preserved IDs, amounts, stages and open-deal dates. It moved 12 future closed-stage dates before March 31 using their supplied stage ages, then aligned the other 16 closed-stage ages with their existing close dates. The historical AI study retains its original fixture, scenario and results.
+
+The [metric definitions](https://github.com/kristenmartino/specialtypulse_pipeline/blob/dcee05b9b85c50c0536ddb61cc5dffcefd2a0853/docs/METRIC_CERTIFICATION_LOG.md), [calculation trace](https://github.com/kristenmartino/specialtypulse_pipeline/blob/dcee05b9b85c50c0536ddb61cc5dffcefd2a0853/data/payment_verification.json) and [reproduction guide](https://github.com/kristenmartino/specialtypulse_pipeline/blob/dcee05b9b85c50c0536ddb61cc5dffcefd2a0853/docs/verification/payment-check.md) provide audit detail. Brief links pin raw inputs, reporting rows, sales records and run receipts to the build's repository revision.
 
 </details>
 
@@ -78,7 +80,7 @@ The first complete run exposed duplicate synthetic provider identifiers. These w
 
 The local Mac's annual UTC schedule is enabled; its next run is due **December 31, 2026 at 7 p.m. Eastern**. Host availability and valid OAuth remain dependencies. The three Delta tables are replaced in individual commits, not one shared transaction. Operational use still requires real-source reconciliation, intended-user access enforcement, recovery tests and an alerting plan. The review list does not write to a CRM, and no actual sales review or CRM update has been recorded.
 
-The [selected run receipt](https://github.com/kristenmartino/specialtypulse_pipeline/blob/caf03eaae093d7af768ceb898c0dcb7b3683c5d5/data/releases/databricks-527988765998273/receipt.json) and [deployment runbook](https://github.com/kristenmartino/specialtypulse_pipeline/blob/caf03eaae093d7af768ceb898c0dcb7b3683c5d5/deployment/README.md) document execution and setup. Earlier Domo policy tests are archived and do not verify active access enforcement.
+The [selected run receipt](https://github.com/kristenmartino/specialtypulse_pipeline/blob/dcee05b9b85c50c0536ddb61cc5dffcefd2a0853/data/releases/databricks-527988765998273/receipt.json) and [deployment runbook](https://github.com/kristenmartino/specialtypulse_pipeline/blob/dcee05b9b85c50c0536ddb61cc5dffcefd2a0853/deployment/README.md) document execution and setup. Earlier Domo policy tests are archived and do not verify active access enforcement.
 
 </details>
 
@@ -92,6 +94,6 @@ Confirm actual workflows and comparable task difficulty before testing. Recipien
 3. At least 20% median paired preparation-time reduction over the full workflow, without reducing completeness.
 4. At least four of five recipients explain the next action without clarification, with no more requests overall than for comparator briefs.
 
-These are proposed criteria, not achieved human results. Accuracy or completeness failures require revision before retesting speed. Page views and sessions are activity measures, not usefulness evidence. The [workflow and evaluation plan](https://github.com/kristenmartino/specialtypulse_pipeline/blob/caf03eaae093d7af768ceb898c0dcb7b3683c5d5/docs/BUSINESS_REVIEW.md) records the proposed process.
+These are proposed criteria, not achieved human results. Accuracy or completeness failures require revision before retesting speed. Page views and sessions are activity measures, not usefulness evidence. The [workflow and evaluation plan](https://github.com/kristenmartino/specialtypulse_pipeline/blob/dcee05b9b85c50c0536ddb61cc5dffcefd2a0853/docs/BUSINESS_REVIEW.md) records the proposed process.
 
 </details>
