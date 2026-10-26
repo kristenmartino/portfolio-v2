@@ -85,9 +85,9 @@ export const projects: Project[] = [
       "SpecialtyPulse Procedure Detail for Dermatology / HCPCS 99213, comparing a generated 2022 scenario with synthetic 2023 records: $104.91 across 3,777 services in 2023.",
     metrics: [
       "Analyst → sales or operations lead",
-      "Editable brief with procedure evidence",
+      "Downloadable review packets",
       "AI comparison · human study pending",
-      "Synthetic data · reconciled calculations",
+      "870 reconciled rows · synthetic data",
     ],
   },
   {
