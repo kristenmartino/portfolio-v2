@@ -245,7 +245,7 @@ n8n processes events to update Airtable and send notifications. Failed deliverie
 
 A webhook trigger starts processing, while a 60-second sweep checks pending events. Nightly [reconciliation](https://github.com/kristenmartino/cabana/blob/5acbf9ff6c4bc3ef03b94098ff723bf2284969e4/ops/n8n/workflows/reconciliation.json) compares booking IDs and 11 fields, including status, deposit state, visit times and notes, between the app and Airtable. It reports the result to Telegram without changing records.
 
-The **October 26, 2026** live check matched **14 current bookings with zero drift** after missing records and stale visit times were corrected. **14 historical QA records** kept their original IDs, notes and staff evidence and were counted separately. A history label cannot hide a current booking from comparison.
+The **October 26, 2026** live check matched **14 current bookings with zero drift**. Airtable also retains **14 historical QA records** whose source bookings are no longer in the app, preserving their original IDs, notes and staff evidence. These are counted separately; a history label cannot exclude a current booking from comparison.
 
 ## Failure-injection testing
 
@@ -261,6 +261,6 @@ These results come from one recorded run at demo volume.
 
 The public demo uses fictional data, a shared member account and Stripe test mode. Requests and edits are saved to that account, so visitors should use sample details. Row-level security restricts the session to that member’s records.
 
-The deposit step includes sandbox instructions; no real money is collected. The normal half-hour reset was restored after the walkthrough, so the test booking is temporary.
+The deposit step includes sandbox instructions; no real money is collected. Shared demo data resets every half hour, so walkthrough bookings are temporary.
 
 Booking email notifications are not implemented. The Telegram bot rejects and logs unauthorized chats; rate limiting and alerts for those attempts remain follow-up work.
