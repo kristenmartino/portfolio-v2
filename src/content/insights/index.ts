@@ -2,8 +2,18 @@ import type { Note } from "@/lib/types";
 
 export const notes: Note[] = [
   {
-    slug: "make-extraction-failures-visible",
+    slug: "llm-app-wrong-question",
     index: "01",
+    title: "Your AI app can do the math correctly and still answer the wrong question",
+    date: "2026-10-26",
+    updated: "2026-10-26",
+    excerpt:
+      "A small test for checking which records and inputs an LLM app actually uses, with manual steps, optional coding-assistant prompts, and a saved query example.",
+    readingMinutes: 6,
+  },
+  {
+    slug: "make-extraction-failures-visible",
+    index: "02",
     title: "Check the value and its source separately.",
     date: "2026-05-07",
     updated: "2026-10-24",
@@ -13,7 +23,7 @@ export const notes: Note[] = [
   },
   {
     slug: "ai-as-thinking-aid",
-    index: "02",
+    index: "03",
     title: "Show what a prioritization score measures.",
     date: "2026-05-07",
     updated: "2026-10-24",
@@ -23,7 +33,7 @@ export const notes: Note[] = [
   },
   {
     slug: "what-aggregators-dedupe-away",
-    index: "03",
+    index: "04",
     title: "Compare the retrieved reporting.",
     date: "2026-05-07",
     updated: "2026-10-24",
@@ -33,7 +43,7 @@ export const notes: Note[] = [
   },
   {
     slug: "why-most-dashboards-fail",
-    index: "04",
+    index: "05",
     title: "Trace a dashboard value to its denominator.",
     date: "2026-04-22",
     updated: "2026-10-24",
@@ -43,7 +53,7 @@ export const notes: Note[] = [
   },
   {
     slug: "decompose-ambiguity",
-    index: "05",
+    index: "06",
     title: "Turn a billing exception into a requirement.",
     date: "2026-03-14",
     updated: "2026-10-24",

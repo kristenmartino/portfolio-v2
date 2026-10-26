@@ -20,11 +20,11 @@ export const site = {
 } as const;
 
 export const navItems: NavItem[] = [
-  { label: "Work", href: "#work" },
-  { label: "Capabilities", href: "#expertise" },
-  { label: "About", href: "#about" },
+  { label: "Work", href: "/#work" },
+  { label: "Capabilities", href: "/#expertise" },
+  { label: "About", href: "/#about" },
   { label: "Insights", href: "/insights" },
-  { label: "Contact", href: "#contact" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 export const sectionOrder = [

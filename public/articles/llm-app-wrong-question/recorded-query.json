@@ -1,0 +1,232 @@
+{
+  "provenance": {
+    "description": "Selected fields from a saved October 25, 2026 model-backed check over synthetic data. This is a curated supporting record, not a complete raw event log. No fresh model call was made for this article.",
+    "sourceFileSha256": "dcac1799cc1f42152311c360934be2014cd4d0ef2c8022d1be8eb0fe11b9fb74",
+    "sourceCaseId": "practice-independent-ranges",
+    "sourceRunDate": "2026-10-25",
+    "dataScope": "Synthetic practice scenario",
+    "validationCheckedAtRevision": "a1ce674407d1b9b2f5dd6abef1ce11db9e838b44"
+  },
+  "question": "Show revenue for January through March and collections for July through September 2025.",
+  "toolName": "query_practice",
+  "recordedToolInput": {
+    "queries": [
+      {
+        "metric": "revenue",
+        "months": [
+          0,
+          1,
+          2
+        ],
+        "providers": [],
+        "payers": [],
+        "procedures": [],
+        "groupBy": [
+          "provider"
+        ],
+        "predicate": {
+          "metric": "revenue",
+          "operator": "none",
+          "value": null
+        },
+        "ranking": {
+          "metric": "revenue",
+          "direction": "none",
+          "limit": 1,
+          "within": []
+        }
+      },
+      {
+        "metric": "collections",
+        "months": [
+          6,
+          7,
+          8
+        ],
+        "providers": [],
+        "payers": [],
+        "procedures": [],
+        "groupBy": [
+          "provider"
+        ],
+        "predicate": {
+          "metric": "collections",
+          "operator": "none",
+          "value": null
+        },
+        "ranking": {
+          "metric": "collections",
+          "direction": "none",
+          "limit": 1,
+          "within": []
+        }
+      }
+    ],
+    "explain": false
+  },
+  "recordedCalculatedResult": {
+    "domain": "practice",
+    "results": [
+      {
+        "metric": "revenue",
+        "scope": [
+          "Period: Jan\u2013Mar 2025.",
+          "Providers: Lin, Shah, Singh, Brooks, Yamamoto.",
+          "Grouping: provider."
+        ],
+        "rows": [
+          {
+            "name": "Lin",
+            "dimensions": {
+              "provider": "Lin"
+            },
+            "revenue": 355795
+          },
+          {
+            "name": "Shah",
+            "dimensions": {
+              "provider": "Shah"
+            },
+            "revenue": 331984
+          },
+          {
+            "name": "Singh",
+            "dimensions": {
+              "provider": "Singh"
+            },
+            "revenue": 364355
+          },
+          {
+            "name": "Brooks",
+            "dimensions": {
+              "provider": "Brooks"
+            },
+            "revenue": 256956
+          },
+          {
+            "name": "Yamamoto",
+            "dimensions": {
+              "provider": "Yamamoto"
+            },
+            "revenue": 367032
+          }
+        ],
+        "rankings": [],
+        "scopeTotal": 1676122,
+        "filtered": false,
+        "notes": [],
+        "query": {
+          "metric": "revenue",
+          "months": [
+            0,
+            1,
+            2
+          ],
+          "providers": [],
+          "payers": [],
+          "procedures": [],
+          "groupBy": [
+            "provider"
+          ],
+          "predicate": {
+            "metric": "revenue",
+            "operator": "none",
+            "value": null
+          },
+          "ranking": {
+            "metric": "revenue",
+            "direction": "none",
+            "limit": 1,
+            "within": []
+          }
+        }
+      },
+      {
+        "metric": "collections",
+        "scope": [
+          "Period: Jul\u2013Sep 2025.",
+          "Providers: Lin, Shah, Singh, Brooks, Yamamoto.",
+          "Grouping: provider."
+        ],
+        "rows": [
+          {
+            "name": "Lin",
+            "dimensions": {
+              "provider": "Lin"
+            },
+            "collections": 375643
+          },
+          {
+            "name": "Shah",
+            "dimensions": {
+              "provider": "Shah"
+            },
+            "collections": 365175
+          },
+          {
+            "name": "Singh",
+            "dimensions": {
+              "provider": "Singh"
+            },
+            "collections": 397953
+          },
+          {
+            "name": "Brooks",
+            "dimensions": {
+              "provider": "Brooks"
+            },
+            "collections": 306173
+          },
+          {
+            "name": "Yamamoto",
+            "dimensions": {
+              "provider": "Yamamoto"
+            },
+            "collections": 294735
+          }
+        ],
+        "rankings": [],
+        "scopeTotal": 1739679,
+        "filtered": false,
+        "notes": [],
+        "query": {
+          "metric": "collections",
+          "months": [
+            6,
+            7,
+            8
+          ],
+          "providers": [],
+          "payers": [],
+          "procedures": [],
+          "groupBy": [
+            "provider"
+          ],
+          "predicate": {
+            "metric": "collections",
+            "operator": "none",
+            "value": null
+          },
+          "ranking": {
+            "metric": "collections",
+            "direction": "none",
+            "limit": 1,
+            "within": []
+          }
+        }
+      }
+    ],
+    "explain": false
+  },
+  "recordedDisplayedAnswer": "Period: Jan\u2013Mar 2025.\nRevenue:\nLin: $355,795\nShah: $331,984\nSingh: $364,355\nBrooks: $256,956\nYamamoto: $367,032\n\nPeriod: Jul\u2013Sep 2025.\nCollections:\nLin: $375,643\nShah: $365,175\nSingh: $397,953\nBrooks: $306,173\nYamamoto: $294,735",
+  "recordedAppliedScope": [
+    "Query 1: Revenue.",
+    "Period: Jan\u2013Mar 2025.",
+    "Providers: Lin, Shah, Singh, Brooks, Yamamoto.",
+    "Grouping: provider.",
+    "Query 2: Collections.",
+    "Period: Jul\u2013Sep 2025.",
+    "Providers: Lin, Shah, Singh, Brooks, Yamamoto.",
+    "Grouping: provider."
+  ]
+}
