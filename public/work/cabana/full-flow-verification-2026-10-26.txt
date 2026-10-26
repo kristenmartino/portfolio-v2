@@ -1,5 +1,5 @@
 CABANA — FULL-FLOW VERIFICATION
-October 26, 2026 | approximately 7:09–7:16 PM EDT
+October 26, 2026 | latest run, approximately 7:30–7:36 PM EDT
 
 RESULT: PASS — one isolated QA-member booking, from email sign-in through reconciliation.
 Fictional service data, sample checkout details and Stripe Sandbox. No real money or on-site service.
@@ -10,16 +10,16 @@ LIVE STEPS
 2. Submitted a fictional heater repair through the app. AI triage opened the $75 test deposit step.
 3. Completed Stripe Sandbox Checkout. One $75 payment was recorded as paid, backed by a processed checkout.session.completed event with livemode=false.
 4. Pressed the actual Telegram Approve button. The app showed Approved · time pending, and the existing Airtable record updated.
-5. Assigned October 26, 6–7 PM EDT through Telegram /schedule using explicit offsets. The app, Airtable and Telegram matched both bounds (22:00–23:00 UTC).
+5. Assigned October 26, 6:15–7:15 PM EDT through Telegram /schedule using explicit offsets. The app, Airtable and Telegram matched both bounds (22:15–23:15 UTC).
 6. Checked mark_completed on that Airtable record. The audited office:airtable transition updated the app and sent the Telegram completion notification.
 7. Saved a clearly fictional completion note in Airtable. The exact text appeared in the app's Service history; completed status and paid deposit remained unchanged.
 
 DELIVERY AND RECONCILIATION
 One booking, one Airtable record and one paid test deposit throughout the run.
 All six lifecycle/scheduling events reached Airtable and Telegram without retries.
-The published reconciliation workflow succeeded at 7:15 PM EDT: 15 current app bookings and 15 current Airtable records matched across all 11 fields, including status, payment state, both visit bounds and notes.
+The published reconciliation workflow succeeded at 7:35 PM EDT: 16 current app bookings and 16 current Airtable records matched across all 11 fields, including status, payment state, both visit bounds and notes.
 Zero field mismatches, missing or unexpected bookings, duplicate or invalid IDs, history conflicts or deferred comparisons.
-Telegram received the same result. Fourteen historical Airtable QA records were retained separately (29 Airtable records total), with original IDs, creation times, fields, notes and staff evidence unchanged.
+Telegram received the same result. Fourteen historical Airtable QA records were retained separately (30 Airtable records total), with original IDs, creation times, fields, notes and staff evidence unchanged. All prior current-booking comparison fields were also preserved.
 An independent read corroborated the reconciliation result. Final health: database OK; zero pending outbox/Telegram deliveries and zero dead letters.
 
 SCOPE
