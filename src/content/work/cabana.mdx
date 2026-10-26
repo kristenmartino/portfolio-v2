@@ -229,9 +229,11 @@ On refresh, the request page shows “Completed” and “This request is marked
 
 ## Cancelled and missed visits
 
-Owners cancel bookings through Telegram’s `/cancel` command. Marking a visit missed is currently **backend-only**, through the audited transition function; there is no staff button or command for it.
+Owners cancel bookings with Telegram’s `/cancel` command. Office staff enter a reason and check `mark_missed` in Airtable. This requires a confirmed visit whose recorded window has ended and saves staff identity and reason in an audit record.
 
-Separate tests on **October 26, 2026** used two synthetic confirmed visits: cancellation through Telegram and missed status through that backend function. Both left Open requests and appeared in Service history as **Cancelled** or **Missed**. The existing Airtable records and Telegram notifications showed `cancelled` or `no_show` (the stored status for Missed). Both status events were fully delivered.
+Separate synthetic tests on **October 26, 2026** verified both actions across the app, existing Airtable records and Telegram. The app showed **Cancelled** or **Missed** in Service history (`cancelled` or `no_show` in the operational tools).
+
+Future visits, unconfirmed visits and missing reasons were refused with clear feedback. Repeating the accepted missed action created no additional transition or notification.
 
 ## Visit notes
 
