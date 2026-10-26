@@ -243,7 +243,9 @@ Booking status and visit-window changes are saved with their pending integration
 
 n8n processes events to update Airtable and send notifications. Failed deliveries are retried, and deduplication keys identify repeated deliveries. Events that reach the retry limit move to a dead-letter queue for operator review.
 
-A webhook trigger starts processing, while a 60-second sweep checks for pending events. The repository’s [reconciliation workflow](https://github.com/kristenmartino/cabana/blob/92d57f1db20a3d2f63a1ec93af0359ff401b0085/ops/n8n/workflows/reconciliation.json) compares Supabase and Airtable record counts; it does not verify individual booking fields.
+A webhook trigger starts processing, while a 60-second sweep checks pending events. Nightly [reconciliation](https://github.com/kristenmartino/cabana/blob/5acbf9ff6c4bc3ef03b94098ff723bf2284969e4/ops/n8n/workflows/reconciliation.json) compares booking IDs and 11 fields, including status, deposit state, visit times and notes, between the app and Airtable. It reports the result to Telegram without changing records.
+
+The **October 26, 2026** live check matched **14 current bookings with zero drift** after missing records and stale visit times were corrected. **14 historical QA records** kept their original IDs, notes and staff evidence and were counted separately. A history label cannot hide a current booking from comparison.
 
 ## Failure-injection testing
 
