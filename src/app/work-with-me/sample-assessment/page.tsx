@@ -8,12 +8,13 @@ import styles from "./page.module.css";
 export const metadata: Metadata = {
   title: "Checking quota totals, source labels, and written amounts · Kristen Martino",
   description:
-    "A self-initiated review of GTM Healthcare Intelligence: missing totals, source claims, written amounts, and dated verification with original evidence.",
+    "A self-initiated review of GTM Healthcare Intelligence: missing totals, source claims, written amounts, and dated calculation and display checks with original evidence.",
 };
 
 const narrative = assessment.hiringNarrative;
 const quotaFollowUp = assessment.quotaFollowUp;
 const writtenAmountFollowUp = assessment.writtenAmountFollowUp;
+const bookingsDisplayFollowUp = assessment.bookingsDisplayFollowUp;
 
 function findingDisplay(id: string) {
   return assessment.findingDisplay[id as keyof typeof assessment.findingDisplay];
@@ -158,6 +159,7 @@ export default function SampleAssessment() {
                 <p className={styles.supportContext}>Original review: {assessment.title} — {assessment.subtitle}. The five original requests were checked {assessment.checkedAt}, at app revision <a href={`https://github.com/kristenmartino/gtm-healthcare-intel/tree/${assessment.appRevision}`} target="_blank" rel="noreferrer"><code>{assessment.appRevisionShort}</code> ↗</a>.</p>
                 <p className={styles.supportContext}>The separate <a href="#quota-follow-up">October 26 quota follow-up</a> checked three requests at revision <a href={quotaFollowUp.servingSource} target="_blank" rel="noreferrer"><code>{quotaFollowUp.appRevisionShort}</code> ↗</a>. The quota requests did not recheck other findings.</p>
                 <p className={styles.supportContext}>The later <a href="#written-amount-follow-up">October 26 written-amount follow-up</a>, at 3:01 p.m. Eastern, checked written and numeric thresholds plus one malformed-input control. Source disclosure, quarterly ranking and no-show controls retain their original October 25 observations.</p>
+                <p className={styles.supportContext}>The latest <a href="#bookings-display-follow-up">October 26 bookings-display follow-up</a>, at 3:51 p.m. Eastern, checked three requests after a separate app release. It verified the repeated block was removed while numerical results and calculation records stayed available.</p>
                 <p className={styles.supportContext}>{assessment.provenance}</p>
                 <section id="summary" className={styles.section}>
                   <SectionHeading number="01" title="Assessment summary" />
@@ -169,6 +171,7 @@ export default function SampleAssessment() {
                     <div><dt>October 25 requests</dt><dd>{assessment.counts.originalRequests}</dd></div>
                     <div><dt>October 26 quota requests</dt><dd>{assessment.counts.quotaFollowUpRequests}</dd></div>
                     <div><dt>October 26 written-amount requests</dt><dd>{assessment.counts.writtenAmountFollowUpRequests}</dd></div>
+                    <div><dt>October 26 display requests</dt><dd>{assessment.counts.presentationFollowUpRequests}</dd></div>
                   </dl>
                   <div className={styles.scopeGrid}>
                     <div><h3 className={styles.smallHeading}>Original review scope</h3><ul className={styles.list}>{assessment.scope.map((item) => <li key={item}>{item}</li>)}</ul></div>
@@ -214,7 +217,7 @@ export default function SampleAssessment() {
                         </div>
                         {finding.id === "F02" && (
                           <div id="quota-follow-up" className={styles.verificationNote} style={{ scrollMarginTop: 88 }}>
-                            <h4 className={styles.smallHeading}>October 26 verified recheck</h4>
+                            <h4 className={styles.smallHeading}>October 26 quota recheck · 1:55 p.m.</h4>
                             <p>{quotaFollowUp.checkedAt}. Serving revision <a href={quotaFollowUp.servingSource} target="_blank" rel="noreferrer"><code>{quotaFollowUp.appRevisionShort}</code> ↗</a>; <a href={quotaFollowUp.fixSource} target="_blank" rel="noreferrer">existing fix <code>{quotaFollowUp.fixCommit.slice(0, 7)}</code> ↗</a>.</p>
                             <p>{quotaFollowUp.summary}</p>
                             <div className={styles.checks}>
@@ -224,10 +227,31 @@ export default function SampleAssessment() {
                                 <details className={styles.details}><summary>October 26 observed response</summary><pre className={styles.response}>{check.observed}</pre></details>
                               </article>)}
                             </div>
+                            <p className={styles.supportContext}>Historical display observation from the 1:55 p.m. quota check. The later <a href="#bookings-display-follow-up">3:51 p.m. follow-up</a> below verified its repair.</p>
                             <p>{quotaFollowUp.perRepNote}</p>
                             <p>45 JavaScript tests passed, including all 63 nonempty rep subsets, aggregate calculations and preservation of individual results.</p>
                             <p><a href={quotaFollowUp.downloadHref} download>Download October 26 quota recheck packet ↓</a></p>
                             <EvidenceLinks ids={quotaFollowUp.evidence} />
+                          </div>
+                        )}
+                        {finding.id === "F02" && (
+                          <div id="bookings-display-follow-up" className={styles.verificationNote} style={{ scrollMarginTop: 88 }}>
+                            <h4 className={styles.smallHeading}>October 26 bookings-display recheck · 3:51 p.m.</h4>
+                            <p>{bookingsDisplayFollowUp.checkedAt}. Deployed fix <a href={bookingsDisplayFollowUp.fixSource} target="_blank" rel="noreferrer"><code>{bookingsDisplayFollowUp.appRevisionShort}</code> ↗</a>; <a href={bookingsDisplayFollowUp.pullRequest} target="_blank" rel="noreferrer">app PR 28 ↗</a>; <a href={bookingsDisplayFollowUp.testSource} target="_blank" rel="noreferrer">presentation tests ↗</a>.</p>
+                            <p>{bookingsDisplayFollowUp.summary}</p>
+                            <p>The <a href="#quota-follow-up">earlier quota check</a> retains the original repeated bookings response as a dated before record.</p>
+                            <div className={styles.checks}>
+                              {bookingsDisplayFollowUp.cases.map((check) => <article key={check.id} className={styles.check}>
+                                <h4 className={styles.smallHeading}>{check.id === "combined" ? "Combined total" : check.id === "per-rep" ? "Individual results" : "Combined and individual results"} · passed</h4>
+                                <p>{check.question}</p>
+                                <details className={styles.details}><summary>October 26, 3:51 p.m. recorded response</summary><pre className={styles.response}>{check.observed}</pre></details>
+                              </article>)}
+                            </div>
+                            <p>{bookingsDisplayFollowUp.preservedRecords}</p>
+                            <p>{bookingsDisplayFollowUp.testNote}</p>
+                            <p>{bookingsDisplayFollowUp.scopeNote}</p>
+                            <p><a href={bookingsDisplayFollowUp.downloadHref} download>Download October 26 bookings-display recheck packet ↓</a></p>
+                            <EvidenceLinks ids={bookingsDisplayFollowUp.evidence} />
                           </div>
                         )}
                         {finding.id === "F04" && (
@@ -262,7 +286,7 @@ export default function SampleAssessment() {
                 </section>
 
                 <section id="action-plan" className={styles.section}>
-                  <SectionHeading number="03" title="Remaining work and checks to retain" note="Remove the repeated bookings block, then retain the numerical and input checks below." />
+                  <SectionHeading number="03" title="Checks to retain" note="Retain the numerical, input and display checks after their dated verification." />
                   <ol className={styles.plan}>
                     {assessment.plan.map((item) => <li key={item.order}><span className={styles.planNumber}>{item.order}</span><div><p className={styles.planStatus}>{item.status} · {item.finding}</p><h3>{item.title}</h3><p>{item.text}</p></div></li>)}
                   </ol>
@@ -284,7 +308,7 @@ export default function SampleAssessment() {
                 </section>
 
                 <section id="evidence" className={styles.section}>
-                  <SectionHeading number="05" title="Evidence ledger" note="E1–E9 retain the original record; E10–E11 document the earlier quota follow-up; E12–E13 document the later written-amount follow-up and parser source." />
+                  <SectionHeading number="05" title="Evidence ledger" note="E1–E9 retain the original record; E10–E11 document the earlier quota follow-up; E12–E13 document the written-amount follow-up and parser source; E14–E17 document the latest display follow-up and separate app release." />
                   <ol className={styles.sourceLedger}>
                     {assessment.sources.map((source) => <li id={source.id} key={source.id}><span className={styles.sourceId}>{source.id}</span><div><a href={source.href} target={source.href.startsWith("https:") ? "_blank" : undefined} rel={source.href.startsWith("https:") ? "noreferrer" : undefined}>{source.label} <span aria-hidden="true">{source.href.startsWith("https:") ? "↗" : "↓"}</span></a><p>{source.note}</p></div></li>)}
                   </ol>

@@ -10,7 +10,7 @@
   "appRevision": "d80dd7d22a5eb1922518b37c561c7ca071fe7812",
   "appRevisionShort": "d80dd7d",
   "downloadHref": "/assessments/gtm-healthcare/verification.json",
-  "summary": "All four selected findings have dated verification: source disclosure and quarterly ranking on October 25, combined quota and written amounts in separate October 26 follow-ups. The duplicate bookings block remains a presentation follow-up; it does not change the quota calculation result.",
+  "summary": "All four selected findings have dated verification: source disclosure and quarterly ranking on October 25, combined quota and written amounts in separate October 26 follow-ups. A later October 26 check confirmed the duplicate bookings block was removed while the combined and individual values stayed intact.",
   "provenance": "This is a self-initiated review of a demo I own. All sales and practice records used here are synthetic.",
   "counts": {
     "findings": 4,
@@ -18,7 +18,8 @@
     "awaitingRecheck": 0,
     "originalRequests": 5,
     "quotaFollowUpRequests": 3,
-    "writtenAmountFollowUpRequests": 3
+    "writtenAmountFollowUpRequests": 3,
+    "presentationFollowUpRequests": 3
   },
   "scope": [
     "Public GTM demo and portfolio data disclosures.",
@@ -29,8 +30,8 @@
   "limits": [
     "The requests were purpose-selected; they are not a random sample or a model-accuracy benchmark.",
     "This review did not test every query, security controls, production scale, or source accuracy.",
-    "The original before/after strings and five check results are October 25 records at d80dd7d. Separate October 26 follow-ups at a1ce674 covered three quota requests at 1:55 p.m. Eastern and three written-amount requests at 3:01 p.m. Eastern. Source-disclosure, quarterly-ranking and no-show controls were not rechecked in either follow-up.",
-    "No app code was changed or deployed for the assessment or either follow-up. The disclosure and quarterly-ranking repairs predated the original review; the quota and written-amount fixes were already deployed before their October 26 checks.",
+    "The original before/after strings and five check results are October 25 records at d80dd7d. October 26 checks at a1ce674 covered three quota requests at 1:55 p.m. Eastern and three written-amount requests at 3:01 p.m. Eastern. A later three-request presentation check at 3:51 p.m. Eastern followed the separate app release at 3bde922. Source disclosures, quarterly rankings and no-show controls retain their October 25 evidence; written and malformed amounts were not rechecked by the presentation follow-up.",
+    "No app code was changed or deployed for the original assessment or its first two follow-ups; those numerical and input fixes were already deployed. The later presentation check followed a separately deployed duplicate-bookings fix. This portfolio update does not deploy app code.",
     "No user study, patient-data review, clinical validation or measured commercial outcome is claimed."
   ],
   "methodNote": "AI tools supported implementation, testing and analysis. Numerical expectations were recomputed from the synthetic input records; this is not an independent third-party audit.",
@@ -74,16 +75,16 @@
       "id": "F02",
       "priority": "P2",
       "kind": "Query completeness",
-      "title": "Combined-quota output passed a dated follow-up.",
-      "status": "Verified correction · October 26",
+      "title": "Combined totals and individual results are complete and shown once.",
+      "status": "Verified correction · October 26, 3:51 p.m. Eastern",
       "state": "closed",
       "risk": "The original response supplied correct individual figures but omitted the requested combined result. Without a total, a reader had to reconstruct weighted attainment from the amounts.",
-      "observation": "The combined-quota question returned only Chen and Kim rows on October 25. Three October 26 follow-up requests verified the combined total, individual quota rows and both together.",
+      "observation": "The combined-quota question returned only Chen and Kim rows on October 25. The 1:55 p.m. October 26 follow-up verified the combined total and individual quota rows but recorded repeated bookings. After a separate app release, the 3:51 p.m. check confirmed each rep appeared once while the combined and individual values stayed intact.",
       "question": "What is the combined quota and attainment for Sarah Chen and David Kim in Q1 2025?",
       "before": "Chen: $504,000 bookings / $450,000 quota / 112.0%\nKim: $250,000 bookings / $350,000 quota / 71.4%\nNo combined result.",
       "after": "Fresh production response: the same two rep rows.\nNo combined quota, bookings or attainment was returned.",
-      "fix": "The existing fix returns a combined quota row and calculates attainment from summed bookings and quota, while preserving per-rep results. Fix 65e1db5 was already deployed before the follow-up; no app code was changed or deployed for this recheck.",
-      "verification": "Verified October 26 at serving revision a1ce674. Combined bookings $754,000 / quota $800,000 gives 94.25% attainment (94.3% displayed). Combined-only, per-rep-only and both-together requests matched expected quota rows. The per-rep-only response also contains a duplicate bookings-only block, retained in the raw packet.",
+      "fix": "The earlier numerical fix returns combined quota and weighted attainment while preserving individual results. The later display fix at 3bde922 suppresses a fully redundant bookings block only when quota results cover the same scope, displayed metrics and values. Distinct results and the underlying calculation records remain available.",
+      "verification": "The October 26, 3:51 p.m. production check at revision 3bde922 passed requests for combined totals, individual results, and both together. Combined bookings $754,000 / quota $800,000 still gives 94.25% attainment (94.3% displayed). Chen and Kim each display once with their correct quota rows. The earlier repeated response is preserved in the 1:55 p.m. quota evidence.",
       "acceptance": [
         "Return one combined result with $800,000 quota and $754,000 bookings.",
         "Calculate attainment as 754,000 ÷ 800,000 = 94.25% (94.3% at one decimal).",
@@ -165,9 +166,9 @@
   "plan": [
     {
       "order": "01",
-      "title": "Remove the duplicate bookings block",
-      "status": "Proposed · observed October 26",
-      "text": "The individual-results response repeats bookings before the full quota rows. Remove that repeated block, then recheck requests for the total, individual results, and both together. Preserve weighted attainment and the scenario tests covering all 63 nonempty rep subsets.",
+      "title": "Retain the duplicate-output and quota checks",
+      "status": "Verified · October 26, 3:51 p.m. Eastern",
+      "text": "Keep each rep’s bookings, quota and attainment together once, while preserving requested totals and calculation records. Retain checks that preserve distinct cohorts, periods, groupings, filters, rankings and values. The 50-test suite includes five new presentation tests and the existing weighted-quota coverage.",
       "finding": "F02"
     },
     {
@@ -303,6 +304,30 @@
       "label": "Written-number parser at existing fix",
       "href": "https://github.com/kristenmartino/gtm-healthcare-intel/blob/65e1db584a479abbd10d6901525c6d817f519fbf/lib/query-numbers.mjs",
       "note": "Parser source at fix 65e1db5, already deployed before the written-amount recheck. The dated packet also links fixture and targeted-test sources."
+    },
+    {
+      "id": "E14",
+      "label": "October 26 duplicate-bookings display recheck packet",
+      "href": "/assessments/gtm-healthcare/duplicate-bookings-recheck-2026-10-26.json",
+      "note": "Three production requests captured at 3:51 p.m. Eastern after the separate app release; includes raw responses, retained numerical anchors, the earlier duplicate observation and scoped test results."
+    },
+    {
+      "id": "E15",
+      "label": "Deployed duplicate-bookings display fix",
+      "href": "https://github.com/kristenmartino/gtm-healthcare-intel/blob/3bde9225a5b29a09ac35a0e132598ec219b28968/lib/query-engine.mjs",
+      "note": "Pinned revision 3bde922 suppresses only a fully redundant performance display; underlying query and calculation records remain available."
+    },
+    {
+      "id": "E16",
+      "label": "Duplicate-output presentation tests",
+      "href": "https://github.com/kristenmartino/gtm-healthcare-intel/blob/3bde9225a5b29a09ac35a0e132598ec219b28968/tests/quota-presentation.test.mjs",
+      "note": "Five new presentation tests in the 50-test JavaScript suite; distinct scopes and values retain their output."
+    },
+    {
+      "id": "E17",
+      "label": "GTM app PR 28: duplicate bookings display fix",
+      "href": "https://github.com/kristenmartino/gtm-healthcare-intel/pull/28",
+      "note": "Separate app release preceding the 3:51 p.m. production check. The assessment update itself does not deploy app code."
     }
   ],
   "hiringNarrative": {
@@ -310,7 +335,7 @@
     "label": "Self-initiated review of my own demo",
     "title": "Checking quota totals, source labels, and written amounts",
     "context": "GTM Healthcare Intelligence",
-    "opening": "The original review recorded missing combined totals, source labels broader than the demo’s actual inputs, and different handling of equivalent written and numeric amounts. Dated checks document the corrected results and the remaining presentation issue.",
+    "opening": "The original review recorded missing combined totals, source labels broader than the demo’s actual inputs, and different handling of equivalent written and numeric amounts. Dated follow-ups verified the corrected results; a later check confirmed the repeated bookings block was removed.",
     "role": "",
     "decisions": [
       {
@@ -323,7 +348,7 @@
         "status": "Verified October 26",
         "state": "closed",
         "supportLabel": "F02 / follow-up",
-        "supportHref": "#quota-follow-up"
+        "supportHref": "#bookings-display-follow-up"
       },
       {
         "id": "claims",
@@ -351,11 +376,11 @@
       }
     ],
     "verification": [
-      "Expected answers were calculated separately from synthetic input records. The original five requests and six October 26 follow-ups remain in the full evidence, with captured responses, test results, and dated scope."
+      "Expected answers were calculated separately from synthetic input records. The original five requests and nine October 26 follow-ups remain in the full evidence, with captured responses, test results, and dated scope."
     ],
-    "next": "The calculation passed. The October 26 individual-results response still repeats bookings; removing that duplicate is the next presentation fix.",
+    "next": "October 26 live checks confirmed each rep appears once while combined and individual values remain unchanged. Retain these checks alongside the amount-input controls.",
     "supportTitle": "Full findings and verification evidence",
-    "supportDescription": "Original comparisons, separate quota and written-amount follow-ups, acceptance checks, method and sources.",
+    "supportDescription": "Original comparisons, quota, written-amount and display follow-ups, acceptance checks, method and sources.",
     "byline": "Original review October 25, 2026 · Quota and amounts rechecked October 26, 2026"
   },
   "originalReviewCounts": {
@@ -407,8 +432,8 @@
       "panelLabel": "October 25 recheck · verified then"
     },
     "F02": {
-      "status": "Verified · October 26",
-      "context": "Original failure recorded October 25; the separate October 26 follow-up below verifies the already-deployed fix.",
+      "status": "Verified · October 26, 3:51 p.m.",
+      "context": "Original failure recorded October 25. The 1:55 p.m. October 26 quota check verified the numerical fix and recorded a duplicate display block. A separate app release removed that repetition; the 3:51 p.m. live check below verified presentation and preserved values.",
       "panelLabel": "October 25 recheck · open then"
     },
     "F03": {
@@ -465,6 +490,42 @@
     "evidence": [
       "E12",
       "E13"
+    ]
+  },
+  "bookingsDisplayFollowUp": {
+    "checkedAt": "October 26, 2026, 3:51 p.m. Eastern",
+    "appRevision": "3bde9225a5b29a09ac35a0e132598ec219b28968",
+    "appRevisionShort": "3bde922",
+    "fixSource": "https://github.com/kristenmartino/gtm-healthcare-intel/blob/3bde9225a5b29a09ac35a0e132598ec219b28968/lib/query-engine.mjs",
+    "testSource": "https://github.com/kristenmartino/gtm-healthcare-intel/blob/3bde9225a5b29a09ac35a0e132598ec219b28968/tests/quota-presentation.test.mjs",
+    "pullRequest": "https://github.com/kristenmartino/gtm-healthcare-intel/pull/28",
+    "summary": "After the separate app release, all three production requests passed. Combined bookings remain $754,000 against $800,000 quota: 94.25% attainment, displayed as 94.3%. Each individual result appears once: Chen $504,000 / $450,000 / 112.0%; Kim $250,000 / $350,000 / 71.4%.",
+    "cases": [
+      {
+        "id": "combined",
+        "question": "What is the combined quota and attainment for Sarah Chen and David Kim in Q1 2025?",
+        "observed": "Period: Q1 2025. Reps: Sarah Chen, David Kim.\nTotal: Bookings (won ACV) $754,000; Full-quarter quota $800,000; Attainment 94.3%."
+      },
+      {
+        "id": "per-rep",
+        "question": "Show bookings, quota and attainment by rep for Sarah Chen and David Kim in Q1 2025.",
+        "observed": "Period: Q1 2025. Reps: Sarah Chen, David Kim.\nChen: Bookings (won ACV) $504,000; Full-quarter quota $450,000; Attainment 112.0%.\nKim: Bookings (won ACV) $250,000; Full-quarter quota $350,000; Attainment 71.4%."
+      },
+      {
+        "id": "both",
+        "question": "Show combined bookings, quota and weighted attainment for Sarah Chen and David Kim in Q1 2025, along with the per-rep results.",
+        "observed": "Period: Q1 2025. Reps: Sarah Chen, David Kim.\nTotal: Bookings (won ACV) $754,000; Full-quarter quota $800,000; Attainment 94.3%.\n\nPeriod: Q1 2025. Reps: Sarah Chen, David Kim.\nChen: Bookings (won ACV) $504,000; Full-quarter quota $450,000; Attainment 112.0%.\nKim: Bookings (won ACV) $250,000; Full-quarter quota $350,000; Attainment 71.4%."
+      }
+    ],
+    "preservedRecords": "The individual-results request produced both performance and quota query records, exercising the overlapping plan. Both underlying results, applied scopes and calculation details remain available; only the redundant display block is suppressed.",
+    "testNote": "50 JavaScript tests passed: five new presentation tests and 45 existing tests, including weighted quota checks for all 63 nonempty rep subsets. Distinct cohorts, periods, groupings, filters, rankings and values retain their separate output.",
+    "scopeNote": "This follow-up did not recheck source disclosures, quarterly rankings, written amounts, malformed amounts, or no-show controls. Their earlier dated evidence is retained.",
+    "downloadHref": "/assessments/gtm-healthcare/duplicate-bookings-recheck-2026-10-26.json",
+    "evidence": [
+      "E14",
+      "E15",
+      "E16",
+      "E17"
     ]
   }
 }
