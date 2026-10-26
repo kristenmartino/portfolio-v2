@@ -1,0 +1,107 @@
+You ask your app for January revenue. It returns a total, the calculation checks out, and nothing appears broken. But it has added up all twelve months.
+
+## The short version
+
+A model can choose the wrong dates or records, then hand them to code that calculates correctly. Checking the arithmetic alone will miss that mistake.
+
+Try a small test:
+
+1. Use two fictional records: $100 in January and $900 in February.
+2. Ask for January, February, and the full year. Expect $100, $900, and $1,000.
+3. Inspect the actual inputs and records used, alongside the displayed answer. Ask the January question another way and check it again.
+
+If you already collect dates through a selector, pass those dates directly to the calculation where possible. The model does not need to choose them again.
+
+Below is the walkthrough for capturing the details, adapting the records, and testing a deliberately changed request. Optional coding-assistant prompts are grouped at the end.
+
+## The detailed walkthrough
+
+This exercise is for apps that answer questions about sales, invoices, inventory, or similar records. You can work directly in your code or use a coding assistant with access to the project.
+
+A model's request to an application function is called a **tool call**. A **schema** defines the fields and values that request accepts. It might require a month between January and December. The app can reject a request if the required month is missing or outside the allowed range. It cannot establish that the model selected the month you intended. [Anthropic's structured-output documentation](https://platform.claude.com/docs/en/build-with-claude/structured-outputs) describes enforcing these structures.
+
+### 1. Capture one actual run
+
+Choose a question the app supports. Look for a saved test response or logs—the app's recorded activity. The answer on screen will not usually reveal how it was produced.
+
+If those details are missing, temporarily record them in a local or test version using fictional data:
+
+- The question and other inputs sent to the model, plus selections made in the interface.
+- The model's response, including the function it requests and the values it supplies.
+- The inputs accepted by the code, any rejection reason, and the records selected for calculation. Preserve any differences from the model's proposed inputs.
+- The calculated value and the answer sent to the interface.
+
+Give the entries one request ID—a label linking them to the same run. Save them in a JSON file or development logs. Server-side calls may appear in the server's terminal or logs rather than the browser console. Leave credentials out of the recording.
+
+In reviewing my [GTM Healthcare Intelligence application](/work/gtm-healthcare), I wanted the requested periods and filters to survive interpretation. I used AI coding assistance in developing the application, which uses fictional commercial and practice data. One saved response contains this excerpt:
+
+```json
+{
+  "metric": "revenue",
+  "months": [0, 1, 2]
+}
+```
+
+Months start at zero in this app, so this requests January–March revenue. The saved response also contains the calculated result and displayed answer. The [saved example](/articles/llm-app-wrong-question/recorded-query.json) includes both requested measures, the calculated results, and the displayed answer. The code explains how the app used those inputs.
+
+### 2. Use records with independently checkable answers
+
+Use these two fictional sales records:
+
+<div className="my-6 overflow-x-auto">
+  <table className="w-full max-w-xl text-left text-base text-[var(--color-graphite-20)]">
+    <caption className="sr-only">Fictional sales records for the exercise</caption>
+    <thead>
+      <tr className="border-b border-[var(--color-graphite-60)]">
+        <th scope="col" className="py-3 pr-6 font-semibold text-[var(--color-bone)]">Date</th>
+        <th scope="col" className="py-3 text-right font-semibold text-[var(--color-bone)]">Revenue</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr className="border-b border-[var(--color-graphite-80)]">
+        <td className="py-3 pr-6">January 10, 2025</td>
+        <td className="py-3 text-right">$100</td>
+      </tr>
+      <tr className="border-b border-[var(--color-graphite-80)]">
+        <td className="py-3 pr-6">February 10, 2025</td>
+        <td className="py-3 text-right">$900</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+Adapt them to your app's required fields and revenue definition: IDs, statuses, currency, and whether amounts are stored in dollars or cents. Have the app read them through its normal data-loading code in a test setup separate from real users and data. If no suitable setup exists, identify the smallest one needed before building it.
+
+Run the actual model with both “What was revenue in January 2025?” and “How much revenue did we have during January 2025?” Expect $100 for each. Check February and the full year too. A prewritten model answer supplied by a test cannot establish how the model interprets a question.
+
+If January returns $1,000, use the captured inputs to investigate why. Also investigate a refusal to answer a supported question. Passing these examples does not establish accuracy on unfamiliar questions.
+
+### 3. Test a deliberately changed request
+
+If the app uses tool calls, copy a captured January request and change its period to February. Run that copy through the normal checks before calculation, retaining the original question or selected dates. Record whether it is rejected or executed and why. This tests a particular check; the previous step tests what the model and application actually do with a question.
+
+For the GTM request above, the full question also asked for collections for July–September. The recorded model request preserved both periods. A deliberately altered copy swapped them. It still fit the schema, but a [measure-and-period check](https://github.com/kristenmartino/gtm-healthcare-intel/blob/a1ce674407d1b9b2f5dd6abef1ce11db9e838b44/lib/query-language.mjs#L74) rejected it before calculation. That check covers supported wording, not every possible question.
+
+Checking code can misunderstand language too. An earlier GTM test rejected “not more than one point five million” before calling the model. Its rules mistook the phrase for an instruction to exclude data. The correction recognized an upper bound of $1,500,000; tests then covered equivalent “at most” and “not more than” wording.
+
+If a check must reinterpret typed dates, it introduces another opportunity for error. Selected dates provide a more direct comparison. If typed and selected dates conflict, surface the conflict rather than silently choosing one. A date selector may be easier to maintain than a growing set of language rules.
+
+Anthropic's guidance on [writing tools for agents](https://www.anthropic.com/research/writing-tools-for-agents) recommends verifiable outcomes and inspection of actual calls and responses. Retain the records, captured run, expected result, and command to repeat the test. For January, another person should be able to see which records produced $100 and reproduce it.
+
+Read the [GTM sample assessment](/work-with-me/sample-assessment) for separate, dated examples of query checks and corrections. To repeat the period-check demonstration against the referenced GTM source, use the [validation script](/articles/llm-app-wrong-question/validate-periods.mjs) with the saved example. The edited request in that demonstration is a constructed test.
+
+## Optional coding-assistant prompts
+
+Use these in a coding assistant that can inspect and run your project.
+
+### Capture a run
+
+> Run this question: “[insert question].” Find saved responses or logs showing the model inputs, response, function inputs, selected records, calculated result, and displayed answer. If missing, add temporary recording in a local or test version using fictional data. Preserve model-proposed and code-adjusted inputs under one request ID. Exclude credentials. Show the exact file or log location. Distinguish observed execution from code inference; say what remains unverified if you cannot run it.
+
+### Test known records
+
+> Identify how this app loads data and runs tests. If no suitable test setup exists, propose the smallest isolated setup and how to run it before creating it. Adapt two fictional records—January 10, 2025: $100; February 10, 2025: $900—to required fields and the app's revenue definition. Show assumptions. Keep live data unchanged. Run the January question in two phrasings, February, and the full year. Expect $100, $100, $900, and $1,000. Use actual model responses. Show inputs, selected records, results, failures, and the command to rerun.
+
+### Change a request
+
+> Copy a captured January tool request and change its period to February. Retain the original January question or selected dates. Run the copy through the existing validation and report whether it is rejected or executed, and why. Label it as deliberately edited test input, not an observed model mistake.

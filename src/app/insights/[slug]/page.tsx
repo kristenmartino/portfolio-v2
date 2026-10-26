@@ -6,6 +6,7 @@ import { Footer } from "@/components/footer/Footer";
 import { Mono } from "@/components/typography/Mono";
 import { ReadingProgress } from "@/components/case-study/ReadingProgress";
 import { notes, getNote } from "@/content/insights/index";
+import { site } from "@/content/site";
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
   year: "numeric",
@@ -31,6 +32,25 @@ export async function generateMetadata({
   return {
     title: `${note.title} — Kristen Martino`,
     description: note.excerpt,
+    alternates: {
+      canonical: `https://${site.domain}/insights/${note.slug}`,
+    },
+    openGraph: {
+      title: note.title,
+      description: note.excerpt,
+      url: `https://${site.domain}/insights/${note.slug}`,
+      type: "article",
+      publishedTime: note.date,
+      modifiedTime: note.updated ?? note.date,
+      authors: ["Kristen Martino"],
+      images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: note.title,
+      description: note.excerpt,
+      images: ["/opengraph-image"],
+    },
   };
 }
 
