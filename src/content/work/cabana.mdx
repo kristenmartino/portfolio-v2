@@ -195,11 +195,9 @@ Tests with real emails confirmed that expired links are rejected and requesting 
 
 The dashboard shows the regular service day from the member’s plan and labels Service history entries as Completed, Cancelled or Missed. The request page separates payment receipt, staff approval and the assigned visit window.
 
-A request that reaches scheduling without an assigned visit window shows “Awaiting visit time,” or “Approved · time pending” after approval. Payment, staff approval and a confirmed visit time are separate states.
+A request that reaches scheduling without an assigned visit window shows “Awaiting visit time,” or “Approved · time pending” after approval.
 
-When a visit window is recorded before approval, the app labels it “Awaiting approval” and shows the proposed time separately.
-
-Once an approved request has a visit window, the app shows “Confirmed” with both dates, times and the Eastern time zone. The deposit receipt remains separate.
+When a visit window is recorded before approval, the app shows “Awaiting approval” and the proposed time. After approval, it shows “Confirmed” with both dates, times and the Eastern time zone.
 
 ## Deposit confirmation
 
@@ -245,7 +243,7 @@ Booking status and visit-window changes are saved with their pending integration
 
 n8n processes events to update Airtable and send notifications. Failed deliveries are retried, and deduplication keys identify repeated deliveries. Events that reach the retry limit move to a dead-letter queue for operator review.
 
-A webhook trigger starts processing, while a 60-second sweep checks for pending events. Nightly reconciliation checks for unresolved work.
+A webhook trigger starts processing, while a 60-second sweep checks for pending events. The repository’s [reconciliation workflow](https://github.com/kristenmartino/cabana/blob/92d57f1db20a3d2f63a1ec93af0359ff401b0085/ops/n8n/workflows/reconciliation.json) compares Supabase and Airtable record counts; it does not verify individual booking fields.
 
 ## Failure-injection testing
 
