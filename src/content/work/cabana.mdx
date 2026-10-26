@@ -189,7 +189,7 @@ The [20-case golden suite](https://github.com/kristenmartino/cabana/blob/e9c447e
 
 Registered members request an email link, open it, then select **Sign in** to confirm. The shared demo needs no email.
 
-Live checks with two real emails confirmed sign-in on desktop and in a separate browser at mobile widths (emulated). Sessions survived reload, used links were rejected, and the QA account stayed isolated.
+Tests with real emails confirmed that expired links are rejected and requesting a fresh link restores sign-in. Checks covered desktop and phone-sized browser windows, with expiry simulated on the test account.
 
 ## Member status
 
