@@ -163,6 +163,8 @@
 .quotaColumns span { display: block; margin-top: 8px; font-size: 11px; line-height: 1.6; color: var(--report-muted); }
 .quotaColumns .expectedQuota { padding-left: 18px; background: #eee7d7; border-left: 2px solid var(--report-amber); }
 .expectedQuota h3 { color: var(--report-amber); }
+.quotaColumns .verifiedQuota { background: #e8eee7; border-left-color: var(--report-teal); }
+.quotaColumns .verifiedQuota h3 { color: var(--report-teal); }
 .expectedQuota strong { font-weight: 600; }
 .verificationSummary { padding: 32px 0 22px; }
 .verificationSummary h2 { font-size: 27px; line-height: 1.25; font-weight: 600; letter-spacing: -.02em; }

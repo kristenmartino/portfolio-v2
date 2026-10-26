@@ -6,12 +6,17 @@ import assessment from "@/content/assessments/gtm-healthcare.json";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
-  title: "Correct figures, missing combined total · Kristen Martino",
+  title: "Combined quota fix verified · Kristen Martino",
   description:
-    "GTM Healthcare Intelligence: a missing combined total, corrected source labels and dated query checks, with full supporting evidence.",
+    "GTM Healthcare Intelligence: the combined-quota fix verified on October 26, with original observations and dated follow-up evidence.",
 };
 
 const narrative = assessment.hiringNarrative;
+const quotaFollowUp = assessment.quotaFollowUp;
+
+function findingDisplay(id: string) {
+  return assessment.findingDisplay[id as keyof typeof assessment.findingDisplay];
+}
 
 const revealEvidenceScript = `(() => {
   const reveal = (hash, scroll) => {
@@ -83,7 +88,7 @@ export default function SampleAssessment() {
             <p className={styles.selfLabel}>{narrative.label}</p>
             <h1>{narrative.title}</h1>
             <p className={styles.subtitle}>{narrative.context}</p>
-            <p className={styles.byline}>{assessment.author} · {assessment.date}</p>
+            <p className={styles.byline}>{assessment.author} · {narrative.byline}</p>
           </div>
         </header>
 
@@ -113,15 +118,15 @@ export default function SampleAssessment() {
                         <figcaption>Q1 2025 · synthetic records</figcaption>
                         <div className={styles.quotaColumns}>
                           <div>
-                            <h3>Observed: separate reps</h3>
+                            <h3>Original · October 25</h3>
                             <p>Chen: $504,000 / $450,000 · 112.0%</p>
                             <p>Kim: $250,000 / $350,000 · 71.4%</p>
                             <span>Bookings / quota · attainment</span>
                           </div>
-                          <div className={styles.expectedQuota}>
-                            <h3>Expected combined result · not shipped</h3>
+                          <div className={`${styles.expectedQuota} ${styles.verifiedQuota}`}>
+                            <h3>Verified · October 26</h3>
                             <p>$754,000 ÷ $800,000 = <strong>94.25%</strong></p>
-                            <span>Combined bookings ÷ combined quota</span>
+                            <span>Combined bookings ÷ quota · 94.3% displayed</span>
                           </div>
                         </div>
                       </figure>
@@ -141,7 +146,7 @@ export default function SampleAssessment() {
               <p className={styles.nextStep}>{narrative.next}</p>
             </section>
             <div className={styles.packetLink}>
-              <a href={assessment.downloadHref} download>Download verification packet <span aria-hidden="true">↓</span></a>
+              <a href={assessment.downloadHref} download>Download original October 25 evidence <span aria-hidden="true">↓</span></a>
               <span>Recorded questions and responses</span>
             </div>
           </div>
@@ -149,7 +154,8 @@ export default function SampleAssessment() {
             <details id="supporting-evidence" className={`${styles.support} ${styles.details}`}>
               <summary><span>{narrative.supportTitle}</span><small>{narrative.supportDescription}</small></summary>
               <div className={styles.supportBody}>
-                <p className={styles.supportContext}>Supporting record: {assessment.title} — {assessment.subtitle}. Observations below are from {assessment.checkedAt}, at app revision <a href={`https://github.com/kristenmartino/gtm-healthcare-intel/tree/${assessment.appRevision}`} target="_blank" rel="noreferrer"><code>{assessment.appRevisionShort}</code> ↗</a>.</p>
+                <p className={styles.supportContext}>Original review: {assessment.title} — {assessment.subtitle}. The five original requests were checked {assessment.checkedAt}, at app revision <a href={`https://github.com/kristenmartino/gtm-healthcare-intel/tree/${assessment.appRevision}`} target="_blank" rel="noreferrer"><code>{assessment.appRevisionShort}</code> ↗</a>.</p>
+                <p className={styles.supportContext}>The separate <a href="#quota-follow-up">October 26 quota follow-up</a> checked three requests at revision <a href={quotaFollowUp.servingSource} target="_blank" rel="noreferrer"><code>{quotaFollowUp.appRevisionShort}</code> ↗</a>. Other findings retain their October 25 evidence and were not rechecked.</p>
                 <p className={styles.supportContext}>{assessment.provenance}</p>
                 <section id="summary" className={styles.section}>
                   <SectionHeading number="01" title="Assessment summary" />
@@ -157,30 +163,31 @@ export default function SampleAssessment() {
                   <dl className={styles.counts} aria-label="Assessment counts">
                     <div><dt>Findings</dt><dd>{assessment.counts.findings}</dd></div>
                     <div><dt>Verified corrections</dt><dd>{assessment.counts.verifiedCorrections}</dd></div>
-                    <div><dt>Open findings</dt><dd>{assessment.counts.openFindings}</dd></div>
-                    <div><dt>Fresh query requests</dt><dd>{assessment.counts.freshRequests}</dd></div>
+                    <div><dt>Awaiting recheck</dt><dd>{assessment.counts.awaitingRecheck}</dd></div>
+                    <div><dt>October 25 requests</dt><dd>{assessment.counts.originalRequests}</dd></div>
+                    <div><dt>October 26 quota requests</dt><dd>{assessment.counts.quotaFollowUpRequests}</dd></div>
                   </dl>
                   <div className={styles.scopeGrid}>
-                    <div><h3 className={styles.smallHeading}>Review scope</h3><ul className={styles.list}>{assessment.scope.map((item) => <li key={item}>{item}</li>)}</ul></div>
+                    <div><h3 className={styles.smallHeading}>Original review scope</h3><ul className={styles.list}>{assessment.scope.map((item) => <li key={item}>{item}</li>)}</ul></div>
                     <aside className={styles.priorityKey} aria-label="Priority definitions"><h3 className={styles.smallHeading}>How priorities are used</h3>{assessment.priorities.map((item) => <p key={item.level}><strong>{item.level}</strong> {item.meaning}</p>)}</aside>
                   </div>
                   <div className={styles.resourceLinks}>
-                    <a href={assessment.downloadHref} download>Download verification packet <span aria-hidden="true">↓</span></a>
+                    <a href={assessment.downloadHref} download>Download original October 25 evidence <span aria-hidden="true">↓</span></a>
                     <a href="https://gtm.kristenmartino.ai/" target="_blank" rel="noreferrer">Open the demo ↗</a>
                     <Link href="/work/gtm-healthcare">Read the case study →</Link>
                   </div>
                 </section>
 
                 <section id="findings" className={styles.section}>
-                  <SectionHeading number="02" title="Findings and evidence" note="Two corrections were already implemented and rechecked. Two findings remain open at the tested revision." />
+                  <SectionHeading number="02" title="Findings and evidence" note="Three corrections have dated verification: source disclosure and quarterly ranking on October 25, combined quota on October 26. The written-amount finding awaits recheck." />
                   <div className={styles.register}>
-                    <div className={styles.registerHeader} aria-hidden="true"><span>ID / priority</span><span>Finding</span><span>Current status</span><span>Next action</span></div>
+                    <div className={styles.registerHeader} aria-hidden="true"><span>ID / priority</span><span>Finding</span><span>Status / checked date</span><span>Next action</span></div>
                     {assessment.findings.map((finding) => {
                       const action = finding.id === "F02" ? assessment.plan[0].title : finding.id === "F04" ? assessment.plan[1].title : assessment.plan[2].title;
                       return <div className={styles.registerRow} key={finding.id}>
                         <span className={styles.registerId}>{finding.id}<span>{finding.priority}</span></span>
                         <a className={styles.registerTitle} href={`#${finding.id}`}>{finding.title}</a>
-                        <Status state={finding.state}>{finding.status}</Status>
+                        <Status state={finding.state}>{findingDisplay(finding.id).status}</Status>
                         <span className={styles.registerAction}>{action}</span>
                       </div>;
                     })}
@@ -191,17 +198,37 @@ export default function SampleAssessment() {
                       <article id={finding.id} key={finding.id} className={styles.finding}>
                         <header className={styles.findingHeader}>
                           <div className={styles.findingMeta}><span>{finding.id} / {finding.priority}</span><span>{finding.kind}</span></div>
-                          <Status state={finding.state}>{finding.status}</Status>
+                          <Status state={finding.state}>{findingDisplay(finding.id).status}</Status>
                           <h3>{finding.title}</h3>
                         </header>
+                        <p className={styles.supportContext}>{findingDisplay(finding.id).context}</p>
                         <p>{finding.observation}</p>
                         <p className={styles.risk}><strong>Review risk.</strong> {finding.risk}</p>
                         {"question" in finding && <div className={styles.question}><span className={styles.smallHeading}>Question checked</span><blockquote>{finding.question}</blockquote></div>}
-                        <div className={styles.comparison} aria-label={`${finding.id} before and current comparison`}>
+                        <div className={styles.comparison} aria-label={`${finding.id} original recorded comparison`}>
                           <div><h4>Recorded before</h4><pre>{finding.before}</pre></div>
-                          <div className={finding.state === "closed" ? styles.correctedPanel : styles.openPanel}><h4>Current recheck · {finding.state === "closed" ? "verified" : "still open"}</h4><pre>{finding.after}</pre></div>
+                          <div className={finding.id === "F02" || finding.state !== "closed" ? styles.openPanel : styles.correctedPanel}><h4>{findingDisplay(finding.id).panelLabel}</h4><pre>{finding.after}</pre></div>
                         </div>
-                        <div className={styles.fix}><h4 className={styles.smallHeading}>{finding.state === "closed" ? "Implemented fix" : "Recommended fix"}</h4><p>{finding.fix}</p></div>
+                        {finding.id === "F02" && (
+                          <div id="quota-follow-up" className={styles.verificationNote} style={{ scrollMarginTop: 88 }}>
+                            <h4 className={styles.smallHeading}>October 26 verified recheck</h4>
+                            <p>{quotaFollowUp.checkedAt}. Serving revision <a href={quotaFollowUp.servingSource} target="_blank" rel="noreferrer"><code>{quotaFollowUp.appRevisionShort}</code> ↗</a>; <a href={quotaFollowUp.fixSource} target="_blank" rel="noreferrer">existing fix <code>{quotaFollowUp.fixCommit.slice(0, 7)}</code> ↗</a>.</p>
+                            <p>{quotaFollowUp.summary}</p>
+                            <div className={styles.checks}>
+                              {quotaFollowUp.cases.map((check) => <article key={check.id} className={styles.check}>
+                                <h4 className={styles.smallHeading}>{check.id === "combined" ? "Combined only" : check.id === "per-rep" ? "Per-rep only" : "Combined and per-rep together"} · verified</h4>
+                                <p>{check.question}</p>
+                                <details className={styles.details}><summary>October 26 observed response</summary><pre className={styles.response}>{check.observed}</pre></details>
+                              </article>)}
+                            </div>
+                            <p>{quotaFollowUp.perRepNote}</p>
+                            <p>{quotaFollowUp.testNote}</p>
+                            <p>{quotaFollowUp.scopeNote}</p>
+                            <p><a href={quotaFollowUp.downloadHref} download>Download October 26 quota recheck packet ↓</a></p>
+                            <EvidenceLinks ids={quotaFollowUp.evidence} />
+                          </div>
+                        )}
+                        <div className={styles.fix}><h4 className={styles.smallHeading}>{finding.id === "F04" ? "Original recommendation · October 25" : "Implemented fix"}</h4><p>{finding.fix}</p></div>
                         <div className={styles.verificationNote}><h4 className={styles.smallHeading}>Verification and limits</h4><p>{finding.verification}</p></div>
                         <details className={styles.details}><summary>Acceptance checks</summary><ul className={styles.list}>{finding.acceptance.map((item) => <li key={item}>{item}</li>)}</ul></details>
                         <div className={styles.findingSources}><span className={styles.smallHeading}>Evidence</span><EvidenceLinks ids={finding.evidence} /></div>
@@ -211,7 +238,7 @@ export default function SampleAssessment() {
                 </section>
 
                 <section id="action-plan" className={styles.section}>
-                  <SectionHeading number="03" title="Prioritized action plan" note="Recommendations are separated from changes already implemented. No app changes were made for this assessment." />
+                  <SectionHeading number="03" title="Prioritized action plan" note="Retain the verified quota behavior and separately recheck the written-amount finding. No app code was changed or deployed for this assessment or follow-up." />
                   <ol className={styles.plan}>
                     {assessment.plan.map((item) => <li key={item.order}><span className={styles.planNumber}>{item.order}</span><div><p className={styles.planStatus}>{item.status} · {item.finding}</p><h3>{item.title}</h3><p>{item.text}</p></div></li>)}
                   </ol>
@@ -219,8 +246,8 @@ export default function SampleAssessment() {
                 </section>
 
                 <section id="verification" className={styles.section}>
-                  <SectionHeading number="04" title="Before / after verification" note="Five purpose-selected requests, not a benchmark success rate. Historical responses are distinguished from the fresh recheck." />
-                  <p className={styles.checkedAt}>Fresh requests began {assessment.checkedAt}. App revision <code>{assessment.appRevisionShort}</code>.</p>
+                  <SectionHeading number="04" title="Original verification — October 25" note="The five original requests and their results below are retained verbatim. They describe revision d80dd7d, not the October 26 quota follow-up or the latest state of unrechecked findings." />
+                  <p className={styles.checkedAt}>Original requests began {assessment.checkedAt}. App revision <code>{assessment.appRevisionShort}</code>.</p>
                   <div className={styles.checks}>
                     {assessment.checks.map((check, index) => <article key={check.id} className={styles.check}>
                       <div className={styles.checkHeader}><span className={styles.checkIndex}>Q{String(index + 1).padStart(2, "0")}</span><h3>{check.id.replaceAll("-", " ")}</h3><span className={styles.checkOutcome}>{check.outcome}</span></div>
@@ -233,7 +260,7 @@ export default function SampleAssessment() {
                 </section>
 
                 <section id="evidence" className={styles.section}>
-                  <SectionHeading number="05" title="Evidence ledger" note="Source snapshots, recorded responses and fresh checks supporting the findings above." />
+                  <SectionHeading number="05" title="Evidence ledger" note="E1–E9 retain the original source record. E10–E11 document the existing quota fix and the separate October 26 follow-up." />
                   <ol className={styles.sourceLedger}>
                     {assessment.sources.map((source) => <li id={source.id} key={source.id}><span className={styles.sourceId}>{source.id}</span><div><a href={source.href} target={source.href.startsWith("https:") ? "_blank" : undefined} rel={source.href.startsWith("https:") ? "noreferrer" : undefined}>{source.label} <span aria-hidden="true">{source.href.startsWith("https:") ? "↗" : "↓"}</span></a><p>{source.note}</p></div></li>)}
                   </ol>
