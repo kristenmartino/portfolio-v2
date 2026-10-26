@@ -1,125 +1,97 @@
-## A specialty review for sales or operations
+## The business question
 
-SpecialtyPulse is an independent prototype for a **specialty analyst supporting a healthcare-software sales team**. The assumed employer sells electronic health record (EHR), practice management (PM) and revenue cycle management (RCM) subscriptions to specialty practices. A sales or operations lead uses the brief to decide which questions need analyst verification or account discovery before a software recommendation.
+Which payment changes need investigation, and what should a sales or operations lead check next? SpecialtyPulse is an independent prototype for an analyst supporting a healthcare-software vendor selling EHR, practice management and revenue cycle subscriptions.
 
-Medicare payment comparisons describe practice-side signals; pipeline dollars represent hypothetical software contracts for the vendor. Account conversations must establish customer needs before recommending software or prioritizing outreach. This business setting is a design assumption, not a finding from customer research.
+The assumed workflow combines payment reports, CRM exports and a written handoff. Building the brief during investigation could keep evidence and follow-up requests together. Intended users have not confirmed that workflow or its pain points.
 
-## My role and delivered result
+**All data is synthetic.** The 2023 base uses a CMS-style schema; 2021–2022 are generated comparison scenarios. Payment signals describe the practice side, while pipeline dollars represent hypothetical software contracts. Account discovery is still needed before a software recommendation or outreach decision.
+
+## My contribution and delivered work
 
 <Specs>
-  <Spec label="My role" value="Workflow design, metric definitions, pipeline development and validation" />
+  <Spec label="My role" value="Workflow design, metric definitions, AI-assisted implementation and verification" />
   <Spec label="Year" value="2026" />
-  <Spec label="Data" value="Synthetic 2023 base · generated 2021–2022 comparison scenarios" />
-  <Spec label="Execution" value="Databricks Spark 4.2.0 · local Airflow 3.1.8 · 870 reporting rows" />
+  <Spec label="Stack" value="Databricks Spark · Airflow · React" />
+  <Spec label="Verified output" value="29,982 synthetic records → 870 reporting rows" />
 </Specs>
 
-**Delivered:** a specialty and procedure review, a specialty-scoped overdue opportunity list, and an editable Markdown brief with pinned evidence links. The sales list shows opportunity, account, owner, stage, assumed ACV, close date and overdue age, with a return path to the selected specialty's brief.
+The workflow connects a specialty review, a procedure comparison, an overdue sales list and an editable brief. **Start review** opens the workspace; **Add comparison to brief** carries the selected evidence into it. The pipeline view keeps the same specialty selected and shows owner totals before a sortable, paginated opportunity list.
 
-**Verified October 26, 2026:** Databricks processed **29,982 synthetic records into 870 reporting rows**, matching the reconciled baseline. All four tasks in the clean Airflow run passed on their first attempt; the public React dashboard uses that run's export. [Execution evidence](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/deployment_verification.json) records the run results. Airflow runs on a local Mac, and new exports require a separate website release.
+The Markdown brief includes the analyst's notes, procedure evidence, owner summary and complete overdue roster. A separate CSV provides opportunity IDs, owners, stages, assumed ACV, close dates and overdue ages. Both exports carry source context and use the full specialty cohort, regardless of pagination. Missing sales coverage stays unavailable rather than becoming zero.
 
-**Human validation pending: 0 of 5 planned analyst–reviewer pairs completed.** The five-pair AI simulation produced correct, complete briefs with both methods and found no app advantage. Human usefulness, time savings and business outcomes have not been measured.
+Drafts survive tab changes until reload. Downloading saves a copy; it does not send or assign work. The completeness indicator checks field presence, leaving accuracy and approval for review. **Method and sources** opens calculation details and pinned evidence; **About this demo** holds general assumptions.
 
+## One review, from signal to next check
 
-## Problem hypothesis to validate
+For [Dermatology / HCPCS 99213](https://specialtypulse.kristenmartino.ai/?view=procedure&specialty=Dermatology&hcpcs=99213&year=2023), the generated 2022 scenario has **$108.05 per service across 3,626 services**. The synthetic 2023 base has **$104.91 across 3,777 services**: payment falls **$3.14 (2.9%)**, while service count rises **151 (4.2%)**.
 
-**Assumed current workflow:** an analyst compares payment tables, checks pipeline context in a separate report and copies findings into a brief for a sales or operations lead. Moving between those sources may leave evidence or follow-up requests out of the handoff.
+An illustrative brief records that change, asks which source rows and service mix explain it, and requests a calculation check from the analyst. Its separate sales context shows **53 open opportunities totaling $4,579,800 in assumed USD annual contract value (ACV)**. All 53 are overdue at the invented August 31, 2026 snapshot. Sales operations must reconcile stages and close dates before planning. These amounts are unweighted exposure, not recognized revenue or a forecast.
 
-**Product hypothesis:** building the brief during the investigation could reduce preparation time and clarification work while preserving the evidence needed to interpret it. The proposed improvement is a more complete brief that a recipient can act on.
+This is an illustrative assignment, with source and account validation pending. The specialty score of 66.6 organizes scenarios; its weights have not been validated against account need, purchase decisions or sales outcomes.
 
-These are assumptions, not research findings. Before a pilot, I would ask intended analysts and recipients to walk through a recent review: how often it happens, which tools they use, how long it takes, what evidence gets lost and which decision follows. If reviews are infrequent or existing reports already meet the need, I would reconsider the product scope.
-
-## What the analyst hands off
-
-In the [demo](https://specialtypulse.kristenmartino.ai/?view=market), choose **Start review** under **Specialty review**. A shared specialty selection connects the handoff, Procedure Detail and Pipeline Intelligence. The pipeline review keeps that specialty’s totals, owner amounts and overdue opportunity list together. A separately labeled chart compares all specialties; “Return to brief” reopens the current specialty’s draft. Analysts can compare the same procedure across two consecutive years, add that comparison to the brief, then write an observation and its limits, an open question, a next reviewer and a requested check. **Method and sources** opens the comparison formulas and evidence links; **About this demo** holds the general assumptions.
-
-The Markdown download includes both years' payments and service counts, calculated changes, the analyst's draft notes and a link that reopens the selected comparison. It also includes owner totals and the complete specialty-scoped overdue opportunity list. A separate overdue CSV preserves opportunity IDs, owners, stages, assumed ACV, dates, overdue ages, the scenario date and the source revision. Both exports use the full cohort, regardless of table pagination. Verification links point to the reporting mart, synthetic raw inputs, sales CSV, metric definitions and the selected run receipt at the build's repository revision; hashes identify the recorded data snapshot. Each specialty keeps a separate draft as the analyst switches tabs. Drafts last until the page reloads; downloading keeps a copy and does not send or assign it. Missing fields remain explicitly marked. A four-element completeness check measures presence, not accuracy or approval.
-
-## Worked example: a completed illustrative brief
-
-Open [Dermatology / HCPCS 99213 / CY2023](https://specialtypulse.kristenmartino.ai/?view=procedure&specialty=Dermatology&hcpcs=99213&year=2023), inspect the two-year comparison and choose **Add comparison to brief**. The following is an illustrative completed handoff, not a record of stakeholder use or assignment.
-
-- **Focus and evidence:** Office visit, established patient — Dermatology / HCPCS 99213. The generated 2022 scenario has **$108.05 per service across 3,626 services**; the synthetic 2023 base has **$104.91 across 3,777 services**. Payment changes by **−$3.14 (−2.9%)** and service count by **+151 (+4.2%)**. Percentages use the prior-year value as the denominator; payment differences use the displayed mart amounts rounded to cents.
-- **Analyst observation and limits:** In this constructed comparison, payment per service falls while service count rises. The generated prior-year scenario cannot establish a historical payment trend, its cause or an account's need.
-- **Open question:** Which source rows and service mix explain this constructed change?
-- **Next reviewers:** Sales operations lead for stage and close-date review; specialty analyst for calculation review.
-- **Requested next check:** First reconcile the 53 Dermatology open opportunities and their past-due close dates with sales operations. Then match Dermatology / HCPCS 99213 in the pinned 2022 and 2023 inputs and reporting rows. Reproduce the service-weighted payments and service counts, then record unresolved data or interpretation issues for the sales or operations lead.
-- **Commercial context:** Dermatology's scenario score is 66.6. Its 53 synthetic open deals total $4,579,800 in assumed annual contract value (USD), or 11.4% of open-stage pipeline. All 53 have overdue close dates at the scenario snapshot and remain in the total pending review. Those amounts are separate from the procedure comparison and score.
-- **Recipient verification:** The downloaded brief carries the exact comparison link, versioned input/mart files, data hashes and run receipt. Its 2023 calculation trace identifies the 57 raw rows behind the $104.91 value below; that trace does not verify the generated 2022 inputs.
-- **Status:** illustrative draft; source and account validation remain pending. Naming a reviewer does not send or assign the brief. No shortlist or stakeholder approval has been recorded.
-
-The first sales action is to reconcile opportunity stages and close dates before using the pipeline balance for planning. The analyst also verifies the payment evidence and reports unresolved issues before a commercial recommendation. A specialty-level score does not establish an account's need or justify outreach by itself.
-
-## Deployment path
-
-The current stack is **Databricks → Airflow-validated export → React dashboard**. I archived the earlier Domo integration after trial access ended. The React interface and its review workflow remain in place.
-
-The serverless Databricks job uses the shared Spark transformations, writes raw, staging and mart Delta tables, and compares every mart business value with the reconciled baseline. Airflow checks the successful run's receipt and exported file, saves an immutable versioned copy, and selects it for the next React build. The build checks the selected export again. Creating a scheduled export and publishing a website release are separate steps.
-
-**Verified October 26, 2026:** Databricks Spark 4.2.0 processed **29,982 raw records into 870 mart rows** in Unity Catalog Delta tables. The persisted output matched every business value in the reconciled baseline. Airflow 3.1.8 completed both an initial scheduled refresh and a separate clean manual run; all four tasks in the clean run passed on their first attempt. The public dashboard now uses that run's versioned export. [Run receipts and schedule verification](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/deployment_verification.json) record the executed steps and setup corrections.
-
-Airflow runs as a local macOS user service with CLI-managed OAuth. Its annual UTC schedule is enabled, with the next run due **December 31, 2026 at 7 p.m. Eastern**. The Mac must be awake and the user signed in; this is not managed cloud Airflow. New exports require a separate website release. The [deployment runbook](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/deployment/README.md) explains the setup. These infrastructure checks are separate from the internal rehearsal and pending human comparison.
-
-## Decisions behind the workflow
-
-**Make the payment denominator explicit.** Average payment per billed service gives larger service volumes more weight. In the reconciled example, a simple average across 57 source rows is $103.80; weighting by their 3,777 services gives $104.91. Different denominators can lead reviewers to different conclusions.
-
-**Keep procedure comparisons specific.** The comparison matches specialty, HCPCS code and consecutive years. Missing inputs or a zero prior value leave percentage changes unavailable. I also rank the most-used procedures by service count. A specialty's blended average combines different procedures, so a payment below that blend is not evidence that a particular procedure is underpaid. The ratio-based outlier definition is available beside the table.
-
-**Count providers at the decision grain.** A provider billing several procedures counts once within each specialty and year. Spark computes that distinct count from staged provider IDs before procedure aggregation; the dashboard and pressure index use it once. A regression with overlapping procedures checks this behavior, and independent raw-input reconciliation verifies every published specialty/year count.
-
-**Keep scores and sales dollars separate.** The index organizes comparison scenarios; pipeline amounts provide exposure context. The score prompts questions about payment, charge and volume inputs. Its weights have not been validated against purchase decisions or sales outcomes.
-
-**Define the sales dollar basis and date scope.** For this demo, opportunity amount is assumed annual contract value (ACV) in USD. Open-stage totals are unweighted, exclude Closed Won and Closed Lost, and include overdue open opportunities. Closed-won ACV is a separate stage total, not recognized revenue or a forecast.
-
-The **invented sales scenario snapshot is August 31, 2026**; the source capture date was not recorded. Stages remain as supplied. All 500 fixture opportunities are included without a reporting-period filter: created dates September 2, 2025–February 24, 2026; close dates October 11, 2025–August 14, 2026. These sales dates are separate from reimbursement CY2021–2023.
-
-**Surface the overdue backlog before planning.** At that scenario date, all **472 open opportunities, totaling $40,178,200 in assumed ACV**, have close dates in the past: **100% of open deals, 17–324 days overdue**. The dashboard shows the overdue count and ACV. Its specialty-scoped review list exposes the underlying opportunities and can be sorted by owner, stage, amount, close date or overdue age. Each specialty brief carries its own overdue exposure. The list is a review aid; it does not write changes to a CRM. The first sales follow-up is to reconcile stages and close dates with sales operations. The prototype retains the supplied opportunities in the open-stage total until reviewed; past-due dates alone do not close or remove a deal. Missing or invalid close dates are reported separately. No actual sales review or CRM update has been recorded.
-
-
-## Evidence supporting the review
-
-The public procedure list displays **$104.91 across 3,777 services** for Dermatology / HCPCS 99213. The 57 matching raw rows have a weighted payment sum of $396,247.22. The displayed value reconciles to those records, the exported reporting table and the browser data.
-
-<Diagram title="Procedure comparison" fullSizeHref="/work/specialtypulse-review-2026-10-26.png" fullSizeLabel="View full-size screenshot ↗">
+<Diagram title="Live procedure comparison" fullSizeHref="/work/specialtypulse-review-2026-10-26.png" fullSizeLabel="View full-size screenshot ↗">
   <img src="/work/specialtypulse-review-2026-10-26.png" alt="SpecialtyPulse compares Dermatology / HCPCS 99213: the generated 2022 scenario has $108.05 across 3,626 services; the synthetic 2023 records have $104.91 across 3,777 services." width={947} height={955} className="h-auto w-full" />
 </Diagram>
-<Caption>Live Procedure Detail, captured October 26, 2026 after the UI cleanup, with Dermatology / HCPCS 99213 and the constructed CY2022–2023 comparison selected.</Caption>
+<Caption>Captured October 26, 2026 after the UI cleanup. Both years are constructed comparison inputs.</Caption>
 
-The local Spark baseline processes **29,982 raw records into 870 reporting rows**. The Databricks notebook adapters import the same transformation functions and produce the matching business values now served by the dashboard. Independent Decimal tests reconcile all 870 groups, and CI re-executes Spark to compare every business column. The build rejects source, transformation-code or output hashes that differ from the recorded run.
+## What was verified
 
-The first complete run exposed duplicate synthetic provider identifiers. I corrected them deterministically and retained duplicate-key rejection before aggregation. Release tests check the export hash, every business value and the run receipt before selecting an artifact for the dashboard. They also reject changed artifacts for a previously recorded run. Earlier Domo policy code and its tests are archived; they are not evidence of active access enforcement.
+On October 26, Databricks Spark 4.2.0 processed **29,982 raw records into 870 reporting rows**, matching every business value in the reconciled baseline. All four tasks in the clean Airflow 3.1.8 run passed on their first attempt. The public React dashboard uses that run's versioned export. [Execution records](https://github.com/kristenmartino/specialtypulse_pipeline/blob/caf03eaae093d7af768ceb898c0dcb7b3683c5d5/data/deployment_verification.json) document the run.
 
-Open the [same Dermatology / 99213 comparison](https://specialtypulse.kristenmartino.ai/?view=procedure&specialty=Dermatology&hcpcs=99213&year=2023) to inspect the displayed payments and 2023 source trace. The [run receipt](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/releases/databricks-527988765998273/receipt.json), [input/output artifact](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/payment_verification.json) and [reproduction guide](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/docs/verification/payment-check.md) provide the technical detail. The brief's versioned links preserve its evidence snapshot when the live demo changes.
+The displayed $104.91 reconciles to **57 raw rows**, a weighted payment sum of **$396,247.22** and **3,777 services**. A simple row average would be $103.80. Spark counts distinct providers at specialty/year grain before procedure aggregation, so billing several procedures does not multiply the provider count. Independent Decimal checks cover all 870 groups; CI reruns the shared Spark transformations.
 
-## AI comparison results · human validation pending
+Airflow runs on a local Mac that must be awake and signed in with valid OAuth access. New exports require a separate website release. Public usage and access rules are illustrative; the demo serves the same synthetic data to everyone.
 
-On October 26, 2026, **five fictional AI analysts and five separate AI reviewers** completed an artifact-based comparison. Each analyst prepared one brief from constructed CSV reports and one from a captured app draft. Both methods produced **5 of 5 complete briefs**, with **100 of 100 structured fields correct per method**. Reviewers could state the next action for all ten briefs without clarification; no critical interpretation errors were found. **No advantage for SpecialtyPulse was demonstrated.**
+## AI comparison: quality tied
 
-The agents had fresh contexts but shared a model family. Their role-based workflows were assumed, and source cues prevented full method blinding. Analysts did not navigate the app. Runtime excluded source gathering, coordinator preparation, browser use and reviewer work, so it cannot estimate human time savings or assess the proposed 20% threshold. **Human validation remains 0 of 5 pairs.**
+On October 26, **five fictional AI analysts and five separate AI reviewers** completed ten briefs using constructed CSV reports and captured app drafts. Both methods produced **5 of 5 complete briefs**, with **100 of 100 structured fields correct per method**. Reviewers could state the next action for all ten briefs without clarification; no critical interpretation errors were found. **No advantage for SpecialtyPulse was demonstrated.**
 
-The [comparison report, fictional role contexts, briefs and scoring records](/work/specialtypulse-ai-comparison-2026-10-26/results.md) document the tie and limitations. The study used [release d628a13](https://github.com/kristenmartino/specialtypulse_pipeline/commit/d628a13592a5d0f5cc0ca93f6cce5f0c265258ca), before the latest UI cleanup and recipient packet; those changes have not been evaluated with users or rerun through this comparison. An [earlier single-assistant rehearsal](/work/specialtypulse-rehearsal-2026-10-25/results.md) found and verified a missing sales-source link.
+This was an artifact simulation: agents did not navigate the browser, and timing excluded source gathering, coordinator preparation and reviewer work. Fresh contexts shared a model family, role-based workflows were assumed, and source cues prevented full method blinding. The test used an earlier release, before the UI cleanup and recipient packet. It cannot estimate human time savings.
 
-## Planned human comparison
+**Human validation remains 0 of 5 planned pairs.** Usefulness, adoption and business outcomes are unmeasured. The [comparison report and audit records](/work/specialtypulse-ai-comparison-2026-10-26/results.md) include fictional role contexts, briefs, scoring and limitations. An [earlier single-assistant rehearsal](/work/specialtypulse-rehearsal-2026-10-25/results.md) found and verified a missing sales-source link.
 
-The five-pair human comparison has not started. Its evaluation criteria remain proposed and are documented below and in the linked evaluation plan. No stakeholder validation or human user-evaluation results have been recorded.
+## Next validation
 
-I would recruit **five analyst–reviewer pairs for an exploratory comparison**. Each analyst would prepare two briefs from matched data: one with their usual report or spreadsheet and one with SpecialtyPulse. I would alternate the order and scenario assigned to each method, confirming the existing workflow and comparable task difficulty first.
+Ask intended analysts and recipients to walk through a recent review: its frequency, tools, data access, preparation effort and decision. Then compare five human analyst–reviewer pairs using their existing workflow and SpecialtyPulse, alternating method order and comparable scenarios. Time the full process from the business question through data gathering, calculations and brief delivery. If existing reports already meet the need, reconsider the product scope.
 
-Preparation time would cover the full workflow for both methods: receiving the business question, locating and exporting source data, checking calculations and delivering the brief. Recipients would review briefs without the method identified; I would record missing evidence, interpretation errors and clarification requests before they can state the next action.
+<details className="mt-10 border-t border-[var(--color-graphite-90)] pt-6">
+<summary className="cursor-pointer font-semibold text-[var(--color-bone)]">Metric definitions and sales scope</summary>
 
-The proposed thresholds for proceeding to a larger pilot are:
+**Payment grain.** Raw payments are weighted by service count within specialty, HCPCS and year. Year comparisons use the previous year's denominator and displayed mart values rounded to cents. Missing inputs, duplicate matches or zero prior denominators leave changes unavailable. Specialty averages combine procedure-level measures; a payment below that blend is not evidence that a specific procedure is underpaid. Ratio outliers use the specialty/year distribution.
 
-1. **Completeness:** at least four of five SpecialtyPulse briefs include procedure evidence, an observation with limits, an open question, and a next reviewer with a requested check. Completeness must be at least as high as the comparison method.
-2. **Interpretation:** no critical errors in SpecialtyPulse briefs or recipient explanations. Treating synthetic data as observed history, a score as account need, or a blended average as a procedure-specific expected rate would count as a critical error.
-3. **Preparation time:** a median paired time reduction of at least 20% against the comparison method, without reducing completeness.
-4. **Clarification:** at least four of five recipients can explain the next action without clarification, with no more requests overall than for the comparison briefs.
+**Provider grain.** A provider counts once per specialty/year across procedures. An overlapping-procedure regression and independent raw-input reconciliation check every published specialty/year count.
 
-These thresholds are proposed, not achieved results. If accuracy or completeness fails, I would revise the workflow before testing speed again. Sessions and page views describe activity; they do not demonstrate usefulness. The [workflow and evaluation plan](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/docs/BUSINESS_REVIEW.md) documents the proposed process.
+**Sales basis.** Open-stage totals exclude Closed Won and Closed Lost and retain overdue opportunities. Closed-won ACV is a separate stage total. All 500 fixture opportunities are in scope, without a reporting-period filter; created dates span September 2, 2025–February 24, 2026 and close dates October 11, 2025–August 14, 2026. The source capture date is unknown, and stages remain as supplied.
 
-## Scope and next validation
+**Overdue scope.** At the invented August 31, 2026 snapshot, all 472 open deals total $40,178,200 in assumed ACV and are 17–324 days overdue. Only valid close dates strictly before that snapshot qualify; missing or invalid dates stay separate. Past-due dates alone do not close or remove deals. Owner ages use eligible overdue dates; an em dash means none. Sales records cover nine specialties, versus 29 in reimbursement reporting. No supplied specialty rows means unavailable coverage, not zero sales.
 
-All records are synthetic. The 2021–2022 inputs are generated comparison scenarios, not historical CMS observations. Both the local Spark/Parquet baseline and the Databricks Delta/Airflow delivery path have been reconciled. The schedule runs on a local Mac; host availability and valid OAuth access remain operating dependencies. Public access rules and usage are illustrative; the public dashboard serves the same synthetic data to all visitors.
+The [metric definitions](https://github.com/kristenmartino/specialtypulse_pipeline/blob/caf03eaae093d7af768ceb898c0dcb7b3683c5d5/docs/METRIC_CERTIFICATION_LOG.md), [calculation trace](https://github.com/kristenmartino/specialtypulse_pipeline/blob/caf03eaae093d7af768ceb898c0dcb7b3683c5d5/data/payment_verification.json) and [reproduction guide](https://github.com/kristenmartino/specialtypulse_pipeline/blob/caf03eaae093d7af768ceb898c0dcb7b3683c5d5/docs/verification/payment-check.md) provide audit detail. Brief links pin raw inputs, reporting rows, sales records and run receipts to the build's repository revision.
 
-The current deployment job replaces each Delta table in a single table commit; the three tables are not one transaction. Operational use would still require tested recovery, real-source reconciliation and intended-user access checks.
+</details>
 
-Next, I would confirm intended users' actual workflow and comparable task difficulty, then run the five-pair human comparison. Operational recommendations still require real-source reconciliation, intended-user access checks, recovery tests and an alerting plan. [GTM Healthcare Intelligence](/work/gtm-healthcare) covers the related reporting-workflow prototype.
+<details className="mt-8 border-t border-[var(--color-graphite-90)] pt-6">
+<summary className="cursor-pointer font-semibold text-[var(--color-bone)]">Deployment evidence and operating limits</summary>
+
+The stack is **Databricks → Airflow-validated export → React**. The earlier Domo integration was archived after trial access ended. The serverless job writes raw, staging and mart Delta tables using the same transformations as the local Spark/Parquet baseline. Airflow checks the receipt and export, saves an immutable versioned copy, and selects it for the next React build. The build rejects mismatched source, transformation or output hashes. Release checks also reject changed artifacts for a recorded run.
+
+The first complete run exposed duplicate synthetic provider identifiers. These were corrected deterministically, with duplicate-key rejection retained before aggregation. Both the initial scheduled cloud refresh and a separate clean manual run completed; the public export comes from the clean run.
+
+The local Mac's annual UTC schedule is enabled; its next run is due **December 31, 2026 at 7 p.m. Eastern**. Host availability and valid OAuth remain dependencies. The three Delta tables are replaced in individual commits, not one shared transaction. Operational use still requires real-source reconciliation, intended-user access enforcement, recovery tests and an alerting plan. The review list does not write to a CRM, and no actual sales review or CRM update has been recorded.
+
+The [selected run receipt](https://github.com/kristenmartino/specialtypulse_pipeline/blob/caf03eaae093d7af768ceb898c0dcb7b3683c5d5/data/releases/databricks-527988765998273/receipt.json) and [deployment runbook](https://github.com/kristenmartino/specialtypulse_pipeline/blob/caf03eaae093d7af768ceb898c0dcb7b3683c5d5/deployment/README.md) document execution and setup. Earlier Domo policy tests are archived and do not verify active access enforcement.
+
+</details>
+
+<details className="mt-8 border-t border-[var(--color-graphite-90)] pt-6">
+<summary className="cursor-pointer font-semibold text-[var(--color-bone)]">Proposed human comparison criteria</summary>
+
+Confirm actual workflows and comparable task difficulty before testing. Recipients review briefs without the method identified; record their next-action explanations, missing evidence, interpretation errors and clarification requests. Proposed thresholds for a larger pilot are:
+
+1. At least four of five app briefs include procedure evidence, an observation with limits, an open question and a next reviewer with a concrete check; completeness is at least as high as the comparator.
+2. No critical interpretation errors, including synthetic data treated as history, a score treated as account need or a blended average treated as a procedure-specific expected rate.
+3. At least 20% median paired preparation-time reduction over the full workflow, without reducing completeness.
+4. At least four of five recipients explain the next action without clarification, with no more requests overall than for comparator briefs.
+
+These are proposed criteria, not achieved human results. Accuracy or completeness failures require revision before retesting speed. Page views and sessions are activity measures, not usefulness evidence. The [workflow and evaluation plan](https://github.com/kristenmartino/specialtypulse_pipeline/blob/caf03eaae093d7af768ceb898c0dcb7b3683c5d5/docs/BUSINESS_REVIEW.md) records the proposed process.
+
+</details>
