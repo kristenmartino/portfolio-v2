@@ -1,0 +1,463 @@
+{
+  "assessment": "GTM Healthcare Intelligence — written-amount follow-up",
+  "label": "Self-initiated review of my own demo",
+  "scopeNotice": "Follow-up to F04 only: written and numeric annual-revenue thresholds plus one malformed-quantity control. Original and quota-recheck evidence remain separate. All data is synthetic; this is not an independent audit or overall-accuracy benchmark. No app source was changed or deployed for this recheck.",
+  "completedAt": "2026-10-26T19:01:53.728095+00:00",
+  "displayDate": "October 26, 2026",
+  "displayTimeEastern": "3:01 p.m.",
+  "servingRevision": "a1ce674407d1b9b2f5dd6abef1ce11db9e838b44",
+  "fixCommit": "65e1db584a479abbd10d6901525c6d817f519fbf",
+  "fixSource": "https://github.com/kristenmartino/gtm-healthcare-intel/commit/65e1db584a479abbd10d6901525c6d817f519fbf",
+  "fixtureSource": "https://github.com/kristenmartino/gtm-healthcare-intel/blob/a1ce674407d1b9b2f5dd6abef1ce11db9e838b44/lib/practice-scenario.mjs",
+  "parserSource": "https://github.com/kristenmartino/gtm-healthcare-intel/blob/65e1db584a479abbd10d6901525c6d817f519fbf/lib/query-numbers.mjs",
+  "testSource": "https://github.com/kristenmartino/gtm-healthcare-intel/blob/a1ce674407d1b9b2f5dd6abef1ce11db9e838b44/tests/quota-decimal.test.mjs",
+  "originalEvidence": "/assessments/gtm-healthcare/verification.json",
+  "quotaEvidence": "/assessments/gtm-healthcare/quota-recheck-2026-10-26.json",
+  "method": "Two selected model-backed requests checked written and numeric forms. The comparison covers normalized threshold/operator, complete period, grouping, provider selection, calculated rows and displayed answer. Annual revenue was independently summed from monthly fixture values without the query engine. A third malformed-input request checked that no calculation ran. AI tools supported testing and analysis.",
+  "independentExpectations": {
+    "method": "Direct sum of the 12 monthly revenue values per provider; query engine not used.",
+    "threshold": 1500000,
+    "operator": "gte",
+    "period": "January–December 2025",
+    "rows": [
+      {
+        "name": "Lin",
+        "provider": "Dr. Anya Lin",
+        "revenue": 1482047
+      },
+      {
+        "name": "Shah",
+        "provider": "Dr. Priya Shah",
+        "revenue": 1318592
+      },
+      {
+        "name": "Singh",
+        "provider": "Dr. Maya Singh",
+        "revenue": 1592362
+      },
+      {
+        "name": "Brooks",
+        "provider": "Dr. Devon Brooks",
+        "revenue": 1180995
+      },
+      {
+        "name": "Yamamoto",
+        "provider": "Dr. Hana Yamamoto",
+        "revenue": 1384797
+      }
+    ],
+    "matchingRows": [
+      {
+        "name": "Singh",
+        "provider": "Dr. Maya Singh",
+        "revenue": 1592362
+      }
+    ]
+  },
+  "assertions": {
+    "thresholdsMatch": true,
+    "operatorsMatch": true,
+    "periodAndGroupingMatch": true,
+    "providerRowsAndAmountsMatch": true,
+    "displayedAnswersIdentical": true,
+    "malformedQuantityRequestsClarification": true,
+    "malformedQuantityToolCalls": 0
+  },
+  "cases": [
+    {
+      "case": "written",
+      "question": "Which providers had at least one point five million in revenue in 2025?",
+      "startedAt": "2026-10-26T19:01:42.240680+00:00",
+      "completedAt": "2026-10-26T19:01:47.014594+00:00",
+      "status": 200,
+      "source": "validated-query",
+      "text": "Period: Jan–Dec 2025.\nRevenue:\nSingh: $1,592,362\nFilter after aggregation: Revenue ≥ $1,500,000.",
+      "toolCallCount": 1,
+      "results": [
+        {
+          "metric": "revenue",
+          "months": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "providers": [],
+          "groupBy": [
+            "provider"
+          ],
+          "predicate": {
+            "metric": "revenue",
+            "operator": "gte",
+            "value": 1500000
+          },
+          "rows": [
+            {
+              "name": "Singh",
+              "dimensions": {
+                "provider": "Singh"
+              },
+              "revenue": 1592362
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case": "numeric",
+      "question": "Which providers had at least $1.5M in revenue in 2025?",
+      "startedAt": "2026-10-26T19:01:48.115880+00:00",
+      "completedAt": "2026-10-26T19:01:52.360370+00:00",
+      "status": 200,
+      "source": "validated-query",
+      "text": "Period: Jan–Dec 2025.\nRevenue:\nSingh: $1,592,362\nFilter after aggregation: Revenue ≥ $1,500,000.",
+      "toolCallCount": 1,
+      "results": [
+        {
+          "metric": "revenue",
+          "months": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11
+          ],
+          "providers": [],
+          "groupBy": [
+            "provider"
+          ],
+          "predicate": {
+            "metric": "revenue",
+            "operator": "gte",
+            "value": 1500000
+          },
+          "rows": [
+            {
+              "name": "Singh",
+              "dimensions": {
+                "provider": "Singh"
+              },
+              "revenue": 1592362
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case": "malformed",
+      "question": "Which providers had at least one point five point six million in revenue in 2025?",
+      "startedAt": "2026-10-26T19:01:53.462033+00:00",
+      "completedAt": "2026-10-26T19:01:53.728042+00:00",
+      "status": 200,
+      "source": "query-clarification",
+      "text": "Please clarify the complete numeric quantity, including its decimal and scale. No calculation was run.",
+      "toolCallCount": 0,
+      "results": []
+    }
+  ],
+  "rawResponses": {
+    "written": {
+      "source": "validated-query",
+      "content": [
+        {
+          "type": "text",
+          "text": "Period: Jan–Dec 2025.\nRevenue:\nSingh: $1,592,362\nFilter after aggregation: Revenue ≥ $1,500,000."
+        }
+      ],
+      "appliedScope": [
+        "Query 1: Revenue.",
+        "Period: Jan–Dec 2025.",
+        "Providers: Lin, Shah, Singh, Brooks, Yamamoto.",
+        "Grouping: provider.",
+        "Filter after aggregation: Revenue ≥ $1,500,000."
+      ],
+      "calculationDetails": [
+        {
+          "title": "Revenue",
+          "notes": [
+            "Displayed values are rounded; calculations, filters and ties use unrounded values.",
+            "Scope total before group filter: $6,958,793."
+          ],
+          "rows": [
+            "Singh: $1,592,362"
+          ]
+        }
+      ],
+      "toolCalls": [
+        {
+          "id": "toolu_019SsqbWJCogcTzzjFKp3K6w",
+          "name": "query_practice",
+          "input": {
+            "queries": [
+              {
+                "metric": "revenue",
+                "months": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  8,
+                  9,
+                  10,
+                  11
+                ],
+                "providers": [],
+                "payers": [],
+                "procedures": [],
+                "groupBy": [
+                  "provider"
+                ],
+                "predicate": {
+                  "metric": "revenue",
+                  "operator": "gte",
+                  "value": 1500000
+                },
+                "ranking": {
+                  "metric": "revenue",
+                  "direction": "none",
+                  "limit": 1,
+                  "within": []
+                }
+              }
+            ],
+            "explain": false
+          },
+          "result": {
+            "domain": "practice",
+            "results": [
+              {
+                "metric": "revenue",
+                "scope": [
+                  "Period: Jan–Dec 2025.",
+                  "Providers: Lin, Shah, Singh, Brooks, Yamamoto.",
+                  "Grouping: provider.",
+                  "Filter after aggregation: Revenue ≥ $1,500,000."
+                ],
+                "rows": [
+                  {
+                    "name": "Singh",
+                    "dimensions": {
+                      "provider": "Singh"
+                    },
+                    "revenue": 1592362
+                  }
+                ],
+                "rankings": [],
+                "scopeTotal": 6958793,
+                "filtered": true,
+                "notes": [],
+                "query": {
+                  "metric": "revenue",
+                  "months": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11
+                  ],
+                  "providers": [],
+                  "payers": [],
+                  "procedures": [],
+                  "groupBy": [
+                    "provider"
+                  ],
+                  "predicate": {
+                    "metric": "revenue",
+                    "operator": "gte",
+                    "value": 1500000
+                  },
+                  "ranking": {
+                    "metric": "revenue",
+                    "direction": "none",
+                    "limit": 1,
+                    "within": []
+                  }
+                }
+              }
+            ],
+            "explain": false
+          }
+        }
+      ]
+    },
+    "numeric": {
+      "source": "validated-query",
+      "content": [
+        {
+          "type": "text",
+          "text": "Period: Jan–Dec 2025.\nRevenue:\nSingh: $1,592,362\nFilter after aggregation: Revenue ≥ $1,500,000."
+        }
+      ],
+      "appliedScope": [
+        "Query 1: Revenue.",
+        "Period: Jan–Dec 2025.",
+        "Providers: Lin, Shah, Singh, Brooks, Yamamoto.",
+        "Grouping: provider.",
+        "Filter after aggregation: Revenue ≥ $1,500,000."
+      ],
+      "calculationDetails": [
+        {
+          "title": "Revenue",
+          "notes": [
+            "Displayed values are rounded; calculations, filters and ties use unrounded values.",
+            "Scope total before group filter: $6,958,793."
+          ],
+          "rows": [
+            "Singh: $1,592,362"
+          ]
+        }
+      ],
+      "toolCalls": [
+        {
+          "id": "toolu_012C6UyuCSyZmqegJhtWHJEN",
+          "name": "query_practice",
+          "input": {
+            "queries": [
+              {
+                "metric": "revenue",
+                "months": [
+                  0,
+                  1,
+                  2,
+                  3,
+                  4,
+                  5,
+                  6,
+                  7,
+                  8,
+                  9,
+                  10,
+                  11
+                ],
+                "providers": [],
+                "payers": [],
+                "procedures": [],
+                "groupBy": [
+                  "provider"
+                ],
+                "predicate": {
+                  "metric": "revenue",
+                  "operator": "gte",
+                  "value": 1500000
+                },
+                "ranking": {
+                  "metric": "revenue",
+                  "direction": "none",
+                  "limit": 1,
+                  "within": []
+                }
+              }
+            ],
+            "explain": false
+          },
+          "result": {
+            "domain": "practice",
+            "results": [
+              {
+                "metric": "revenue",
+                "scope": [
+                  "Period: Jan–Dec 2025.",
+                  "Providers: Lin, Shah, Singh, Brooks, Yamamoto.",
+                  "Grouping: provider.",
+                  "Filter after aggregation: Revenue ≥ $1,500,000."
+                ],
+                "rows": [
+                  {
+                    "name": "Singh",
+                    "dimensions": {
+                      "provider": "Singh"
+                    },
+                    "revenue": 1592362
+                  }
+                ],
+                "rankings": [],
+                "scopeTotal": 6958793,
+                "filtered": true,
+                "notes": [],
+                "query": {
+                  "metric": "revenue",
+                  "months": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    10,
+                    11
+                  ],
+                  "providers": [],
+                  "payers": [],
+                  "procedures": [],
+                  "groupBy": [
+                    "provider"
+                  ],
+                  "predicate": {
+                    "metric": "revenue",
+                    "operator": "gte",
+                    "value": 1500000
+                  },
+                  "ranking": {
+                    "metric": "revenue",
+                    "direction": "none",
+                    "limit": 1,
+                    "within": []
+                  }
+                }
+              }
+            ],
+            "explain": false
+          }
+        }
+      ]
+    },
+    "malformed": {
+      "source": "query-clarification",
+      "content": [
+        {
+          "type": "text",
+          "text": "Please clarify the complete numeric quantity, including its decimal and scale. No calculation was run."
+        }
+      ],
+      "appliedScope": [],
+      "toolCalls": []
+    }
+  },
+  "targetedTests": {
+    "command": "node --test tests/quota-decimal.test.mjs",
+    "passed": 7,
+    "failed": 0,
+    "note": "Seven tests in the existing quota/threshold suite; not a general accuracy benchmark."
+  },
+  "unrechecked": "Source-disclosure, quarterly-ranking and no-show controls were not rechecked by these written-amount requests. The separate quota packet retains its own earlier October 26 scope."
+}
