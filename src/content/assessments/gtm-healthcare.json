@@ -10,14 +10,15 @@
   "appRevision": "d80dd7d22a5eb1922518b37c561c7ca071fe7812",
   "appRevisionShort": "d80dd7d",
   "downloadHref": "/assessments/gtm-healthcare/verification.json",
-  "summary": "The combined-quota fix passed three follow-up checks on October 26. Source disclosure and quarterly ranking were verified in the original October 25 review. The written-amount finding retains its original evidence and awaits a separate recheck.",
+  "summary": "All four selected findings now have dated verification: source disclosure and quarterly ranking in the original October 25 review, combined quota in the earlier October 26 follow-up, and written amounts in the later October 26 follow-up. These checks do not establish overall app accuracy.",
   "provenance": "This is a self-initiated review of a demo I own. It is not client work, independent assurance, or evidence of business impact. All sales and practice records used here are synthetic.",
   "counts": {
     "findings": 4,
-    "verifiedCorrections": 3,
-    "awaitingRecheck": 1,
+    "verifiedCorrections": 4,
+    "awaitingRecheck": 0,
     "originalRequests": 5,
-    "quotaFollowUpRequests": 3
+    "quotaFollowUpRequests": 3,
+    "writtenAmountFollowUpRequests": 3
   },
   "scope": [
     "Public GTM demo and portfolio data disclosures.",
@@ -28,8 +29,8 @@
   "limits": [
     "The requests were purpose-selected; they are not a random sample or a model-accuracy benchmark.",
     "This review did not test every query, security controls, production scale, or source accuracy.",
-    "The original before/after strings and five check results are October 25 records at d80dd7d. Only three quota follow-ups were rechecked October 26 at a1ce674; they do not establish the latest state of other findings.",
-    "No app code was changed or deployed for the assessment or quota recheck. The disclosure and quarterly-ranking repairs predated the original review; the quota fix was already deployed before the October 26 follow-up. The written-amount finding was not rechecked.",
+    "The original before/after strings and five check results are October 25 records at d80dd7d. Separate October 26 follow-ups at a1ce674 covered three quota requests at 1:55 p.m. Eastern and three written-amount requests at 3:01 p.m. Eastern. Source-disclosure, quarterly-ranking and no-show controls were not rechecked in either follow-up.",
+    "No app code was changed or deployed for the assessment or either follow-up. The disclosure and quarterly-ranking repairs predated the original review; the quota and written-amount fixes were already deployed before their October 26 checks.",
     "No user study, patient-data review, clinical validation or measured commercial outcome is claimed."
   ],
   "methodNote": "AI tools supported implementation, testing and analysis. Numerical expectations were recomputed from the synthetic input records; this is not an independent third-party audit.",
@@ -131,16 +132,16 @@
       "id": "F04",
       "priority": "P2",
       "kind": "Input usability",
-      "title": "A written decimal threshold is safely rejected.",
-      "status": "Open · safe limitation",
-      "state": "open",
-      "risk": "A supported numeric comparison becomes unusable when the amount is written in words. The guard prevents a misleading partial-number answer.",
-      "observation": "“At least one point five million” asks for clarification. The equivalent “at least $1.5M” query succeeds and selects Singh. Both behaviors were rechecked.",
+      "title": "Written and numeric revenue thresholds now match.",
+      "status": "Verified correction · October 26",
+      "state": "closed",
+      "risk": "The original written amount required clarification where the equivalent numeric form succeeded. A repair must preserve the complete amount and scale rather than accept only a leading number.",
+      "observation": "The October 25 written-threshold request stopped for clarification. A separate October 26 recheck returned the same normalized revenue threshold, provider result and displayed answer for written and numeric forms; a malformed quantity still stopped calculation.",
       "question": "Which providers had at least one point five million in revenue in 2025?",
       "before": "The numeric threshold was not preserved. Please clarify the comparison; no calculation was run.",
       "after": "Written amount: clarification again.\nNumeric control (≥ $1.5M): Singh — $1,592,362.",
-      "fix": "Parse the complete written quantity and scale, or offer an explicit numeric rephrasing. Keep the existing stop behavior when the full amount cannot be preserved.",
-      "verification": "Open at the tested revision. No incorrect numerical answer was returned for the written version. The direct annual revenue sums confirm the numeric-control result.",
+      "fix": "The existing written-number parser preserves the complete quantity and scale, and rejects malformed quantities before tool execution. Fix 65e1db5 was already deployed before the follow-up; no app code was changed or deployed for this recheck.",
+      "verification": "Verified October 26 at 3:01 p.m. Eastern, serving revision a1ce674. Written and numeric forms both use revenue ≥ 1,500,000 across all 12 months and return only Singh at $1,592,362. Direct monthly sums confirm the expectation. The malformed control requests clarification, with zero tool calls and no calculation.",
       "acceptance": [
         "Interpret one point five million as 1,500,000, or clearly ask for the supported numeric form.",
         "Match the $1.5M control when calculation proceeds.",
@@ -149,8 +150,16 @@
       "evidence": [
         "E6",
         "E8",
-        "E9"
-      ]
+        "E9",
+        "E12",
+        "E13"
+      ],
+      "followUp": {
+        "date": "October 26, 2026",
+        "appRevision": "a1ce674407d1b9b2f5dd6abef1ce11db9e838b44",
+        "href": "#written-amount-follow-up",
+        "summary": "Written and numeric thresholds matched; the malformed-input control stopped without a calculation."
+      }
     }
   ],
   "plan": [
@@ -163,9 +172,9 @@
     },
     {
       "order": "02",
-      "title": "Recheck the written-amount finding separately",
-      "status": "Not rechecked · October 25 evidence",
-      "text": "Re-run the original written and numeric forms before determining whether any limitation remains. Retain the stop when the complete amount or a required input is missing.",
+      "title": "Retain written, numeric and malformed-input checks",
+      "status": "Verified · October 26, 3:01 p.m. Eastern",
+      "text": "Preserve equivalent complete thresholds and provider results for written and numeric amounts. Keep malformed quantities from degrading to a leading number or triggering a calculation.",
       "finding": "F04"
     },
     {
@@ -282,14 +291,26 @@
       "label": "Quota recheck packet — October 26",
       "href": "/assessments/gtm-healthcare/quota-recheck-2026-10-26.json",
       "note": "Three complete captured responses, expected weighted calculations, serving revision a1ce674 and the 45-test summary. Other findings were not rechecked."
+    },
+    {
+      "id": "E12",
+      "label": "Written-amount recheck packet — October 26",
+      "href": "/assessments/gtm-healthcare/written-amount-recheck-2026-10-26.json",
+      "note": "Three complete captured responses at 3:01 p.m. Eastern, normalized thresholds, independent monthly sums and the existing 7-test summary. Original and quota evidence remain separate."
+    },
+    {
+      "id": "E13",
+      "label": "Written-number parser at existing fix",
+      "href": "https://github.com/kristenmartino/gtm-healthcare-intel/blob/65e1db584a479abbd10d6901525c6d817f519fbf/lib/query-numbers.mjs",
+      "note": "Parser source at fix 65e1db5, already deployed before the written-amount recheck. The dated packet also links fixture and targeted-test sources."
     }
   ],
   "hiringNarrative": {
     "eyebrow": "Review work sample",
     "label": "Self-initiated review of my own demo",
-    "title": "Combined quota fix verified",
+    "title": "Quota totals and written amounts verified",
     "context": "GTM Healthcare Intelligence",
-    "opening": "The October 25 check returned correct rep figures but omitted their combined total. An October 26 recheck confirms combined bookings, quota and weighted attainment, with individual results retained.",
+    "opening": "The October 25 review found missing quota totals and a written-amount limitation. Separate October 26 checks verified both existing fixes: combined results retain individual figures, and written amounts match numeric input.",
     "role": "",
     "decisions": [
       {
@@ -319,24 +340,24 @@
       {
         "id": "safe-stops",
         "number": "03",
-        "title": "Written amount not rechecked",
+        "title": "Written and numeric amounts match",
         "paragraphs": [
-          "On October 25, “one point five million” required clarification; “$1.5M” returned Singh at $1,592,362. The no-show calculation stopped without the required appointment count. These observations were not rechecked on October 26."
+          "“One point five million” and “$1.5M” both preserve revenue ≥ $1,500,000 and return only Singh: $1,592,362 for 2025. Malformed “one point five point six million” requests clarification, makes no tool call and runs no calculation."
         ],
-        "status": "October 25 observation · not rechecked",
-        "state": "open",
-        "supportLabel": "F03–F04 / original controls",
-        "supportHref": "#verification"
+        "status": "Verified October 26",
+        "state": "closed",
+        "supportLabel": "F04 / follow-up",
+        "supportHref": "#written-amount-follow-up"
       }
     ],
     "verification": [
-      "The original five questions used synthetic sample records; expected answers were calculated separately from the app. Source disclosures and all four quarterly winners were verified then.",
-      "Three quota follow-ups on October 26 checked an existing deployed fix. No app code changed for the recheck. Forty-five JavaScript tests passed, covering all 63 nonempty rep subsets. This is not overall model accuracy."
+      "The original five questions used synthetic sample records; expected answers were calculated separately from the app. Source disclosures and all four quarterly winners were verified then. The no-show control remains an October 25 observation.",
+      "October 26 follow-ups covered three quota requests and three written-amount requests, including malformed input. Seven existing quota and threshold tests passed. These checks do not establish overall accuracy."
     ],
-    "next": "Retain quota and per-rep regression checks. Recheck the written-amount finding separately before deciding whether another fix is needed.",
+    "next": "Retain quota, numeric-threshold and malformed-input regression checks. Extend question coverage without weakening the checks for missing inputs or incomplete amounts.",
     "supportTitle": "Full findings and verification evidence",
-    "supportDescription": "Original comparisons, dated quota follow-up, acceptance checks, method and sources.",
-    "byline": "Original review October 25, 2026 · Quota rechecked October 26, 2026"
+    "supportDescription": "Original comparisons, separate quota and written-amount follow-ups, acceptance checks, method and sources.",
+    "byline": "Original review October 25, 2026 · Quota and amounts rechecked October 26, 2026"
   },
   "originalReviewCounts": {
     "findings": 4,
@@ -397,9 +418,54 @@
       "panelLabel": "October 25 recheck · verified then"
     },
     "F04": {
-      "status": "October 25 finding · not rechecked",
-      "context": "Original October 25 finding, not rechecked on October 26. All observations and open-status language below refer to the original revision d80dd7d, not the latest app.",
+      "status": "Verified · October 26",
+      "context": "Original clarification recorded October 25; the separate October 26 written-amount follow-up below verifies the already-deployed fix. The original failed response remains preserved as an October 25 record.",
       "panelLabel": "October 25 recheck · open then"
     }
+  },
+  "writtenAmountFollowUp": {
+    "date": "October 26, 2026",
+    "checkedAt": "3:01 p.m. Eastern · October 26, 2026",
+    "completedAt": "2026-10-26T19:01:53.728095+00:00",
+    "appRevision": "a1ce674407d1b9b2f5dd6abef1ce11db9e838b44",
+    "appRevisionShort": "a1ce674",
+    "servingSource": "https://github.com/kristenmartino/gtm-healthcare-intel/tree/a1ce674407d1b9b2f5dd6abef1ce11db9e838b44",
+    "fixCommit": "65e1db584a479abbd10d6901525c6d817f519fbf",
+    "fixSource": "https://github.com/kristenmartino/gtm-healthcare-intel/commit/65e1db584a479abbd10d6901525c6d817f519fbf",
+    "downloadHref": "/assessments/gtm-healthcare/written-amount-recheck-2026-10-26.json",
+    "summary": "Written “one point five million” and numeric “$1.5M” both normalize to revenue ≥ 1,500,000 for January–December 2025, grouped by provider across all providers. Both return only Singh, with $1,592,362 revenue; the displayed answers are identical.",
+    "independentExpectation": "Directly summing the 12 monthly sample-record values per provider, without the query engine, confirms Singh is the only provider at or above $1,500,000. The packet retains all five annual provider totals and the linked fixture source.",
+    "cases": [
+      {
+        "id": "written",
+        "question": "Which providers had at least one point five million in revenue in 2025?",
+        "source": "validated-query",
+        "observed": "Period: Jan–Dec 2025.\nRevenue:\nSingh: $1,592,362\nFilter after aggregation: Revenue ≥ $1,500,000.",
+        "toolCallCount": 1
+      },
+      {
+        "id": "numeric",
+        "question": "Which providers had at least $1.5M in revenue in 2025?",
+        "source": "validated-query",
+        "observed": "Period: Jan–Dec 2025.\nRevenue:\nSingh: $1,592,362\nFilter after aggregation: Revenue ≥ $1,500,000.",
+        "toolCallCount": 1
+      },
+      {
+        "id": "malformed",
+        "question": "Which providers had at least one point five point six million in revenue in 2025?",
+        "source": "query-clarification",
+        "observed": "Please clarify the complete numeric quantity, including its decimal and scale. No calculation was run.",
+        "toolCallCount": 0
+      }
+    ],
+    "malformedNote": "The malformed phrase “one point five point six million” requests clarification with zero tool calls and no calculation. It does not fall back to the leading “one.”",
+    "testNote": "The existing quota/threshold suite passed 7 tests, with 0 failures, using node --test tests/quota-decimal.test.mjs. These were not seven new tests or a model-accuracy benchmark. The earlier quota packet retains its separate 45-test result.",
+    "method": "Two selected model-backed requests checked written and numeric forms. The comparison covers normalized threshold/operator, complete period, grouping, provider selection, calculated rows and displayed answer. Annual revenue was independently summed from monthly fixture values without the query engine. A third malformed-input request checked that no calculation ran. AI tools supported testing and analysis.",
+    "scopeNote": "Follow-up to F04 only: written and numeric annual-revenue thresholds plus one malformed-quantity control. Original and quota-recheck evidence remain separate. All data is synthetic; this is not an independent audit or overall-accuracy benchmark. No app source was changed or deployed for this recheck.",
+    "unrechecked": "Source-disclosure, quarterly-ranking and no-show controls were not rechecked by these written-amount requests. The separate quota packet retains its own earlier October 26 scope.",
+    "evidence": [
+      "E12",
+      "E13"
+    ]
   }
 }
