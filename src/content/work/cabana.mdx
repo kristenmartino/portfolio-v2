@@ -167,7 +167,7 @@ All **20 evidence checks** passed in this single demo run.
 
 Next.js provides the member portal. Supabase Postgres stores member and booking data, with row-level security restricting access to each member’s records.
 
-Edge functions validate incoming Stripe, Telegram and Airtable events. n8n processes pending outbox events to update Airtable and calls a private Supabase function to send Telegram notifications. That function records Telegram’s message ID after a successful send. Claude Haiku classifies requests and drafts acknowledgments for staff. Member status messages use recorded booking and payment states.
+Edge functions validate incoming Stripe, Telegram and Airtable events. n8n processes pending outbox events to update Airtable and calls a private Supabase function to send Telegram notifications. That function records Telegram’s message ID after a successful send. Member pages read the recorded booking and payment states.
 
 ## Problem framing
 
@@ -193,7 +193,7 @@ Tests with real emails confirmed that expired links are rejected and requesting 
 
 ## Member status
 
-The dashboard shows the regular service day from the member’s plan. The request page shows the stored booking status, payment receipt and any assigned visit window separately. AI triage and Dana’s review are separate steps.
+The dashboard shows the regular service day from the member’s plan and labels past visits as Completed, Cancelled or Missed. The request page separates payment receipt, staff approval and the assigned visit window.
 
 A request that reaches scheduling without an assigned visit window shows “Awaiting visit time,” or “Approved · time pending” after approval. Payment, staff approval and a confirmed visit time are separate states.
 
@@ -205,7 +205,7 @@ Once an approved request has a visit window, the app shows “Confirmed” with 
 
 Cabana uses Stripe Checkout in test mode for $75 repair deposits. Payment status is updated from Stripe webhook events after their signatures are verified.
 
-The application records event IDs so it can recognize repeated deliveries and avoid applying the same payment update twice. The confirmation page checks the database and displays “confirming…” until payment is recorded.
+The application records event IDs so it can recognize repeated deliveries and avoid applying the same payment update twice. After Checkout, the request page displays “Confirming your payment…” until the database records the payment.
 
 ## Telegram staff approval
 
