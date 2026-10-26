@@ -1,0 +1,14 @@
+{
+  "coordinator_not_blinded": true,
+  "reviewed_artifacts": "All ten authored briefs plus structured fields and five initial reviewer reports",
+  "critical_errors_found": [],
+  "basis": [
+    "200 structured comparison/sales field checks against raw CSV/Decimal answer key",
+    "Synthetic/base/generated-year boundaries retained",
+    "ACV distinct from recognized revenue and forecasts",
+    "Unvalidated scores not treated as account need or outreach priority",
+    "Absent sales coverage retained as unavailable in both pair-5 briefs",
+    "No commercial approval or recorded stakeholder/business outcome claimed"
+  ],
+  "observed_limit": "This is coordinator qualitative adjudication, not an independent blinded human evaluation."
+}

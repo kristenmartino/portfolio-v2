@@ -1,0 +1,247 @@
+{
+  "study_type": "Five fictional AI analyst-reviewer pairs; artifact-based comparison",
+  "completed_at": "2026-10-26T19:35:37.974557+00:00",
+  "human_pairs_completed": 0,
+  "ai_pairs_completed": 5,
+  "agents": {
+    "analysts": 5,
+    "reviewers": 5,
+    "context": "fresh context per agent; no model override; inherited session model",
+    "exact_resolved_model": "not exposed by collaboration tool"
+  },
+  "input_files_verified_unchanged": 95,
+  "conditions": {
+    "csv": {
+      "briefs": 5,
+      "complete_4_of_4": 5,
+      "checked_fields": 100,
+      "numeric_errors": 0,
+      "reviewer_apparent_interpretation_errors": 0,
+      "reviewers_clear_before_clarification": 5,
+      "clarification_requests": 0,
+      "median_ai_artifact_seconds": 30.971073
+    },
+    "app": {
+      "briefs": 5,
+      "complete_4_of_4": 5,
+      "checked_fields": 100,
+      "numeric_errors": 0,
+      "reviewer_apparent_interpretation_errors": 0,
+      "reviewers_clear_before_clarification": 5,
+      "clarification_requests": 0,
+      "median_ai_artifact_seconds": 31.776423
+    }
+  },
+  "pairs": [
+    {
+      "pair": "P01",
+      "analyst": "Maya Chen",
+      "analyst_role": "Revenue operations analyst",
+      "reviewer": "Jordan Ellis",
+      "reviewer_role": "Regional sales director",
+      "context": "Midmarket EHR/PM/RCM vendor; weekly specialty pipeline review. Analyst assembles CSV report extracts and a short sales-operations handoff. Reviewer needs an owner and next check before using exposure for planning.",
+      "method_order": [
+        "csv",
+        "app"
+      ],
+      "csv_scenario": [
+        "Dermatology",
+        "99213"
+      ],
+      "app_scenario": [
+        "Orthopedic Surgery",
+        "27130"
+      ]
+    },
+    {
+      "pair": "P02",
+      "analyst": "Luis Ortega",
+      "analyst_role": "Finance analytics analyst",
+      "reviewer": "Priya Nair",
+      "reviewer_role": "Finance business partner",
+      "context": "Healthcare-software vendor; monthly commercial planning input. Existing assumed workflow joins a reimbursement report with a CRM export in a workbook and writes a planning-data caveat. Reviewer distinguishes assumed ACV, forecasts and recognized revenue.",
+      "method_order": [
+        "app",
+        "csv"
+      ],
+      "csv_scenario": [
+        "Urology",
+        "51798"
+      ],
+      "app_scenario": [
+        "Ophthalmology",
+        "92014"
+      ]
+    },
+    {
+      "pair": "P03",
+      "analyst": "Avery Brooks",
+      "analyst_role": "BI analyst",
+      "reviewer": "Morgan Reed",
+      "reviewer_role": "Commercial analytics lead",
+      "context": "Analytics team at a specialty-software vendor; weekly certified-metric review. Existing assumed workflow verifies the specialty/procedure/year grain in CSV reports, checks source snapshots and sends a concise evidence memo. Reviewer values reproducibility and explicit missing inputs.",
+      "method_order": [
+        "csv",
+        "app"
+      ],
+      "csv_scenario": [
+        "Gastroenterology",
+        "45378"
+      ],
+      "app_scenario": [
+        "Pain Management",
+        "64483"
+      ]
+    },
+    {
+      "pair": "P04",
+      "analyst": "Samira Patel",
+      "analyst_role": "Market analysis specialist",
+      "reviewer": "Theo Grant",
+      "reviewer_role": "Product manager",
+      "context": "Specialty-software product team; fortnightly market-signal triage. Existing assumed workflow compares a payment report and a sales report, then drafts discovery questions. Reviewer decides which questions need evidence before discussing a product or commercial recommendation.",
+      "method_order": [
+        "app",
+        "csv"
+      ],
+      "csv_scenario": [
+        "Podiatry",
+        "11721"
+      ],
+      "app_scenario": [
+        "Plastic Surgery",
+        "19318"
+      ]
+    },
+    {
+      "pair": "P05",
+      "analyst": "Noah Williams",
+      "analyst_role": "Business systems analyst",
+      "reviewer": "Riley Park",
+      "reviewer_role": "Sales operations manager",
+      "context": "CRM/reporting team at a healthcare-software vendor; weekly data-quality triage. Existing assumed workflow checks a reimbursement extract against CRM CSV coverage, records missing feeds and sends a systems follow-up memo. Reviewer needs to distinguish absent coverage from a measured zero.",
+      "method_order": [
+        "csv",
+        "app"
+      ],
+      "csv_scenario": [
+        "Cardiology",
+        "99213"
+      ],
+      "app_scenario": [
+        "Neurology",
+        "99213"
+      ]
+    }
+  ],
+  "clarification_exchanges_triggered": 0,
+  "timing": {
+    "records": [
+      {
+        "pair": "P01",
+        "method": "csv",
+        "start_utc": "2026-10-26T19:29:05Z",
+        "end_utc": "2026-10-26T19:29:38Z",
+        "elapsed_seconds": 33.0
+      },
+      {
+        "pair": "P01",
+        "method": "app",
+        "start_utc": "2026-10-26T19:29:42Z",
+        "end_utc": "2026-10-26T19:30:12Z",
+        "elapsed_seconds": 30.0
+      },
+      {
+        "pair": "P02",
+        "method": "csv",
+        "start_utc": "2026-10-26T19:29:49Z",
+        "end_utc": "2026-10-26T19:30:11Z",
+        "elapsed_seconds": 22.0
+      },
+      {
+        "pair": "P02",
+        "method": "app",
+        "start_utc": "2026-10-26T19:29:13Z",
+        "end_utc": "2026-10-26T19:29:45Z",
+        "elapsed_seconds": 32.0
+      },
+      {
+        "pair": "P03",
+        "method": "csv",
+        "start_utc": "2026-10-26T19:29:22.107290+00:00",
+        "end_utc": "2026-10-26T19:29:53.078363+00:00",
+        "elapsed_seconds": 30.971073
+      },
+      {
+        "pair": "P03",
+        "method": "app",
+        "start_utc": "2026-10-26T19:29:57.093121+00:00",
+        "end_utc": "2026-10-26T19:30:28.869544+00:00",
+        "elapsed_seconds": 31.776423
+      },
+      {
+        "pair": "P04",
+        "method": "csv",
+        "start_utc": "2026-10-26T19:31:30Z",
+        "end_utc": "2026-10-26T19:31:59Z",
+        "elapsed_seconds": 29.0
+      },
+      {
+        "pair": "P04",
+        "method": "app",
+        "start_utc": "2026-10-26T19:30:47Z",
+        "end_utc": "2026-10-26T19:31:27Z",
+        "elapsed_seconds": 40.0
+      },
+      {
+        "pair": "P05",
+        "method": "csv",
+        "start_utc": "2026-10-26T19:30:49Z",
+        "end_utc": "2026-10-26T19:31:20Z",
+        "elapsed_seconds": 31.0
+      },
+      {
+        "pair": "P05",
+        "method": "app",
+        "start_utc": "2026-10-26T19:31:25Z",
+        "end_utc": "2026-10-26T19:31:45Z",
+        "elapsed_seconds": 20.0
+      }
+    ],
+    "median_paired_ai_reduction_pct": -2.6003296689139597,
+    "app_faster_pairs": 2,
+    "human_20pct_time_threshold": "not assessed; no human preparation timing or browser workflow measured"
+  },
+  "label_masking": {
+    "neutral_labels_and_common_format": true,
+    "full_method_blinding_established": false,
+    "observed_cue_cases": [
+      {
+        "pair": "P01",
+        "method": "app",
+        "label": "R73",
+        "cues": [
+          "explicit app wording"
+        ]
+      },
+      {
+        "pair": "P03",
+        "method": "app",
+        "label": "R64",
+        "cues": [
+          "explicit app wording",
+          "live product URL"
+        ]
+      },
+      {
+        "pair": "P05",
+        "method": "app",
+        "label": "R09",
+        "cues": [
+          "explicit app wording"
+        ]
+      }
+    ]
+  },
+  "conclusion": "Quality and recipient clarity tied under these AI artifact conditions. No incremental app advantage or human usefulness/time-saving result was established."
+}

@@ -17,7 +17,7 @@ Medicare payment comparisons describe practice-side signals; pipeline dollars re
 
 **Verified October 26, 2026:** Databricks processed **29,982 synthetic records into 870 reporting rows**, matching the reconciled baseline. All four tasks in the clean Airflow run passed on their first attempt; the public React dashboard uses that run's export. [Execution evidence](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/deployment_verification.json) records the run results. Airflow runs on a local Mac, and new exports require a separate website release.
 
-**Human validation pending: 0 of 5 planned analyst–reviewer pairs completed.** The internal AI rehearsal checked artifacts and calculations. Human usefulness, time savings and business outcomes have not been measured.
+**Human validation pending: 0 of 5 planned analyst–reviewer pairs completed.** The five-pair AI simulation produced correct, complete briefs with both methods and found no app advantage. Human usefulness, time savings and business outcomes have not been measured.
 
 
 ## Problem hypothesis to validate
@@ -91,13 +91,13 @@ The first complete run exposed duplicate synthetic provider identifiers. I corre
 
 Open the [same Dermatology / 99213 comparison](https://specialtypulse.kristenmartino.ai/?view=procedure&specialty=Dermatology&hcpcs=99213&year=2023) to inspect the displayed payments and 2023 source trace. The [run receipt](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/releases/databricks-527988765998273/receipt.json), [input/output artifact](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/payment_verification.json) and [reproduction guide](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/docs/verification/payment-check.md) provide the technical detail. The brief's versioned links preserve its evidence snapshot when the live demo changes.
 
-## Internal rehearsal results
+## AI comparison results · human validation pending
 
-On October 25, 2026, **one AI assistant with prior project knowledge prepared and self-checked four briefs**: Dermatology / HCPCS 99213 and Orthopedic Surgery / HCPCS 27130, each through a scripted CSV-report comparator and the live app. The payment/service comparisons and overdue sales figures matched raw-input calculations. Both live app downloads saved and matched their generated content byte for byte.
+On October 26, 2026, **five fictional AI analysts and five separate AI reviewers** completed an artifact-based comparison. Each analyst prepared one brief from constructed CSV reports and one from a captured app draft. Both methods produced **5 of 5 complete briefs**, with **100 of 100 structured fields correct per method**. Reviewers could state the next action for all ten briefs without clarification; no critical interpretation errors were found. **No advantage for SpecialtyPulse was demonstrated.**
 
-The first rehearsal found that app exports lacked a direct pinned sales CSV link. That gap was fixed. A rerun against [release 7cd9592](https://github.com/kristenmartino/specialtypulse_pipeline/commit/7cd9592e01f24cdfe77612ca97dc0852a5753877) confirmed the link and reproduction filters in **both tested app exports**; the linked CSV reproduced each specialty's overdue count, ACV, pipeline share and overdue ages. The [rehearsal report and saved briefs](/work/specialtypulse-rehearsal-2026-10-25/results.md) document these artifact checks.
+The agents had fresh contexts but shared a model family. Their role-based workflows were assumed, and source cues prevented full method blinding. Analysts did not navigate the app. Runtime excluded source gathering, coordinator preparation, browser use and reviewer work, so it cannot estimate human time savings or assess the proposed 20% threshold. **Human validation remains 0 of 5 pairs.**
 
-**Human validation remains pending: 0 of 5 planned analyst–reviewer pairs have participated.** The same assistant knew the answers and checked its own outputs; the review was not blinded. The scripted comparator was not an observed analyst's usual workflow. Human preparation time, independent recipient understanding, clarification rates, user preference and business outcomes were not measured. The rehearsal does not establish that the proposed usefulness thresholds below have been met.
+The [comparison report, fictional role contexts, briefs and scoring records](/work/specialtypulse-ai-comparison-2026-10-26/results.md) document the tie and limitations. The study used [release d628a13](https://github.com/kristenmartino/specialtypulse_pipeline/commit/d628a13592a5d0f5cc0ca93f6cce5f0c265258ca), before the latest UI cleanup and recipient packet; those changes have not been evaluated with users or rerun through this comparison. An [earlier single-assistant rehearsal](/work/specialtypulse-rehearsal-2026-10-25/results.md) found and verified a missing sales-source link.
 
 ## Planned human comparison
 
@@ -105,7 +105,7 @@ The five-pair human comparison has not started. Its evaluation criteria remain p
 
 I would recruit **five analyst–reviewer pairs for an exploratory comparison**. Each analyst would prepare two briefs from matched data: one with their usual report or spreadsheet and one with SpecialtyPulse. I would alternate the order and scenario assigned to each method, confirming the existing workflow and comparable task difficulty first.
 
-Preparation time would run from opening the data to submitting a brief. Recipients would review briefs without the method identified; I would record missing evidence, interpretation errors and clarification requests before they can state the next action.
+Preparation time would cover the full workflow for both methods: receiving the business question, locating and exporting source data, checking calculations and delivering the brief. Recipients would review briefs without the method identified; I would record missing evidence, interpretation errors and clarification requests before they can state the next action.
 
 The proposed thresholds for proceeding to a larger pilot are:
 

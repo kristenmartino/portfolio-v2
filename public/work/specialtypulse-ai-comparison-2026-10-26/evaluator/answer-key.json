@@ -1,0 +1,262 @@
+{
+  "P01-csv": {
+    "comparison": {
+      "specialty": "Dermatology",
+      "hcpcs": "99213",
+      "prior_year": 2022,
+      "year": 2023,
+      "prior_payment": 108.05,
+      "payment": 104.91,
+      "prior_services": 3626,
+      "services": 3777,
+      "payment_change_dollars": -3.14,
+      "payment_change_pct": -2.906062008329477,
+      "service_change_count": 151,
+      "service_change_pct": 4.164368450082736
+    },
+    "sales": {
+      "coverage": "supplied",
+      "open_deal_count": 53,
+      "open_acv_usd": 4579800.0,
+      "open_share_pct": 11.398718708155169,
+      "overdue_count": 53,
+      "overdue_acv_usd": 4579800.0,
+      "min_days_overdue": 25,
+      "max_days_overdue": 291
+    }
+  },
+  "P01-app": {
+    "comparison": {
+      "specialty": "Orthopedic Surgery",
+      "hcpcs": "27130",
+      "prior_year": 2022,
+      "year": 2023,
+      "prior_payment": 222.06,
+      "payment": 213.47,
+      "prior_services": 2990,
+      "services": 3117,
+      "payment_change_dollars": -8.59,
+      "payment_change_pct": -3.868323876429794,
+      "service_change_count": 127,
+      "service_change_pct": 4.247491638795987
+    },
+    "sales": {
+      "coverage": "supplied",
+      "open_deal_count": 47,
+      "open_acv_usd": 6272200.0,
+      "open_share_pct": 15.610953203478504,
+      "overdue_count": 47,
+      "overdue_acv_usd": 6272200.0,
+      "min_days_overdue": 45,
+      "max_days_overdue": 315
+    }
+  },
+  "P02-csv": {
+    "comparison": {
+      "specialty": "Urology",
+      "hcpcs": "51798",
+      "prior_year": 2022,
+      "year": 2023,
+      "prior_payment": 136.32,
+      "payment": 133.66,
+      "prior_services": 3733,
+      "services": 3886,
+      "payment_change_dollars": -2.66,
+      "payment_change_pct": -1.9512910798122065,
+      "service_change_count": 153,
+      "service_change_pct": 4.098580230377713
+    },
+    "sales": {
+      "coverage": "supplied",
+      "open_deal_count": 57,
+      "open_acv_usd": 5004100.0,
+      "open_share_pct": 12.454764026262998,
+      "overdue_count": 57,
+      "overdue_acv_usd": 5004100.0,
+      "min_days_overdue": 39,
+      "max_days_overdue": 291
+    }
+  },
+  "P02-app": {
+    "comparison": {
+      "specialty": "Ophthalmology",
+      "hcpcs": "92014",
+      "prior_year": 2022,
+      "year": 2023,
+      "prior_payment": 126.46,
+      "payment": 123.97,
+      "prior_services": 5805,
+      "services": 6046,
+      "payment_change_dollars": -2.49,
+      "payment_change_pct": -1.9690020559860826,
+      "service_change_count": 241,
+      "service_change_pct": 4.151593453919036
+    },
+    "sales": {
+      "coverage": "supplied",
+      "open_deal_count": 48,
+      "open_acv_usd": 5132000.0,
+      "open_share_pct": 12.77309585795282,
+      "overdue_count": 48,
+      "overdue_acv_usd": 5132000.0,
+      "min_days_overdue": 17,
+      "max_days_overdue": 271
+    }
+  },
+  "P03-csv": {
+    "comparison": {
+      "specialty": "Gastroenterology",
+      "hcpcs": "45378",
+      "prior_year": 2022,
+      "year": 2023,
+      "prior_payment": 178.42,
+      "payment": 183.96,
+      "prior_services": 2845,
+      "services": 2963,
+      "payment_change_dollars": 5.54,
+      "payment_change_pct": 3.1050330680416995,
+      "service_change_count": 118,
+      "service_change_pct": 4.147627416520211
+    },
+    "sales": {
+      "coverage": "supplied",
+      "open_deal_count": 44,
+      "open_acv_usd": 4983000.0,
+      "open_share_pct": 12.402247985225818,
+      "overdue_count": 44,
+      "overdue_acv_usd": 4983000.0,
+      "min_days_overdue": 35,
+      "max_days_overdue": 323
+    }
+  },
+  "P03-app": {
+    "comparison": {
+      "specialty": "Pain Management",
+      "hcpcs": "64483",
+      "prior_year": 2022,
+      "year": 2023,
+      "prior_payment": 85.79,
+      "payment": 84.94,
+      "prior_services": 3609,
+      "services": 3762,
+      "payment_change_dollars": -0.85,
+      "payment_change_pct": -0.990791467537009,
+      "service_change_count": 153,
+      "service_change_pct": 4.239401496259352
+    },
+    "sales": {
+      "coverage": "supplied",
+      "open_deal_count": 57,
+      "open_acv_usd": 3211200.0,
+      "open_share_pct": 7.99239388524125,
+      "overdue_count": 57,
+      "overdue_acv_usd": 3211200.0,
+      "min_days_overdue": 52,
+      "max_days_overdue": 300
+    }
+  },
+  "P04-csv": {
+    "comparison": {
+      "specialty": "Podiatry",
+      "hcpcs": "11721",
+      "prior_year": 2022,
+      "year": 2023,
+      "prior_payment": 68.67,
+      "payment": 66.66,
+      "prior_services": 4735,
+      "services": 4931,
+      "payment_change_dollars": -2.01,
+      "payment_change_pct": -2.927042376583661,
+      "service_change_count": 196,
+      "service_change_pct": 4.139387539598733
+    },
+    "sales": {
+      "coverage": "supplied",
+      "open_deal_count": 54,
+      "open_acv_usd": 2451300.0,
+      "open_share_pct": 6.101069734333544,
+      "overdue_count": 54,
+      "overdue_acv_usd": 2451300.0,
+      "min_days_overdue": 38,
+      "max_days_overdue": 324
+    }
+  },
+  "P04-app": {
+    "comparison": {
+      "specialty": "Plastic Surgery",
+      "hcpcs": "19318",
+      "prior_year": 2022,
+      "year": 2023,
+      "prior_payment": 190.79,
+      "payment": 194.74,
+      "prior_services": 1727,
+      "services": 1798,
+      "payment_change_dollars": 3.95,
+      "payment_change_pct": 2.070339116305886,
+      "service_change_count": 71,
+      "service_change_pct": 4.111175448755066
+    },
+    "sales": {
+      "coverage": "supplied",
+      "open_deal_count": 54,
+      "open_acv_usd": 4649500.0,
+      "open_share_pct": 11.572195867410686,
+      "overdue_count": 54,
+      "overdue_acv_usd": 4649500.0,
+      "min_days_overdue": 45,
+      "max_days_overdue": 311
+    }
+  },
+  "P05-csv": {
+    "comparison": {
+      "specialty": "Cardiology",
+      "hcpcs": "99213",
+      "prior_year": 2022,
+      "year": 2023,
+      "prior_payment": 154.67,
+      "payment": 157.9,
+      "prior_services": 528,
+      "services": 548,
+      "payment_change_dollars": 3.23,
+      "payment_change_pct": 2.0883170621322815,
+      "service_change_count": 20,
+      "service_change_pct": 3.787878787878788
+    },
+    "sales": {
+      "coverage": "not_supplied",
+      "open_deal_count": null,
+      "open_acv_usd": null,
+      "open_share_pct": null,
+      "overdue_count": null,
+      "overdue_acv_usd": null,
+      "min_days_overdue": null,
+      "max_days_overdue": null
+    }
+  },
+  "P05-app": {
+    "comparison": {
+      "specialty": "Neurology",
+      "hcpcs": "99213",
+      "prior_year": 2022,
+      "year": 2023,
+      "prior_payment": 93.29,
+      "payment": 96.24,
+      "prior_services": 936,
+      "services": 975,
+      "payment_change_dollars": 2.95,
+      "payment_change_pct": 3.162182441848001,
+      "service_change_count": 39,
+      "service_change_pct": 4.166666666666666
+    },
+    "sales": {
+      "coverage": "not_supplied",
+      "open_deal_count": null,
+      "open_acv_usd": null,
+      "open_share_pct": null,
+      "overdue_count": null,
+      "overdue_acv_usd": null,
+      "min_days_overdue": null,
+      "max_days_overdue": null
+    }
+  }
+}
