@@ -1,0 +1,82 @@
+[
+  {
+    "case_id": "P01-csv",
+    "checks": 20,
+    "numeric_errors": [],
+    "complete_elements": 4,
+    "complete_4_of_4": true,
+    "sha256": "84af47edfbf0b00d20593fbf7eb74b45dbc6a39fcb00015b01920e9e8f28d213"
+  },
+  {
+    "case_id": "P01-app",
+    "checks": 20,
+    "numeric_errors": [],
+    "complete_elements": 4,
+    "complete_4_of_4": true,
+    "sha256": "3a0982bb6132cb50324578baff31b3e60832be1fbd49ff3bd9616a09aa566c4d"
+  },
+  {
+    "case_id": "P02-csv",
+    "checks": 20,
+    "numeric_errors": [],
+    "complete_elements": 4,
+    "complete_4_of_4": true,
+    "sha256": "12944064a4ca1d72df73af72aa7df4d1bd2296b6dd992c34c3a39330302afee9"
+  },
+  {
+    "case_id": "P02-app",
+    "checks": 20,
+    "numeric_errors": [],
+    "complete_elements": 4,
+    "complete_4_of_4": true,
+    "sha256": "79f86796eb0dd77349d60504c741a30b83b7be569d24bc4da8f7406cd792c275"
+  },
+  {
+    "case_id": "P03-csv",
+    "checks": 20,
+    "numeric_errors": [],
+    "complete_elements": 4,
+    "complete_4_of_4": true,
+    "sha256": "9a0afa553595cce4ac9f704b3dbb241dba7ace49b0a396b1ff235fabbf599f93"
+  },
+  {
+    "case_id": "P03-app",
+    "checks": 20,
+    "numeric_errors": [],
+    "complete_elements": 4,
+    "complete_4_of_4": true,
+    "sha256": "835eb6b72281582f41e54d050feb0799a2096dca46a88e496d88cf7881bf323d"
+  },
+  {
+    "case_id": "P04-csv",
+    "checks": 20,
+    "numeric_errors": [],
+    "complete_elements": 4,
+    "complete_4_of_4": true,
+    "sha256": "28c33b4cac576a57182c99f6368937f65d9307c81968fce190463fddd2144d42"
+  },
+  {
+    "case_id": "P04-app",
+    "checks": 20,
+    "numeric_errors": [],
+    "complete_elements": 4,
+    "complete_4_of_4": true,
+    "sha256": "5acf1e90414b3906dcb7ccb053ce59ff017b1d0b72fda683fd6de477d4de9f56"
+  },
+  {
+    "case_id": "P05-csv",
+    "checks": 20,
+    "numeric_errors": [],
+    "complete_elements": 4,
+    "complete_4_of_4": true,
+    "sha256": "f10cfe196f7a0d74bac61060ac3a5600b777f7830d12ab9d04daafcb63287f5d"
+  },
+  {
+    "case_id": "P05-app",
+    "checks": 20,
+    "numeric_errors": [],
+    "complete_elements": 4,
+    "complete_4_of_4": true,
+    "sha256": "bb054dba0023ecc055323ccd04a093d7700df2ddb195b10dd9f290cd51b17ea5"
+  }
+]

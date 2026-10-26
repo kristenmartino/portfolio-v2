@@ -69,7 +69,7 @@ export const projects: Project[] = [
     title: "SpecialtyPulse Pipeline",
     category: "Healthcare Data Platform",
     shareDescription:
-      "Synthetic prototype with an internal export rehearsal. Human validation and business outcomes remain unmeasured.",
+      "Synthetic review prototype with reconciled data and a five-pair AI simulation. Human usefulness and business outcomes remain unmeasured.",
     summary:
       "A specialty review prototype for healthcare-software sales teams, connecting payment comparisons to evidence and account-discovery questions.",
     href: "/work/specialtypulse-pipeline",
@@ -80,13 +80,13 @@ export const projects: Project[] = [
     status: "Shipped",
     mode: "Solo build",
     shape: "pipeline",
-    image: "/work/specialtypulse.png",
+    image: "/work/specialtypulse-review-2026-10-26.png",
     imageAlt:
       "SpecialtyPulse Procedure Detail for Dermatology / HCPCS 99213, comparing a generated 2022 scenario with synthetic 2023 records: $104.91 across 3,777 services in 2023.",
     metrics: [
       "Analyst → sales or operations lead",
       "Editable brief with procedure evidence",
-      "Internal rehearsal · human study pending",
+      "AI comparison · human study pending",
       "Synthetic data · reconciled calculations",
     ],
   },

@@ -1,0 +1,102 @@
+[
+  {
+    "id": "P01",
+    "analyst": "Maya Chen",
+    "analyst_role": "Revenue operations analyst",
+    "reviewer": "Jordan Ellis",
+    "reviewer_role": "Regional sales director",
+    "context": "Midmarket EHR/PM/RCM vendor; weekly specialty pipeline review. Analyst assembles CSV report extracts and a short sales-operations handoff. Reviewer needs an owner and next check before using exposure for planning.",
+    "order": [
+      "csv",
+      "app"
+    ],
+    "csv": [
+      "Dermatology",
+      "99213"
+    ],
+    "app": [
+      "Orthopedic Surgery",
+      "27130"
+    ]
+  },
+  {
+    "id": "P02",
+    "analyst": "Luis Ortega",
+    "analyst_role": "Finance analytics analyst",
+    "reviewer": "Priya Nair",
+    "reviewer_role": "Finance business partner",
+    "context": "Healthcare-software vendor; monthly commercial planning input. Existing assumed workflow joins a reimbursement report with a CRM export in a workbook and writes a planning-data caveat. Reviewer distinguishes assumed ACV, forecasts and recognized revenue.",
+    "order": [
+      "app",
+      "csv"
+    ],
+    "csv": [
+      "Urology",
+      "51798"
+    ],
+    "app": [
+      "Ophthalmology",
+      "92014"
+    ]
+  },
+  {
+    "id": "P03",
+    "analyst": "Avery Brooks",
+    "analyst_role": "BI analyst",
+    "reviewer": "Morgan Reed",
+    "reviewer_role": "Commercial analytics lead",
+    "context": "Analytics team at a specialty-software vendor; weekly certified-metric review. Existing assumed workflow verifies the specialty/procedure/year grain in CSV reports, checks source snapshots and sends a concise evidence memo. Reviewer values reproducibility and explicit missing inputs.",
+    "order": [
+      "csv",
+      "app"
+    ],
+    "csv": [
+      "Gastroenterology",
+      "45378"
+    ],
+    "app": [
+      "Pain Management",
+      "64483"
+    ]
+  },
+  {
+    "id": "P04",
+    "analyst": "Samira Patel",
+    "analyst_role": "Market analysis specialist",
+    "reviewer": "Theo Grant",
+    "reviewer_role": "Product manager",
+    "context": "Specialty-software product team; fortnightly market-signal triage. Existing assumed workflow compares a payment report and a sales report, then drafts discovery questions. Reviewer decides which questions need evidence before discussing a product or commercial recommendation.",
+    "order": [
+      "app",
+      "csv"
+    ],
+    "csv": [
+      "Podiatry",
+      "11721"
+    ],
+    "app": [
+      "Plastic Surgery",
+      "19318"
+    ]
+  },
+  {
+    "id": "P05",
+    "analyst": "Noah Williams",
+    "analyst_role": "Business systems analyst",
+    "reviewer": "Riley Park",
+    "reviewer_role": "Sales operations manager",
+    "context": "CRM/reporting team at a healthcare-software vendor; weekly data-quality triage. Existing assumed workflow checks a reimbursement extract against CRM CSV coverage, records missing feeds and sends a systems follow-up memo. Reviewer needs to distinguish absent coverage from a measured zero.",
+    "order": [
+      "csv",
+      "app"
+    ],
+    "csv": [
+      "Cardiology",
+      "99213"
+    ],
+    "app": [
+      "Neurology",
+      "99213"
+    ]
+  }
+]

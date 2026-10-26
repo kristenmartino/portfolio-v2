@@ -1,0 +1,289 @@
+[
+  {
+    "pair": "P01",
+    "method": "app",
+    "label": "R73",
+    "next_action": "The sales operations manager should coordinate with opportunity owners to reconcile all 47 supplied open Orthopedic Surgery opportunities against the 2026-08-31 scenario date, checking source-system stages and close dates and documenting owner support. Return the confirmed open exposure and unresolved rows to Jordan Ellis before using the $6,272,200 supplied ACV in planning. All 47 opportunities are overdue by 45 to 315 days, so the supplied open total needs validation. Account needs require a separate check before any commercial recommendation; this step authorizes no CRM changes or outreach.",
+    "can_state_next_action_without_clarification": true,
+    "missing_evidence": [
+      "The handoff does not include the opportunity-level roster, identifiers, owner attestations, or supporting stage and close-date evidence; source links are supplied as pointers.",
+      "The extract capture timestamp, source provenance verification, and reconciled account-level exposure remain unverified, as the brief acknowledges."
+    ],
+    "interpretation_errors": [],
+    "clarification_needed": false,
+    "clarification_questions": [],
+    "business_questions_for_next_check": [
+      "Which of the 47 opportunities have owner-supported open stages as of the scenario date?",
+      "What close dates can owners substantiate, and what explains the overdue dates?",
+      "What confirmed open ACV remains after review, and which rows or amounts remain unresolved?",
+      "When was the supplied sales extract captured, and does it represent the scenario date closely enough for the proposed planning use?",
+      "What account-specific evidence would support a separate assessment of software needs?"
+    ],
+    "source_or_format_cues": [
+      "Uses a structured handoff with metric lists, limits, open question, named reviewer role, requested check, draft status, and GitHub source links.",
+      "Mentions an app artifact, local extract reconciliation, and a coordinator-captured export; the source list includes receipt.json as well as mart.csv and a metric certification log.",
+      "These are visible provenance and format cues only; linked sources were not opened and no condition was inferred."
+    ],
+    "confidence": "high"
+  },
+  {
+    "pair": "P01",
+    "method": "csv",
+    "label": "R14",
+    "next_action": "The sales operations manager should have opportunity owners review all 53 supplied open Dermatology opportunities against the 2026-08-31 scenario date, confirming source-system stages and close dates and the evidence for retaining each opportunity in open pipeline. Return a reconciled open-ACV total to Jordan Ellis before planning use. All 53 opportunities are overdue by 25 to 291 days, so the supplied $4,579,800 ACV cannot yet be relied on for planning. Separately validate account needs before proposing account action; this check authorizes no CRM changes or outreach.",
+    "can_state_next_action_without_clarification": true,
+    "missing_evidence": [
+      "The handoff does not include opportunity-level identifiers, owners, or evidence substantiating open stages and close dates; source links are supplied as pointers.",
+      "The extract capture timestamp, source validation, reconciled exposure, account linkage, and account-specific needs evidence are absent or explicitly pending."
+    ],
+    "interpretation_errors": [],
+    "clarification_needed": false,
+    "clarification_questions": [],
+    "business_questions_for_next_check": [
+      "Which of the 53 opportunities still have evidence supporting an open stage as of the scenario date?",
+      "What close dates can owners substantiate, and what explains the overdue dates?",
+      "What is the reconciled open-ACV total, and what uncertainty remains in that total?",
+      "When was the sales extract captured, and is its timing appropriate for the proposed planning use?",
+      "What account linkage and discovery evidence would support a separate assessment of software needs?"
+    ],
+    "source_or_format_cues": [
+      "Uses the same structured section pattern of metric lists, limits, open question, next reviewer, requested check, draft status, and GitHub source links.",
+      "Explicitly describes payment as service-weighted; its source list includes mart.csv and a metric certification log but no receipt.json link.",
+      "These are visible provenance and format cues only; linked sources were not opened and no condition was inferred."
+    ],
+    "confidence": "high"
+  },
+  {
+    "pair": "P02",
+    "method": "csv",
+    "label": "R52",
+    "next_action": "The sales operations lead should reconcile all 57 supplied open Urology opportunities against CRM evidence, establish the evidence timestamp, and document supported current stages, close dates, and corrections without excluding opportunities merely because their dates are overdue. This is needed because all $5,004,100 of supplied unweighted assumed ACV is overdue at an assumed snapshot and is not yet suitable for monthly planning. Luis should retain the reproduced procedure calculation. After reconciliation, Priya should determine the appropriate period and planning treatment of the reconciled ACV, keeping it separate from a forecast and recognized revenue. Account context must be validated before a commercial recommendation; the brief authorizes no CRM update.",
+    "can_state_next_action_without_clarification": true,
+    "missing_evidence": [
+      "Opportunity-level CRM records and supporting stage/close-date evidence are not included, so neither the 57-opportunity population nor supported corrections can be verified from this handoff.",
+      "The actual sales-data capture timestamp and a defined planning-period population are absent; the handoff explicitly identifies an assumed 2026-08-31 snapshot and inclusion of all 500 supplied rows without period filtering.",
+      "Underlying source validation, account discovery evidence, and approved planning treatment after reconciliation remain pending. These are evidence gaps for the next check, not obstacles to assigning that check."
+    ],
+    "interpretation_errors": [],
+    "clarification_needed": false,
+    "clarification_questions": [],
+    "business_questions_for_next_check": [
+      "For each of the 57 opportunities, what current stage and close date does timestamped CRM evidence support, and what correction, if any, is justified?",
+      "Does the CRM extract reconcile to the supplied count and $5,004,100 assumed ACV, and what is the actual capture date?",
+      "Which reconciled opportunities belong in the relevant monthly planning period, and what assumptions and approvals would be needed for any separate forecast treatment?",
+      "What account-specific discovery supports a commercial recommendation, beyond a synthetic specialty-level reimbursement pattern? If recognized revenue is needed for planning, what separate contract and accounting evidence supports it?"
+    ],
+    "source_or_format_cues": [
+      "The handoff uses repeated markdown headings, raw underscore-separated metric names, and a neutral R52 label.",
+      "Visible source URLs identify a GitHub repository, a fixed commit, CSV filenames, a Databricks release directory, a receipt, and a metric certification log. Links were not opened.",
+      "The limits explicitly identify synthetic data, AI agent execution timing, and an unvalidated pressure heuristic. These are visible provenance and wording cues only."
+    ],
+    "confidence": "high"
+  },
+  {
+    "pair": "P02",
+    "method": "app",
+    "label": "R21",
+    "next_action": "The sales operations lead should reconcile all 48 supplied open Ophthalmology opportunities against CRM evidence, establish the evidence timestamp, and record supported current stages, close dates, and corrections without removing opportunities solely because their dates are past due. This is needed because all $5,132,000 of supplied unweighted assumed ACV is overdue at an assumed snapshot and requires reconciliation before planning. Luis should retain the reproduced procedure calculation. Priya should then approve the period and planning treatment of the reconciled ACV, separately from any forecast or recognized revenue. The brief authorizes no CRM change or account recommendation.",
+    "can_state_next_action_without_clarification": true,
+    "missing_evidence": [
+      "Opportunity-level CRM records and supporting stage/close-date evidence are not included, so neither the 48-opportunity population nor supported corrections can be verified from this handoff.",
+      "The actual sales-data capture timestamp and a defined planning-period population are absent; the handoff explicitly identifies an assumed 2026-08-31 snapshot and inclusion of all 500 supplied rows without period filtering.",
+      "Underlying source validation, account discovery evidence, and approved planning treatment after reconciliation remain pending. These are evidence gaps for the next check, not obstacles to assigning that check."
+    ],
+    "interpretation_errors": [],
+    "clarification_needed": false,
+    "clarification_questions": [],
+    "business_questions_for_next_check": [
+      "For each of the 48 opportunities, what current stage and close date does timestamped CRM evidence support, and what correction, if any, is justified?",
+      "Does the CRM extract reconcile to the supplied count and $5,132,000 assumed ACV, and what is the actual capture date?",
+      "Which reconciled opportunities belong in the relevant monthly planning period, and what assumptions and approvals would be needed for any separate forecast treatment?",
+      "What account-specific discovery supports a commercial recommendation, beyond a synthetic specialty-level reimbursement pattern? If recognized revenue is needed for planning, what separate contract and accounting evidence supports it?"
+    ],
+    "source_or_format_cues": [
+      "The handoff uses repeated markdown headings, raw underscore-separated metric names, and a neutral R21 label.",
+      "Visible source URLs identify a GitHub repository, a fixed commit, CSV filenames, a Databricks release directory, a receipt, and a metric certification log. Links were not opened.",
+      "The limits explicitly identify synthetic data, an unvalidated pressure score, and a captured-artifact comparison with browser-usability and human-timing exclusions. These are visible provenance and wording cues only."
+    ],
+    "confidence": "high"
+  },
+  {
+    "pair": "P03",
+    "method": "csv",
+    "label": "R38",
+    "next_action": "The sales operations owner should reconcile the 44 supplied open Gastroenterology opportunity IDs against the source snapshot, obtain its capture timestamp, and return confirmed or corrected stages and close dates with the resulting open/overdue ACV. Avery Brooks, the BI analyst, should retain the reproduced Gastroenterology/45378/year calculations and verify the pinned snapshot provenance. Sales operations owns source opportunity status and freshness; BI owns reproducibility and provenance. Morgan Reed should receive these results before interpreting the commercial pipeline, with account discovery and applicability still pending.",
+    "can_state_next_action_without_clarification": true,
+    "missing_evidence": [
+      "The 44 opportunity IDs and row-level stages and close dates are not included in the memo itself.",
+      "The source capture timestamp and evidence confirming current opportunity stages and close dates are absent.",
+      "The memo asserts local reproduction but does not include the calculation output or audit trail, and pinned snapshot provenance remains unverified.",
+      "Account-level applicability, discovery evidence, and a validated connection between practice reimbursement changes and vendor software need are absent."
+    ],
+    "interpretation_errors": [],
+    "clarification_needed": false,
+    "clarification_questions": [],
+    "business_questions_for_next_check": [
+      "Can sales operations match all 44 supplied open opportunity IDs to the source snapshot, and when was that snapshot captured?",
+      "Which stages or close dates require correction, and what open and overdue counts and ACV remain after reconciliation?",
+      "Can BI verify the provenance of the pinned source snapshots and preserve a reproducible specialty/procedure/year calculation trail?",
+      "After source validation, what account discovery would establish whether any opportunity has an applicable software need?"
+    ],
+    "source_or_format_cues": [
+      "The memo uses a structured numeric comparison followed by observation, limits, open question, named reviewer roles, requested check, status, and sources.",
+      "Sources are GitHub links pinned to a commit, including synthetic input CSVs, a Databricks-named release folder, a mart, a receipt, and a metric certification log.",
+      "The observation explicitly labels the figures synthetic, and the limits distinguish local reproduction from unvalidated external provenance."
+    ],
+    "confidence": "high"
+  },
+  {
+    "pair": "P03",
+    "method": "app",
+    "label": "R64",
+    "next_action": "The sales operations lead should reconcile the 57 supplied open Pain Management opportunity IDs against the source snapshot, obtain its capture timestamp, and return confirmed or corrected stages and close dates with the resulting open/overdue ACV. Avery Brooks, the BI analyst, should retain the reproduced Pain Management/64483 calculations and verify the pinned snapshot, exported hash, and receipt provenance. Sales operations owns opportunity status and freshness; BI owns calculation and artifact traceability. Morgan Reed should receive these results before planning or a commercial recommendation; account discovery remains pending.",
+    "can_state_next_action_without_clarification": true,
+    "missing_evidence": [
+      "The 57 opportunity IDs and row-level stages and close dates are not included in the memo itself.",
+      "The source capture timestamp and evidence confirming current opportunity stages and close dates are absent.",
+      "The coordinator-captured app export, calculation audit trail, and exported hash values are not included; local reproduction is asserted, while pinned snapshot/hash/receipt provenance remains unverified.",
+      "Account applicability, discovery evidence, and a validated connection between practice reimbursement changes and vendor software need are absent."
+    ],
+    "interpretation_errors": [],
+    "clarification_needed": false,
+    "clarification_questions": [],
+    "business_questions_for_next_check": [
+      "Can sales operations match all 57 supplied open opportunity IDs to the source snapshot, and when was that snapshot captured?",
+      "Which stages or close dates require correction, and what open and overdue counts and ACV remain after reconciliation?",
+      "Can BI link the reproduced procedure calculations to the pinned snapshots, export hashes, and receipt with a retained audit trail?",
+      "After source validation, what account discovery would establish whether any opportunity has an applicable software need?"
+    ],
+    "source_or_format_cues": [
+      "The memo uses the same structured comparison, limits, ownership, requested check, status, and source-list format.",
+      "It explicitly refers to an app export, coordinator capture, exported hashes/receipt, and browser usability not being measured.",
+      "The source list includes commit-pinned GitHub artifacts, a Databricks-named release folder, a procedure-view application URL, and a payment-check document.",
+      "A numeric pressure score is disclosed as an unvalidated project heuristic, with explicit limits on commercial interpretation."
+    ],
+    "confidence": "high"
+  },
+  {
+    "pair": "P04",
+    "method": "app",
+    "label": "R46",
+    "next_action": "Theo should coordinate a sales operations review of all 54 supplied open Plastic Surgery opportunities. Sales operations should reconcile stages and close dates against current account records, record supported corrections, retain overdue opportunities until individually reviewed, and return confirmed active exposure with its as-of date. This establishes whether the supplied pipeline context is usable. The specialty analyst should then examine source composition and service mix behind the service-weighted 19318 payment comparison, explicitly treating 2022 as generated and both years as synthetic. Theo can use these checks to frame account-discovery questions; any real product or commercial recommendation would also require independently supported customer-problem evidence and applicable real-world source evidence.",
+    "can_state_next_action_without_clarification": true,
+    "missing_evidence": [
+      "Opportunity-level current account records and review results supporting which of the 54 opportunities remain active, their current stages and close dates, and confirmed active ACV.",
+      "A source capture timestamp or current verification date for the supplied sales context; the overdue calculation is anchored to 2026-08-31.",
+      "A breakdown of provider/source composition and service mix sufficient to explain the weighted payment change within the synthetic comparison.",
+      "Account-level evidence of a specific customer workflow problem, its consequences, and any defensible relationship to the procedure-level pattern.",
+      "Externally validated, applicable real-world payment and account evidence if these synthetic observations are to inform a real business decision."
+    ],
+    "interpretation_errors": [],
+    "clarification_needed": false,
+    "clarification_questions": [],
+    "business_questions_for_next_check": [
+      "Which of the 54 supplied open opportunities remain active according to current account records, and what stage and close-date corrections are supported?",
+      "After review, what active opportunity count and assumed ACV remain, as of what date?",
+      "How much of the synthetic $3.95 weighted payment increase is associated with changes in source/provider composition or service mix?",
+      "Do account records or subsequent discovery establish a specific workflow problem, who experiences it, and what evidence supports its consequence?",
+      "Is there any supported connection between that confirmed problem and applicable procedure-payment evidence, or should the problem be investigated independently?"
+    ],
+    "source_or_format_cues": [
+      "Neutral case label appears in the heading, while the specialty, HCPCS code, and distinctive numeric values remain visible.",
+      "A fixed section template separates procedure comparison, sales context, observation, limits, open question, next reviewer, requested check, status, and sources.",
+      "The body names Theo Grant and the sales operations/specialty analyst roles, making the intended routing explicit.",
+      "Visible GitHub URLs expose the repository name, commit identifier, Databricks release path, sample-year CSV names, sample sales CSV, and metric certification log filename. These are provenance/format cues only; linked contents were not inspected.",
+      "Synthetic/generated labels and draft/source-account-validation-pending status are explicit."
+    ],
+    "confidence": "high"
+  },
+  {
+    "pair": "P04",
+    "method": "csv",
+    "label": "R97",
+    "next_action": "Theo should coordinate a sales operations review of all 54 supplied open Podiatry opportunities. Sales operations should validate stages and close dates against current account records, document supported changes while retaining overdue rows until reviewed, and report confirmed active exposure with its as-of date. This resolves the reliability of the sales context. The specialty analyst should then examine source composition and service mix behind the service-weighted 11721 payment decline, preserving the generated-2022 and synthetic-data limits. Theo should frame discovery around independently evidenced workflow problems before discussing a product or commercial recommendation; the synthetic payment decline itself does not justify an account action.",
+    "can_state_next_action_without_clarification": true,
+    "missing_evidence": [
+      "Opportunity-level current account records and review results establishing active status, stages, close dates, and confirmed active ACV for the 54 supplied opportunities.",
+      "A source capture timestamp or current verification date for the supplied sales context; the overdue calculation is anchored to 2026-08-31.",
+      "A provider/source composition and service-mix breakdown explaining the weighted payment decline within the synthetic comparison.",
+      "Account discovery or other direct evidence of a specific workflow problem, affected users, consequences, and reasons it merits investigation independently of the synthetic decline.",
+      "Externally validated, applicable real-world payment and account evidence before using this handoff to support a real business decision."
+    ],
+    "interpretation_errors": [],
+    "clarification_needed": false,
+    "clarification_questions": [],
+    "business_questions_for_next_check": [
+      "Which of the 54 supplied open opportunities are still active, and which stages or close dates require supported corrections?",
+      "What active opportunity count and assumed ACV remain after review, and what is the review as-of date?",
+      "How much of the synthetic $2.01 weighted payment decline is associated with source/provider composition or service mix?",
+      "Does account discovery establish a concrete workflow problem independently of the synthetic payment decline, and what evidence shows its consequence?",
+      "What further customer and applicable market evidence would Theo need before considering a product or commercial recommendation?"
+    ],
+    "source_or_format_cues": [
+      "Neutral case label appears in the heading, while Podiatry, HCPCS 11721, and distinctive numeric values remain visible.",
+      "The section structure and source list match the other handoff; the direction and magnitude of the payment change, specialty, code, and sales values distinguish this case.",
+      "Theo Grant and the sales operations/specialty analyst roles are named in the requested workflow.",
+      "Visible GitHub URLs reveal the repository name, shared commit identifier, Databricks release path, sample-year and sales filenames, and certification log filename. No source links were opened.",
+      "Explicit synthetic/generated wording and draft/source-account-validation-pending status constrain the interpretation."
+    ],
+    "confidence": "high"
+  },
+  {
+    "pair": "P05",
+    "method": "app",
+    "label": "R09",
+    "next_action": "CRM/reporting systems owner should reconcile Neurology taxonomy/mapping, extraction filters and feed completeness against the full CRM, record capture time, and return covered records or explicit source evidence of zero opportunities to Riley Park. Riley should then verify stages and valid close dates before interpreting exposure or overdue state. The procedure aggregates also need a pinned-source recheck and account discovery before an account-level decision.",
+    "can_state_next_action_without_clarification": true,
+    "missing_evidence": [
+      "Full-CRM reconciliation and evidence establishing whether Neurology is covered, omitted or truly has zero opportunities.",
+      "Source capture timestamp and validated specialty mapping, extraction filters and feed completeness.",
+      "Opportunity records with verified stages and valid close dates for any eventual exposure or overdue calculation.",
+      "Completed pinned-source/calculation validation and account context; the handoff explicitly leaves these pending."
+    ],
+    "interpretation_errors": [],
+    "clarification_needed": false,
+    "clarification_questions": [],
+    "business_questions_for_next_check": [
+      "Is Neurology absent because of specialty mapping, extraction filters or an incomplete feed, or does a complete CRM extract explicitly confirm zero opportunities?",
+      "What is the source capture time and what evidence establishes completeness?",
+      "If records are returned, are stage definitions and close dates valid, and what exposure and overdue state do they support under the stated scenario date?",
+      "Do the pinned sources reproduce the weighted-payment aggregates, and what account discovery is needed before an account-level decision?"
+    ],
+    "source_or_format_cues": [
+      "Structured comparison, sales fields, limits, open question, named reviewer and requested check make the action easy to locate.",
+      "The limits refer to a coordinator-captured live app export, browser usability, local extract agreement, snapshot hashes and cloud execution.",
+      "Commit-pinned GitHub links include a Databricks-labelled release path, certification log, receipt and an additional payment-check document; links were not opened.",
+      "Long numeric percentages are followed by readable rounded percentages in the observation; all sales measures are explicitly Unavailable."
+    ],
+    "confidence": "high"
+  },
+  {
+    "pair": "P05",
+    "method": "csv",
+    "label": "R85",
+    "next_action": "CRM/reporting systems owner should reconcile Cardiology taxonomy/mapping and extraction filters against the full CRM, document feed completeness and capture time, and return covered records or explicit evidence of zero opportunities to Riley Park. Riley should verify stages and close dates before interpreting exposure. The weighted-payment aggregates also need a pinned-source recheck and account discovery before an account-level decision.",
+    "can_state_next_action_without_clarification": true,
+    "missing_evidence": [
+      "Full-CRM reconciliation and evidence establishing whether Cardiology is covered, omitted or truly has zero opportunities.",
+      "Source capture timestamp and validated specialty mapping, extraction filters and feed completeness.",
+      "Opportunity records with verified stages and valid close dates for any eventual exposure or overdue calculation.",
+      "Completed pinned-source/calculation validation and account context; the handoff explicitly leaves these pending."
+    ],
+    "interpretation_errors": [],
+    "clarification_needed": false,
+    "clarification_questions": [],
+    "business_questions_for_next_check": [
+      "Does missing Cardiology coverage arise from specialty mapping, extraction filters or an incomplete feed, or does a complete CRM extract explicitly confirm zero opportunities?",
+      "What is the source capture time and what evidence establishes completeness?",
+      "If records are returned, are stage definitions and close dates valid, and what exposure and overdue state do they support under the stated scenario date?",
+      "Do the pinned sources reproduce both weighted-payment aggregates, and what account discovery is needed before an account-level decision?"
+    ],
+    "source_or_format_cues": [
+      "Structured comparison, sales fields, limits, open question, named reviewer and requested check make the action easy to locate.",
+      "The observation describes a nine-specialty sales extract; the limits explicitly identify 500 supplied rows and unknown capture time.",
+      "Commit-pinned GitHub links include a Databricks-labelled release path, certification log and receipt; links were not opened.",
+      "Long numeric percentages are followed by readable rounded percentages in the observation; all sales measures are explicitly Unavailable."
+    ],
+    "confidence": "high"
+  }
+]
