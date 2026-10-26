@@ -28,11 +28,11 @@ Medicare payment comparisons describe practice-side signals; pipeline dollars re
 
 These are assumptions, not research findings. Before a pilot, I would ask intended analysts and recipients to walk through a recent review: how often it happens, which tools they use, how long it takes, what evidence gets lost and which decision follows. If reviews are infrequent or existing reports already meet the need, I would reconsider the product scope.
 
-## What the reviewer hands off
+## What the analyst hands off
 
-The [demo](https://specialtypulse.kristenmartino.ai/?view=market) includes “Prepare a specialty review · sample handoff.” A shared specialty selection connects the handoff, Procedure Detail and Pipeline Intelligence. The pipeline review keeps that specialty’s totals, owner amounts and overdue opportunity list together. A separately labeled chart compares all specialties; “Return to brief” reopens the current specialty’s draft. Analysts can compare the same procedure across two consecutive years, add that comparison to the brief, then write an observation and its limits, an open question, a next reviewer and a requested check.
+In the [demo](https://specialtypulse.kristenmartino.ai/?view=market), choose **Start review** under **Specialty review**. A shared specialty selection connects the handoff, Procedure Detail and Pipeline Intelligence. The pipeline review keeps that specialty’s totals, owner amounts and overdue opportunity list together. A separately labeled chart compares all specialties; “Return to brief” reopens the current specialty’s draft. Analysts can compare the same procedure across two consecutive years, add that comparison to the brief, then write an observation and its limits, an open question, a next reviewer and a requested check. **Method and sources** opens the comparison formulas and evidence links; **About this demo** holds the general assumptions.
 
-The Markdown download includes both years' payments and service counts, calculated changes, the analyst's draft notes and a link that reopens the selected comparison. Verification links point to the reporting mart, synthetic raw inputs, sales CSV, metric definitions and the selected run receipt at the build's repository revision; hashes identify the recorded data snapshot. Each specialty keeps a separate draft as the analyst switches tabs. Drafts last until the page reloads; downloading keeps a copy and does not send or assign it. Missing fields remain explicitly marked. A four-element completeness check measures presence, not accuracy or approval.
+The Markdown download includes both years' payments and service counts, calculated changes, the analyst's draft notes and a link that reopens the selected comparison. It also includes owner totals and the complete specialty-scoped overdue opportunity list. A separate overdue CSV preserves opportunity IDs, owners, stages, assumed ACV, dates, overdue ages, the scenario date and the source revision. Both exports use the full cohort, regardless of table pagination. Verification links point to the reporting mart, synthetic raw inputs, sales CSV, metric definitions and the selected run receipt at the build's repository revision; hashes identify the recorded data snapshot. Each specialty keeps a separate draft as the analyst switches tabs. Drafts last until the page reloads; downloading keeps a copy and does not send or assign it. Missing fields remain explicitly marked. A four-element completeness check measures presence, not accuracy or approval.
 
 ## Worked example: a completed illustrative brief
 
@@ -80,10 +80,10 @@ The **invented sales scenario snapshot is August 31, 2026**; the source capture 
 
 The public procedure list displays **$104.91 across 3,777 services** for Dermatology / HCPCS 99213. The 57 matching raw rows have a weighted payment sum of $396,247.22. The displayed value reconciles to those records, the exported reporting table and the browser data.
 
-<Diagram title="Procedure comparison" fullSizeHref="/work/specialtypulse.png" fullSizeLabel="View full-size screenshot ↗">
-  <img src="/work/specialtypulse.png" alt="SpecialtyPulse compares Dermatology / HCPCS 99213: the generated 2022 scenario has $108.05 across 3,626 services; the synthetic 2023 records have $104.91 across 3,777 services." width={1280} height={960} className="h-auto w-full" />
+<Diagram title="Procedure comparison" fullSizeHref="/work/specialtypulse-review-2026-10-26.png" fullSizeLabel="View full-size screenshot ↗">
+  <img src="/work/specialtypulse-review-2026-10-26.png" alt="SpecialtyPulse compares Dermatology / HCPCS 99213: the generated 2022 scenario has $108.05 across 3,626 services; the synthetic 2023 records have $104.91 across 3,777 services." width={947} height={955} className="h-auto w-full" />
 </Diagram>
-<Caption>Live Procedure Detail, captured October 24, 2026 with Dermatology / HCPCS 99213 and the constructed CY2022–2023 comparison selected.</Caption>
+<Caption>Live Procedure Detail, captured October 26, 2026 after the UI cleanup, with Dermatology / HCPCS 99213 and the constructed CY2022–2023 comparison selected.</Caption>
 
 The local Spark baseline processes **29,982 raw records into 870 reporting rows**. The Databricks notebook adapters import the same transformation functions and produce the matching business values now served by the dashboard. Independent Decimal tests reconcile all 870 groups, and CI re-executes Spark to compare every business column. The build rejects source, transformation-code or output hashes that differ from the recorded run.
 
@@ -101,7 +101,7 @@ The first rehearsal found that app exports lacked a direct pinned sales CSV link
 
 ## Planned human comparison
 
-The five-pair human comparison has not started. Its evaluation criteria remain proposed and are also visible in the demo. No stakeholder validation or human user-evaluation results have been recorded.
+The five-pair human comparison has not started. Its evaluation criteria remain proposed and are documented below and in the linked evaluation plan. No stakeholder validation or human user-evaluation results have been recorded.
 
 I would recruit **five analyst–reviewer pairs for an exploratory comparison**. Each analyst would prepare two briefs from matched data: one with their usual report or spreadsheet and one with SpecialtyPulse. I would alternate the order and scenario assigned to each method, confirming the existing workflow and comparable task difficulty first.
 

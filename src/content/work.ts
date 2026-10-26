@@ -80,7 +80,7 @@ export const projects: Project[] = [
     status: "Shipped",
     mode: "Solo build",
     shape: "pipeline",
-    image: "/work/specialtypulse.png",
+    image: "/work/specialtypulse-review-2026-10-26.png",
     imageAlt:
       "SpecialtyPulse Procedure Detail for Dermatology / HCPCS 99213, comparing a generated 2022 scenario with synthetic 2023 records: $104.91 across 3,777 services in 2023.",
     metrics: [
