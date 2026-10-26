@@ -31,6 +31,8 @@ The balance-sheet check keeps parent equity and noncontrolling interests separat
 
 CRM and CSCO exposed debt totals that included current maturities already carried in short-term debt. Filing-backed mappings now select noncurrent debt for both. CRM also needed total cash-flow D&A and an explicit combined payables/accruals label. Repairs preserve reviewed corrections and feed corrected debt into the net-debt bridge and default WACC. These targeted checks are separate from the historical extraction baseline.
 
+CSCO's generic D&A tag also covered property and equipment only. Its model now uses the filed annual depreciation, amortization and other cash-flow adjustment across the saved history. This is a combined proxy, not pure D&A; statement rows, the assumption ratio and projection column name that scope. Matching tagged annual contexts are required, and the repair preserves corrected debt and the reviewed SG&A note. The historical adjustment/revenue ratio changes the cash-flow estimate without changing the debt bridge or other assumptions.
+
 CRM's revenue display also needs complete coverage: its five subscription offerings exclude professional services. The workspace reads all six categories from tagged filing contexts, checks them against the subscription subtotal and consolidated total, and avoids adding the subtotal twice. It labels these as revenue categories because Salesforce reports one operating segment. This display does not change the consolidated valuation.
 
 A reviewer can replace a flagged value and optionally supply a supporting excerpt. Validation then runs again. The stored company record retains the current correction and its source label; it does not provide reviewer identity or a chronological edit history.
