@@ -18,7 +18,7 @@ These are assumptions, not research findings. Before a pilot, I would ask intend
 
 The [demo](https://specialtypulse.kristenmartino.ai/?view=market) includes “Prepare a specialty review · sample handoff.” A shared specialty selection connects the handoff and Procedure Detail. Analysts can compare the same procedure across two consecutive years, add that comparison to the brief, then write an observation and its limits, an open question, a next reviewer and a requested check.
 
-The Markdown download includes both years' payments and service counts, calculated changes, the analyst's draft notes and a link that reopens the selected comparison. Verification links point to the reporting mart, synthetic raw inputs, sales CSV, metric definitions and local Spark receipt at the build's repository revision; hashes identify the recorded data snapshot. Each specialty keeps a separate draft as the analyst switches tabs. Drafts last until the page reloads; downloading keeps a copy and does not send or assign it. Missing fields remain explicitly marked. A four-element completeness check measures presence, not accuracy or approval.
+The Markdown download includes both years' payments and service counts, calculated changes, the analyst's draft notes and a link that reopens the selected comparison. Verification links point to the reporting mart, synthetic raw inputs, sales CSV, metric definitions and the selected run receipt at the build's repository revision; hashes identify the recorded data snapshot. Each specialty keeps a separate draft as the analyst switches tabs. Drafts last until the page reloads; downloading keeps a copy and does not send or assign it. Missing fields remain explicitly marked. A four-element completeness check measures presence, not accuracy or approval.
 
 ## Worked example: a completed illustrative brief
 
@@ -66,7 +66,9 @@ The current stack is **Databricks → Airflow-validated export → React dashboa
 
 The serverless Databricks job uses the shared Spark transformations, writes raw, staging and mart Delta tables, and compares every mart business value with the reconciled baseline. Airflow checks the successful run's receipt and exported file, saves an immutable versioned copy, and selects it for the next React build. The build checks the selected export again. Creating a scheduled export and publishing a website release are separate steps.
 
-**Current verification:** the public dashboard uses the recorded local Spark artifact. The local Airflow runtime is healthy and its annual DAG is loaded but paused; a successful Databricks run and Airflow-triggered cloud refresh have not yet been recorded. The [deployment runbook](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/deployment/README.md) records the commands and verification boundaries. This deployment work is separate from the internal rehearsal and pending human comparison above.
+**Verified October 26, 2026:** Databricks Spark 4.2.0 processed **29,982 raw records into 870 mart rows** in Unity Catalog Delta tables. The persisted output matched every business value in the reconciled baseline. Airflow 3.1.8 completed both an initial scheduled refresh and a separate clean manual run; all four tasks in the clean run passed on their first attempt. The public dashboard now uses that run's versioned export. [Run receipts and schedule verification](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/deployment_verification.json) record the executed steps and setup corrections.
+
+Airflow runs as a local macOS user service with CLI-managed OAuth. Its annual UTC schedule is enabled, with the next run due **December 31, 2026 at 7 p.m. Eastern**. The Mac must be awake and the user signed in; this is not managed cloud Airflow. New exports require a separate website release. The [deployment runbook](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/deployment/README.md) explains the setup. These infrastructure checks are separate from the internal rehearsal and pending human comparison above.
 
 ## Decisions behind the workflow
 
@@ -100,7 +102,7 @@ A recorded local Spark run processes **29,982 raw records into 870 rows used by 
   <Spec label="My role" value="Workflow design, metric definitions, pipeline development and validation" />
   <Spec label="Year" value="2026" />
   <Spec label="Data" value="Synthetic 2023 base · generated 2021–2022 comparison scenarios" />
-  <Spec label="Execution" value="Local Spark 4.0.1 · 29,982 raw records → 870 reporting rows" />
+  <Spec label="Execution" value="Databricks Spark 4.2.0 · local Airflow 3.1.8 · 870 reporting rows" />
 </Specs>
 
 The first complete run exposed duplicate synthetic provider identifiers. I corrected them deterministically and retained duplicate-key rejection before aggregation. Release tests check the export hash, every business value and the run receipt before selecting an artifact for the dashboard. They also reject changed artifacts for a previously recorded run. Earlier Domo policy code and its tests are archived; they are not evidence of active access enforcement.
@@ -109,8 +111,8 @@ Open the [same Dermatology / 99213 comparison](https://specialtypulse.kristenmar
 
 ## Scope and next validation
 
-All records are synthetic. The 2021–2022 inputs are generated comparison scenarios, not historical CMS observations. The verified run uses local Spark and a Parquet staging round-trip. Databricks catalog/Delta execution and Airflow-triggered cloud orchestration remain unverified. Public access rules and usage are illustrative; the public dashboard serves the same synthetic data to all visitors.
+All records are synthetic. The 2021–2022 inputs are generated comparison scenarios, not historical CMS observations. Both the local Spark/Parquet baseline and the Databricks Delta/Airflow delivery path have been reconciled. The schedule runs on a local Mac; host availability and valid OAuth access remain operating dependencies. Public access rules and usage are illustrative; the public dashboard serves the same synthetic data to all visitors.
 
 The current deployment job replaces each Delta table in a single table commit; the three tables are not one transaction. Operational use would still require tested recovery, real-source reconciliation and intended-user access checks.
 
-Next, I would confirm intended users' actual workflow and comparable task difficulty, then run the five-pair human comparison. External integrations still need verification before operational recommendations. [GTM Healthcare Intelligence](/work/gtm-healthcare) covers the related reporting-workflow prototype.
+Next, I would confirm intended users' actual workflow and comparable task difficulty, then run the five-pair human comparison. Operational recommendations still require real-source reconciliation, intended-user access checks, recovery tests and an alerting plan. [GTM Healthcare Intelligence](/work/gtm-healthcare) covers the related reporting-workflow prototype.
