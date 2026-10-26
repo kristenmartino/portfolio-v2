@@ -35,6 +35,8 @@ CSCO's generic D&A tag also covered property and equipment only. Its model now u
 
 CRM's revenue display also needs complete coverage: its five subscription offerings exclude professional services. The workspace reads all six categories from tagged filing contexts, checks them against the subscription subtotal and consolidated total, and avoids adding the subtotal twice. It labels these as revenue categories because Salesforce reports one operating segment. This display does not change the consolidated valuation.
 
+IBM exposed a different gap: its statements are incorporated in an annual-report exhibit and its standard operating-income tag is absent. A targeted calculation uses filed GAAP pre-tax income from continuing operations plus separately reported interest as an EBIT proxy. The workspace labels the proxy in its figure, assumptions, statements, sensitivity and projection, explains the retained non-operating items and financing costs, and keeps it flagged for review. It is neither reported operating income nor IBM's operating (non-GAAP) earnings. Missing or conflicting operands still prevent valuation.
+
 A reviewer can replace a flagged value and optionally supply a supporting excerpt. Validation then runs again. The stored company record retains the current correction and its source label; it does not provide reviewer identity or a chronological edit history.
 
 ## 3. Make the model choice explicit
