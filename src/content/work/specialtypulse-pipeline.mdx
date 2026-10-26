@@ -96,7 +96,7 @@ The public procedure list displays **$104.91 across 3,777 services** for Dermato
 </Diagram>
 <Caption>Live Procedure Detail, captured October 24, 2026 with Dermatology / HCPCS 99213 and the constructed CY2022–2023 comparison selected.</Caption>
 
-A recorded local Spark run processes **29,982 raw records into 870 rows used by the dashboard**. The Databricks notebook adapters import the same transformation functions. Independent Decimal tests reconcile all 870 groups, and CI re-executes Spark to compare every business column. The build rejects source, transformation-code or output hashes that differ from the recorded run.
+The local Spark baseline processes **29,982 raw records into 870 reporting rows**. The Databricks notebook adapters import the same transformation functions and produce the matching business values now served by the dashboard. Independent Decimal tests reconcile all 870 groups, and CI re-executes Spark to compare every business column. The build rejects source, transformation-code or output hashes that differ from the recorded run.
 
 <Specs>
   <Spec label="My role" value="Workflow design, metric definitions, pipeline development and validation" />
@@ -107,7 +107,7 @@ A recorded local Spark run processes **29,982 raw records into 870 rows used by 
 
 The first complete run exposed duplicate synthetic provider identifiers. I corrected them deterministically and retained duplicate-key rejection before aggregation. Release tests check the export hash, every business value and the run receipt before selecting an artifact for the dashboard. They also reject changed artifacts for a previously recorded run. Earlier Domo policy code and its tests are archived; they are not evidence of active access enforcement.
 
-Open the [same Dermatology / 99213 comparison](https://specialtypulse.kristenmartino.ai/?view=procedure&specialty=Dermatology&hcpcs=99213&year=2023) to inspect the displayed payments and 2023 source trace. The [run receipt](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/pipeline_run.json), [input/output artifact](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/payment_verification.json) and [reproduction guide](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/docs/verification/payment-check.md) provide the technical detail. The brief's versioned links preserve its evidence snapshot when the live demo changes.
+Open the [same Dermatology / 99213 comparison](https://specialtypulse.kristenmartino.ai/?view=procedure&specialty=Dermatology&hcpcs=99213&year=2023) to inspect the displayed payments and 2023 source trace. The [run receipt](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/releases/databricks-527988765998273/receipt.json), [input/output artifact](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/data/payment_verification.json) and [reproduction guide](https://github.com/kristenmartino/specialtypulse_pipeline/blob/main/docs/verification/payment-check.md) provide the technical detail. The brief's versioned links preserve its evidence snapshot when the live demo changes.
 
 ## Scope and next validation
 
