@@ -38,13 +38,13 @@ One repair booking was checked end to end on **October 25, 2026**: request, **$7
 
 [Open the walkthrough full size](/work/cabana/full-flow-2026-10-25.mp4) · [Read the verification record](/work/cabana/full-flow-verification-2026-10-25.txt)
 
-The run verified:
+A separate QA member repeated the full flow on **October 26, 2026**, starting with a received email sign-in link:
 
 - **Payment and approval:** One booking, one Airtable record and one paid test deposit confirmed by Stripe’s sandbox webhook. Staff approved the request through the actual Telegram button.
-- **Scheduling and completion:** The app, Airtable and Telegram matched the **October 25, 2026, 2–3 PM EDT** window. Completing the visit in Airtable updated the app and sent the Telegram notification.
+- **Scheduling and completion:** The app, Airtable and Telegram matched the fictional **October 26, 2026, 6–7 PM EDT** window. Completing the visit in Airtable updated the app and sent the Telegram notification.
 - **Notes and delivery:** The exact Airtable note appeared in Service history. All six lifecycle and scheduling events reached Airtable and Telegram without retries. No deliveries were pending or dead-lettered at the final check.
 
-All **20 evidence checks** passed in this single demo run.
+The October 25 walkthrough passed **20 evidence checks**. The [October 26 verification record](/work/cabana/full-flow-verification-2026-10-26.txt) includes email sign-in, the repeated flow and the final reconciliation result below.
 
 ## The system
 
@@ -245,7 +245,7 @@ n8n processes events to update Airtable and send notifications. Failed deliverie
 
 A webhook trigger starts processing, while a 60-second sweep checks pending events. Nightly [reconciliation](https://github.com/kristenmartino/cabana/blob/5acbf9ff6c4bc3ef03b94098ff723bf2284969e4/ops/n8n/workflows/reconciliation.json) compares booking IDs and 11 fields, including status, deposit state, visit times and notes, between the app and Airtable. It reports the result to Telegram without changing records.
 
-The **October 26, 2026** live check matched **14 current bookings with zero drift**. Airtable also retains **14 historical QA records** whose source bookings are no longer in the app, preserving their original IDs, notes and staff evidence. These are counted separately; a history label cannot exclude a current booking from comparison.
+After the full-flow test, the **October 26, 2026, 7:15 PM EDT** reconciliation matched **15 current bookings across all 11 fields with zero drift**, and Telegram received the report. Airtable’s **14 historical QA records**, whose source bookings are no longer in the app, retained their IDs, notes and staff evidence and were counted separately. A history label cannot exclude a current booking from comparison.
 
 ## Failure-injection testing
 
