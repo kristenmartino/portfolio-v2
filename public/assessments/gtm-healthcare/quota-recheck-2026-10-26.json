@@ -1,0 +1,920 @@
+{
+  "assessment": "GTM Healthcare Intelligence — combined-quota follow-up",
+  "label": "Self-initiated review of my own demo",
+  "scopeNotice": "Follow-up to F02 only. The original October 25 evidence is preserved separately. This is not an independent audit or overall-accuracy benchmark. No app code was changed or deployed for this recheck. All scenario records are synthetic.",
+  "completedAt": "2026-10-26T17:55:31.424612+00:00",
+  "displayDate": "October 26, 2026",
+  "originalEvidence": "/assessments/gtm-healthcare/verification.json",
+  "servingRevision": "a1ce674407d1b9b2f5dd6abef1ce11db9e838b44",
+  "fixCommit": "65e1db584a479abbd10d6901525c6d817f519fbf",
+  "fixSource": "https://github.com/kristenmartino/gtm-healthcare-intel/commit/65e1db584a479abbd10d6901525c6d817f519fbf",
+  "servingSource": "https://github.com/kristenmartino/gtm-healthcare-intel/tree/a1ce674407d1b9b2f5dd6abef1ce11db9e838b44",
+  "method": "Three selected live requests checked combined-only, per-rep-only and combined-plus-per-rep behavior. Expected amounts were checked against the synthetic scenario and separately calculated weighted attainment. AI tools supported testing and analysis.",
+  "expected": {
+    "combined": {
+      "bookings": 754000,
+      "quota": 800000,
+      "attainment": 94.25,
+      "displayedAttainment": "94.3%"
+    },
+    "perRep": [
+      {
+        "name": "Chen",
+        "bookings": 504000,
+        "quota": 450000,
+        "attainment": 112.0
+      },
+      {
+        "name": "Kim",
+        "bookings": 250000,
+        "quota": 350000,
+        "attainment": 71.42857142857143
+      }
+    ],
+    "weightedFormula": "754000 / 800000 * 100 = 94.25",
+    "note": "The combined percentage is recomputed from summed amounts, not an unweighted mean of rep percentages."
+  },
+  "cases": [
+    {
+      "case": "combined",
+      "question": "What is the combined quota and attainment for Sarah Chen and David Kim in Q1 2025?",
+      "status": 200,
+      "source": "validated-query",
+      "text": "Period: Q1 2025. Reps: Sarah Chen, David Kim.\nTotal: Bookings (won ACV) $754,000; Full-quarter quota $800,000; Attainment 94.3%.",
+      "results": [
+        {
+          "groupBy": [],
+          "reps": [
+            "Sarah Chen",
+            "David Kim"
+          ],
+          "rows": [
+            {
+              "name": "Total",
+              "bookings": 754000,
+              "quota": 800000,
+              "attainment": 94.25
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case": "per-rep",
+      "question": "Show bookings, quota and attainment by rep for Sarah Chen and David Kim in Q1 2025.",
+      "status": 200,
+      "source": "validated-query",
+      "text": "Period: Q1 2025. Reps: Sarah Chen, David Kim.\nChen: Bookings (won ACV) $504,000.\nKim: Bookings (won ACV) $250,000.\n\nPeriod: Q1 2025. Reps: Sarah Chen, David Kim.\nChen: Bookings (won ACV) $504,000; Full-quarter quota $450,000; Attainment 112.0%.\nKim: Bookings (won ACV) $250,000; Full-quarter quota $350,000; Attainment 71.4%.",
+      "results": [
+        {
+          "groupBy": [
+            "rep"
+          ],
+          "reps": [
+            "Sarah Chen",
+            "David Kim"
+          ],
+          "rows": [
+            {
+              "name": "Chen",
+              "bookings": 504000,
+              "quota": null,
+              "attainment": null
+            },
+            {
+              "name": "Kim",
+              "bookings": 250000,
+              "quota": null,
+              "attainment": null
+            }
+          ]
+        },
+        {
+          "groupBy": [
+            "rep"
+          ],
+          "reps": [
+            "Sarah Chen",
+            "David Kim"
+          ],
+          "rows": [
+            {
+              "name": "Chen",
+              "bookings": 504000,
+              "quota": 450000,
+              "attainment": 112.00000000000001
+            },
+            {
+              "name": "Kim",
+              "bookings": 250000,
+              "quota": 350000,
+              "attainment": 71.42857142857143
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case": "both",
+      "question": "Show combined bookings, quota and weighted attainment for Sarah Chen and David Kim in Q1 2025, along with the per-rep results.",
+      "status": 200,
+      "source": "validated-query",
+      "text": "Period: Q1 2025. Reps: Sarah Chen, David Kim.\nTotal: Bookings (won ACV) $754,000; Full-quarter quota $800,000; Attainment 94.3%.\n\nPeriod: Q1 2025. Reps: Sarah Chen, David Kim.\nChen: Bookings (won ACV) $504,000; Full-quarter quota $450,000; Attainment 112.0%.\nKim: Bookings (won ACV) $250,000; Full-quarter quota $350,000; Attainment 71.4%.",
+      "results": [
+        {
+          "groupBy": [],
+          "reps": [
+            "Sarah Chen",
+            "David Kim"
+          ],
+          "rows": [
+            {
+              "name": "Total",
+              "bookings": 754000,
+              "quota": 800000,
+              "attainment": 94.25
+            }
+          ]
+        },
+        {
+          "groupBy": [
+            "rep"
+          ],
+          "reps": [
+            "Sarah Chen",
+            "David Kim"
+          ],
+          "rows": [
+            {
+              "name": "Chen",
+              "bookings": 504000,
+              "quota": 450000,
+              "attainment": 112.00000000000001
+            },
+            {
+              "name": "Kim",
+              "bookings": 250000,
+              "quota": 350000,
+              "attainment": 71.42857142857143
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "rawResponses": {
+    "combined": {
+      "source": "validated-query",
+      "content": [
+        {
+          "type": "text",
+          "text": "Period: Q1 2025. Reps: Sarah Chen, David Kim.\nTotal: Bookings (won ACV) $754,000; Full-quarter quota $800,000; Attainment 94.3%."
+        }
+      ],
+      "appliedScope": [
+        "Query 1: quota.",
+        "Period: Q1 2025.",
+        "Report: quota.",
+        "reps: Sarah Chen, David Kim.",
+        "Grouping: total."
+      ],
+      "calculationDetails": [
+        {
+          "title": "quota",
+          "notes": [
+            "Win rate = won / (won + lost). Cycle and mean ACV use won opportunities only. Open pipeline is a separate snapshot, not bookings or a forecast.",
+            "Attainment and coverage use summed amounts and full-quarter quotas. Gross rep shortfalls minus rep overperformance equals the signed net quota gap; net shortfall is the positive part of that gap.",
+            "Displayed values are rounded; calculations, filters and ties use unrounded values."
+          ],
+          "rows": [
+            "Total: Bookings (won ACV) $754,000; Open qualified pipeline $2,400,000; Wins 10; Losses 30; Closed opportunities 40; Closed-cohort win rate 25.0%; Mean won ACV $75,400; Mean won cycle 46.4 days; Full-quarter quota $800,000; Attainment 94.3%; Pipeline / full-quarter quota 3x; Net quota shortfall $46,000; Gross rep shortfalls $100,000; Rep overperformance $54,000; Target gap $46,000."
+          ]
+        }
+      ],
+      "toolCalls": [
+        {
+          "id": "toolu_012KQoi3bcEwAjAQU9gDJann",
+          "name": "query_gtm",
+          "input": {
+            "queries": [
+              {
+                "report": "quota",
+                "quarters": [
+                  "Q1 2025"
+                ],
+                "reps": [
+                  "Sarah Chen",
+                  "David Kim"
+                ],
+                "specialties": [],
+                "sources": [],
+                "groupBy": [],
+                "predicate": {
+                  "metric": "bookings",
+                  "operator": "none",
+                  "value": null
+                },
+                "ranking": {
+                  "metric": "bookings",
+                  "direction": "none",
+                  "limit": 1,
+                  "within": []
+                }
+              }
+            ],
+            "explain": false
+          },
+          "result": {
+            "domain": "gtm",
+            "results": [
+              {
+                "metrics": [
+                  "bookings",
+                  "pipeline",
+                  "wins",
+                  "losses",
+                  "closed",
+                  "winRate",
+                  "avgACV",
+                  "avgCycle",
+                  "quota",
+                  "attainment",
+                  "coverage",
+                  "shortfall",
+                  "grossShortfall",
+                  "overperformance",
+                  "gap"
+                ],
+                "rows": [
+                  {
+                    "name": "Total",
+                    "dimensions": {},
+                    "wins": 10,
+                    "losses": 30,
+                    "closed": 40,
+                    "bookings": 754000,
+                    "pipeline": 2400000,
+                    "winRate": 25,
+                    "avgACV": 75400,
+                    "avgCycle": 46.4,
+                    "quota": 800000,
+                    "attainment": 94.25,
+                    "coverage": 3,
+                    "gap": 46000,
+                    "shortfall": 46000,
+                    "grossShortfall": 100000,
+                    "overperformance": 54000
+                  }
+                ],
+                "rankings": [],
+                "query": {
+                  "report": "quota",
+                  "quarters": [
+                    "Q1 2025"
+                  ],
+                  "reps": [
+                    "Sarah Chen",
+                    "David Kim"
+                  ],
+                  "specialties": [],
+                  "sources": [],
+                  "groupBy": [],
+                  "predicate": {
+                    "metric": "bookings",
+                    "operator": "none",
+                    "value": null
+                  },
+                  "ranking": {
+                    "metric": "bookings",
+                    "direction": "none",
+                    "limit": 1,
+                    "within": []
+                  }
+                },
+                "facts": null,
+                "scope": [
+                  "Period: Q1 2025.",
+                  "Report: quota.",
+                  "reps: Sarah Chen, David Kim.",
+                  "Grouping: total."
+                ],
+                "notes": [
+                  "Win rate = won / (won + lost). Cycle and mean ACV use won opportunities only. Open pipeline is a separate snapshot, not bookings or a forecast.",
+                  "Attainment and coverage use summed amounts and full-quarter quotas. Gross rep shortfalls minus rep overperformance equals the signed net quota gap; net shortfall is the positive part of that gap."
+                ]
+              }
+            ],
+            "explain": false,
+            "displayMetrics": [
+              "quota",
+              "attainment",
+              "bookings"
+            ]
+          }
+        }
+      ]
+    },
+    "per-rep": {
+      "source": "validated-query",
+      "content": [
+        {
+          "type": "text",
+          "text": "Period: Q1 2025. Reps: Sarah Chen, David Kim.\nChen: Bookings (won ACV) $504,000.\nKim: Bookings (won ACV) $250,000.\n\nPeriod: Q1 2025. Reps: Sarah Chen, David Kim.\nChen: Bookings (won ACV) $504,000; Full-quarter quota $450,000; Attainment 112.0%.\nKim: Bookings (won ACV) $250,000; Full-quarter quota $350,000; Attainment 71.4%."
+        }
+      ],
+      "appliedScope": [
+        "Query 1: performance.",
+        "Period: Q1 2025.",
+        "Report: performance.",
+        "reps: Sarah Chen, David Kim.",
+        "Grouping: rep.",
+        "Query 2: quota.",
+        "Period: Q1 2025.",
+        "Report: quota.",
+        "reps: Sarah Chen, David Kim.",
+        "Grouping: rep."
+      ],
+      "calculationDetails": [
+        {
+          "title": "performance",
+          "notes": [
+            "Win rate = won / (won + lost). Cycle and mean ACV use won opportunities only. Open pipeline is a separate snapshot, not bookings or a forecast.",
+            "Displayed values are rounded; calculations, filters and ties use unrounded values."
+          ],
+          "rows": [
+            "Chen: Bookings (won ACV) $504,000; Open qualified pipeline $1,200,000; Wins 8; Losses 16; Closed opportunities 24; Closed-cohort win rate 33.3%; Mean won ACV $63,000; Mean won cycle 41 days.",
+            "Kim: Bookings (won ACV) $250,000; Open qualified pipeline $1,200,000; Wins 2; Losses 14; Closed opportunities 16; Closed-cohort win rate 12.5%; Mean won ACV $125,000; Mean won cycle 68 days."
+          ]
+        },
+        {
+          "title": "quota",
+          "notes": [
+            "Win rate = won / (won + lost). Cycle and mean ACV use won opportunities only. Open pipeline is a separate snapshot, not bookings or a forecast.",
+            "Attainment and coverage use summed amounts and full-quarter quotas. Gross rep shortfalls minus rep overperformance equals the signed net quota gap; net shortfall is the positive part of that gap.",
+            "Displayed values are rounded; calculations, filters and ties use unrounded values."
+          ],
+          "rows": [
+            "Chen: Bookings (won ACV) $504,000; Open qualified pipeline $1,200,000; Wins 8; Losses 16; Closed opportunities 24; Closed-cohort win rate 33.3%; Mean won ACV $63,000; Mean won cycle 41 days; Full-quarter quota $450,000; Attainment 112.0%; Pipeline / full-quarter quota 2.67x; Net quota shortfall $0; Gross rep shortfalls $0; Rep overperformance $54,000; Target gap -$54,000.",
+            "Kim: Bookings (won ACV) $250,000; Open qualified pipeline $1,200,000; Wins 2; Losses 14; Closed opportunities 16; Closed-cohort win rate 12.5%; Mean won ACV $125,000; Mean won cycle 68 days; Full-quarter quota $350,000; Attainment 71.4%; Pipeline / full-quarter quota 3.43x; Net quota shortfall $100,000; Gross rep shortfalls $100,000; Rep overperformance $0; Target gap $100,000."
+          ]
+        }
+      ],
+      "toolCalls": [
+        {
+          "id": "toolu_0181RABBiu5SeMhhnPHGT882",
+          "name": "query_gtm",
+          "input": {
+            "queries": [
+              {
+                "report": "performance",
+                "quarters": [
+                  "Q1 2025"
+                ],
+                "reps": [
+                  "Sarah Chen",
+                  "David Kim"
+                ],
+                "specialties": [],
+                "sources": [],
+                "groupBy": [
+                  "rep"
+                ],
+                "predicate": {
+                  "metric": "bookings",
+                  "operator": "none",
+                  "value": null
+                },
+                "ranking": {
+                  "metric": "bookings",
+                  "direction": "none",
+                  "limit": 1,
+                  "within": []
+                }
+              },
+              {
+                "report": "quota",
+                "quarters": [
+                  "Q1 2025"
+                ],
+                "reps": [
+                  "Sarah Chen",
+                  "David Kim"
+                ],
+                "specialties": [],
+                "sources": [],
+                "groupBy": [
+                  "rep"
+                ],
+                "predicate": {
+                  "metric": "quota",
+                  "operator": "none",
+                  "value": null
+                },
+                "ranking": {
+                  "metric": "quota",
+                  "direction": "none",
+                  "limit": 1,
+                  "within": []
+                }
+              }
+            ],
+            "explain": false
+          },
+          "result": {
+            "domain": "gtm",
+            "results": [
+              {
+                "metrics": [
+                  "bookings",
+                  "pipeline",
+                  "wins",
+                  "losses",
+                  "closed",
+                  "winRate",
+                  "avgACV",
+                  "avgCycle"
+                ],
+                "rows": [
+                  {
+                    "name": "Chen",
+                    "dimensions": {
+                      "rep": "Chen"
+                    },
+                    "wins": 8,
+                    "losses": 16,
+                    "closed": 24,
+                    "bookings": 504000,
+                    "pipeline": 1200000,
+                    "winRate": 33.33333333333333,
+                    "avgACV": 63000,
+                    "avgCycle": 41
+                  },
+                  {
+                    "name": "Kim",
+                    "dimensions": {
+                      "rep": "Kim"
+                    },
+                    "wins": 2,
+                    "losses": 14,
+                    "closed": 16,
+                    "bookings": 250000,
+                    "pipeline": 1200000,
+                    "winRate": 12.5,
+                    "avgACV": 125000,
+                    "avgCycle": 68
+                  }
+                ],
+                "rankings": [],
+                "query": {
+                  "report": "performance",
+                  "quarters": [
+                    "Q1 2025"
+                  ],
+                  "reps": [
+                    "Sarah Chen",
+                    "David Kim"
+                  ],
+                  "specialties": [],
+                  "sources": [],
+                  "groupBy": [
+                    "rep"
+                  ],
+                  "predicate": {
+                    "metric": "bookings",
+                    "operator": "none",
+                    "value": null
+                  },
+                  "ranking": {
+                    "metric": "bookings",
+                    "direction": "none",
+                    "limit": 1,
+                    "within": []
+                  }
+                },
+                "facts": null,
+                "scope": [
+                  "Period: Q1 2025.",
+                  "Report: performance.",
+                  "reps: Sarah Chen, David Kim.",
+                  "Grouping: rep."
+                ],
+                "notes": [
+                  "Win rate = won / (won + lost). Cycle and mean ACV use won opportunities only. Open pipeline is a separate snapshot, not bookings or a forecast."
+                ]
+              },
+              {
+                "metrics": [
+                  "bookings",
+                  "pipeline",
+                  "wins",
+                  "losses",
+                  "closed",
+                  "winRate",
+                  "avgACV",
+                  "avgCycle",
+                  "quota",
+                  "attainment",
+                  "coverage",
+                  "shortfall",
+                  "grossShortfall",
+                  "overperformance",
+                  "gap"
+                ],
+                "rows": [
+                  {
+                    "name": "Chen",
+                    "wins": 8,
+                    "losses": 16,
+                    "closed": 24,
+                    "bookings": 504000,
+                    "pipeline": 1200000,
+                    "winRate": 33.33333333333333,
+                    "avgACV": 63000,
+                    "avgCycle": 41,
+                    "quota": 450000,
+                    "attainment": 112.00000000000001,
+                    "coverage": 2.6666666666666665,
+                    "shortfall": 0,
+                    "overperformance": 54000,
+                    "gap": -54000,
+                    "grossShortfall": 0
+                  },
+                  {
+                    "name": "Kim",
+                    "wins": 2,
+                    "losses": 14,
+                    "closed": 16,
+                    "bookings": 250000,
+                    "pipeline": 1200000,
+                    "winRate": 12.5,
+                    "avgACV": 125000,
+                    "avgCycle": 68,
+                    "quota": 350000,
+                    "attainment": 71.42857142857143,
+                    "coverage": 3.4285714285714284,
+                    "shortfall": 100000,
+                    "overperformance": 0,
+                    "gap": 100000,
+                    "grossShortfall": 100000
+                  }
+                ],
+                "rankings": [],
+                "query": {
+                  "report": "quota",
+                  "quarters": [
+                    "Q1 2025"
+                  ],
+                  "reps": [
+                    "Sarah Chen",
+                    "David Kim"
+                  ],
+                  "specialties": [],
+                  "sources": [],
+                  "groupBy": [
+                    "rep"
+                  ],
+                  "predicate": {
+                    "metric": "quota",
+                    "operator": "none",
+                    "value": null
+                  },
+                  "ranking": {
+                    "metric": "quota",
+                    "direction": "none",
+                    "limit": 1,
+                    "within": []
+                  }
+                },
+                "facts": null,
+                "scope": [
+                  "Period: Q1 2025.",
+                  "Report: quota.",
+                  "reps: Sarah Chen, David Kim.",
+                  "Grouping: rep."
+                ],
+                "notes": [
+                  "Win rate = won / (won + lost). Cycle and mean ACV use won opportunities only. Open pipeline is a separate snapshot, not bookings or a forecast.",
+                  "Attainment and coverage use summed amounts and full-quarter quotas. Gross rep shortfalls minus rep overperformance equals the signed net quota gap; net shortfall is the positive part of that gap."
+                ]
+              }
+            ],
+            "explain": false,
+            "displayMetrics": [
+              "bookings",
+              "quota",
+              "attainment"
+            ]
+          }
+        }
+      ]
+    },
+    "both": {
+      "source": "validated-query",
+      "content": [
+        {
+          "type": "text",
+          "text": "Period: Q1 2025. Reps: Sarah Chen, David Kim.\nTotal: Bookings (won ACV) $754,000; Full-quarter quota $800,000; Attainment 94.3%.\n\nPeriod: Q1 2025. Reps: Sarah Chen, David Kim.\nChen: Bookings (won ACV) $504,000; Full-quarter quota $450,000; Attainment 112.0%.\nKim: Bookings (won ACV) $250,000; Full-quarter quota $350,000; Attainment 71.4%."
+        }
+      ],
+      "appliedScope": [
+        "Query 1: quota.",
+        "Period: Q1 2025.",
+        "Report: quota.",
+        "reps: Sarah Chen, David Kim.",
+        "Grouping: total.",
+        "Query 2: quota.",
+        "Period: Q1 2025.",
+        "Report: quota.",
+        "reps: Sarah Chen, David Kim.",
+        "Grouping: rep."
+      ],
+      "calculationDetails": [
+        {
+          "title": "quota",
+          "notes": [
+            "Win rate = won / (won + lost). Cycle and mean ACV use won opportunities only. Open pipeline is a separate snapshot, not bookings or a forecast.",
+            "Attainment and coverage use summed amounts and full-quarter quotas. Gross rep shortfalls minus rep overperformance equals the signed net quota gap; net shortfall is the positive part of that gap.",
+            "Displayed values are rounded; calculations, filters and ties use unrounded values."
+          ],
+          "rows": [
+            "Total: Bookings (won ACV) $754,000; Open qualified pipeline $2,400,000; Wins 10; Losses 30; Closed opportunities 40; Closed-cohort win rate 25.0%; Mean won ACV $75,400; Mean won cycle 46.4 days; Full-quarter quota $800,000; Attainment 94.3%; Pipeline / full-quarter quota 3x; Net quota shortfall $46,000; Gross rep shortfalls $100,000; Rep overperformance $54,000; Target gap $46,000."
+          ]
+        },
+        {
+          "title": "quota",
+          "notes": [
+            "Win rate = won / (won + lost). Cycle and mean ACV use won opportunities only. Open pipeline is a separate snapshot, not bookings or a forecast.",
+            "Attainment and coverage use summed amounts and full-quarter quotas. Gross rep shortfalls minus rep overperformance equals the signed net quota gap; net shortfall is the positive part of that gap.",
+            "Displayed values are rounded; calculations, filters and ties use unrounded values."
+          ],
+          "rows": [
+            "Chen: Bookings (won ACV) $504,000; Open qualified pipeline $1,200,000; Wins 8; Losses 16; Closed opportunities 24; Closed-cohort win rate 33.3%; Mean won ACV $63,000; Mean won cycle 41 days; Full-quarter quota $450,000; Attainment 112.0%; Pipeline / full-quarter quota 2.67x; Net quota shortfall $0; Gross rep shortfalls $0; Rep overperformance $54,000; Target gap -$54,000.",
+            "Kim: Bookings (won ACV) $250,000; Open qualified pipeline $1,200,000; Wins 2; Losses 14; Closed opportunities 16; Closed-cohort win rate 12.5%; Mean won ACV $125,000; Mean won cycle 68 days; Full-quarter quota $350,000; Attainment 71.4%; Pipeline / full-quarter quota 3.43x; Net quota shortfall $100,000; Gross rep shortfalls $100,000; Rep overperformance $0; Target gap $100,000."
+          ]
+        }
+      ],
+      "toolCalls": [
+        {
+          "id": "toolu_012NGrfMEa9ix59zyrZ8dPE7",
+          "name": "query_gtm",
+          "input": {
+            "queries": [
+              {
+                "report": "quota",
+                "quarters": [
+                  "Q1 2025"
+                ],
+                "reps": [
+                  "Sarah Chen",
+                  "David Kim"
+                ],
+                "specialties": [],
+                "sources": [],
+                "groupBy": [],
+                "predicate": {
+                  "metric": "bookings",
+                  "operator": "none",
+                  "value": null
+                },
+                "ranking": {
+                  "metric": "bookings",
+                  "direction": "none",
+                  "limit": 1,
+                  "within": []
+                }
+              },
+              {
+                "report": "quota",
+                "quarters": [
+                  "Q1 2025"
+                ],
+                "reps": [
+                  "Sarah Chen",
+                  "David Kim"
+                ],
+                "specialties": [],
+                "sources": [],
+                "groupBy": [
+                  "rep"
+                ],
+                "predicate": {
+                  "metric": "bookings",
+                  "operator": "none",
+                  "value": null
+                },
+                "ranking": {
+                  "metric": "bookings",
+                  "direction": "none",
+                  "limit": 1,
+                  "within": []
+                }
+              }
+            ],
+            "explain": false
+          },
+          "result": {
+            "domain": "gtm",
+            "results": [
+              {
+                "metrics": [
+                  "bookings",
+                  "pipeline",
+                  "wins",
+                  "losses",
+                  "closed",
+                  "winRate",
+                  "avgACV",
+                  "avgCycle",
+                  "quota",
+                  "attainment",
+                  "coverage",
+                  "shortfall",
+                  "grossShortfall",
+                  "overperformance",
+                  "gap"
+                ],
+                "rows": [
+                  {
+                    "name": "Total",
+                    "dimensions": {},
+                    "wins": 10,
+                    "losses": 30,
+                    "closed": 40,
+                    "bookings": 754000,
+                    "pipeline": 2400000,
+                    "winRate": 25,
+                    "avgACV": 75400,
+                    "avgCycle": 46.4,
+                    "quota": 800000,
+                    "attainment": 94.25,
+                    "coverage": 3,
+                    "gap": 46000,
+                    "shortfall": 46000,
+                    "grossShortfall": 100000,
+                    "overperformance": 54000
+                  }
+                ],
+                "rankings": [],
+                "query": {
+                  "report": "quota",
+                  "quarters": [
+                    "Q1 2025"
+                  ],
+                  "reps": [
+                    "Sarah Chen",
+                    "David Kim"
+                  ],
+                  "specialties": [],
+                  "sources": [],
+                  "groupBy": [],
+                  "predicate": {
+                    "metric": "bookings",
+                    "operator": "none",
+                    "value": null
+                  },
+                  "ranking": {
+                    "metric": "bookings",
+                    "direction": "none",
+                    "limit": 1,
+                    "within": []
+                  }
+                },
+                "facts": null,
+                "scope": [
+                  "Period: Q1 2025.",
+                  "Report: quota.",
+                  "reps: Sarah Chen, David Kim.",
+                  "Grouping: total."
+                ],
+                "notes": [
+                  "Win rate = won / (won + lost). Cycle and mean ACV use won opportunities only. Open pipeline is a separate snapshot, not bookings or a forecast.",
+                  "Attainment and coverage use summed amounts and full-quarter quotas. Gross rep shortfalls minus rep overperformance equals the signed net quota gap; net shortfall is the positive part of that gap."
+                ]
+              },
+              {
+                "metrics": [
+                  "bookings",
+                  "pipeline",
+                  "wins",
+                  "losses",
+                  "closed",
+                  "winRate",
+                  "avgACV",
+                  "avgCycle",
+                  "quota",
+                  "attainment",
+                  "coverage",
+                  "shortfall",
+                  "grossShortfall",
+                  "overperformance",
+                  "gap"
+                ],
+                "rows": [
+                  {
+                    "name": "Chen",
+                    "wins": 8,
+                    "losses": 16,
+                    "closed": 24,
+                    "bookings": 504000,
+                    "pipeline": 1200000,
+                    "winRate": 33.33333333333333,
+                    "avgACV": 63000,
+                    "avgCycle": 41,
+                    "quota": 450000,
+                    "attainment": 112.00000000000001,
+                    "coverage": 2.6666666666666665,
+                    "shortfall": 0,
+                    "overperformance": 54000,
+                    "gap": -54000,
+                    "grossShortfall": 0
+                  },
+                  {
+                    "name": "Kim",
+                    "wins": 2,
+                    "losses": 14,
+                    "closed": 16,
+                    "bookings": 250000,
+                    "pipeline": 1200000,
+                    "winRate": 12.5,
+                    "avgACV": 125000,
+                    "avgCycle": 68,
+                    "quota": 350000,
+                    "attainment": 71.42857142857143,
+                    "coverage": 3.4285714285714284,
+                    "shortfall": 100000,
+                    "overperformance": 0,
+                    "gap": 100000,
+                    "grossShortfall": 100000
+                  }
+                ],
+                "rankings": [],
+                "query": {
+                  "report": "quota",
+                  "quarters": [
+                    "Q1 2025"
+                  ],
+                  "reps": [
+                    "Sarah Chen",
+                    "David Kim"
+                  ],
+                  "specialties": [],
+                  "sources": [],
+                  "groupBy": [
+                    "rep"
+                  ],
+                  "predicate": {
+                    "metric": "bookings",
+                    "operator": "none",
+                    "value": null
+                  },
+                  "ranking": {
+                    "metric": "bookings",
+                    "direction": "none",
+                    "limit": 1,
+                    "within": []
+                  }
+                },
+                "facts": null,
+                "scope": [
+                  "Period: Q1 2025.",
+                  "Report: quota.",
+                  "reps: Sarah Chen, David Kim.",
+                  "Grouping: rep."
+                ],
+                "notes": [
+                  "Win rate = won / (won + lost). Cycle and mean ACV use won opportunities only. Open pipeline is a separate snapshot, not bookings or a forecast.",
+                  "Attainment and coverage use summed amounts and full-quarter quotas. Gross rep shortfalls minus rep overperformance equals the signed net quota gap; net shortfall is the positive part of that gap."
+                ]
+              }
+            ],
+            "explain": false,
+            "displayMetrics": [
+              "bookings",
+              "quota",
+              "attainment"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "assertions": {
+    "combinedAmountsCorrect": true,
+    "weightedAttainmentCorrect": true,
+    "perRepResultsPreserved": true,
+    "combinedAndPerRepTogetherCorrect": true,
+    "javascriptTestsPassed": 45,
+    "trackedSourceChanges": 0,
+    "newDeployments": 0,
+    "servingRevision": "a1ce674407d1b9b2f5dd6abef1ce11db9e838b44",
+    "existingFixCommit": "65e1db584a479abbd10d6901525c6d817f519fbf"
+  },
+  "javascriptTests": {
+    "command": "npm run test:scenario",
+    "checkedOutRevision": "a1ce674407d1b9b2f5dd6abef1ce11db9e838b44",
+    "passed": 45,
+    "failed": 0,
+    "coverageNote": "Includes all 63 nonempty rep subsets, aggregate calculations and per-rep preservation; these are tests of the supplied synthetic scenario, not evidence of general model accuracy."
+  },
+  "unrechecked": "Other assessment findings retain their original October 25 evidence and were not rechecked by these three quota requests."
+}

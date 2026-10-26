@@ -10,13 +10,14 @@
   "appRevision": "d80dd7d22a5eb1922518b37c561c7ca071fe7812",
   "appRevisionShort": "d80dd7d",
   "downloadHref": "/assessments/gtm-healthcare/verification.json",
-  "summary": "The source disclosure is now explicit, and a quarterly-ranking repair passed a targeted recheck. Two query limitations remain: combined quota totals are omitted, and written decimal amounts require clarification.",
+  "summary": "The combined-quota fix passed three follow-up checks on October 26. Source disclosure and quarterly ranking were verified in the original October 25 review. The written-amount finding retains its original evidence and awaits a separate recheck.",
   "provenance": "This is a self-initiated review of a demo I own. It is not client work, independent assurance, or evidence of business impact. All sales and practice records used here are synthetic.",
   "counts": {
     "findings": 4,
-    "verifiedCorrections": 2,
-    "openFindings": 2,
-    "freshRequests": 5
+    "verifiedCorrections": 3,
+    "awaitingRecheck": 1,
+    "originalRequests": 5,
+    "quotaFollowUpRequests": 3
   },
   "scope": [
     "Public GTM demo and portfolio data disclosures.",
@@ -27,8 +28,8 @@
   "limits": [
     "The requests were purpose-selected; they are not a random sample or a model-accuracy benchmark.",
     "This review did not test every query, security controls, production scale, or source accuracy.",
-    "Historical before responses are retained records. Current observations were rechecked against the deployment identified here.",
-    "The app was not changed for this assessment. Two repairs came from prior work; two recommendations remain open.",
+    "The original before/after strings and five check results are October 25 records at d80dd7d. Only three quota follow-ups were rechecked October 26 at a1ce674; they do not establish the latest state of other findings.",
+    "No app code was changed or deployed for the assessment or quota recheck. The disclosure and quarterly-ranking repairs predated the original review; the quota fix was already deployed before the October 26 follow-up. The written-amount finding was not rechecked.",
     "No user study, patient-data review, clinical validation or measured commercial outcome is claimed."
   ],
   "methodNote": "AI tools supported implementation, testing and analysis. Numerical expectations were recomputed from the synthetic input records; this is not an independent third-party audit.",
@@ -72,16 +73,16 @@
       "id": "F02",
       "priority": "P2",
       "kind": "Query completeness",
-      "title": "A combined-quota request still returns separate rep results.",
-      "status": "Open · reproduced",
-      "state": "open",
-      "risk": "The response supplies correct individual figures but omits the requested combined result. A reviewer must reconstruct the denominator and weighted percentage.",
-      "observation": "The same combined-quota question returned Chen and Kim rows in the recorded run and in the fresh production check. Neither answer supplied the combined total.",
+      "title": "Combined-quota output passed a dated follow-up.",
+      "status": "Verified correction · October 26",
+      "state": "closed",
+      "risk": "The original response supplied correct individual figures but omitted the requested combined result. Without a total, a reader had to reconstruct weighted attainment from the amounts.",
+      "observation": "The combined-quota question returned only Chen and Kim rows on October 25. Three October 26 follow-up requests verified the combined total, individual quota rows and both together.",
       "question": "What is the combined quota and attainment for Sarah Chen and David Kim in Q1 2025?",
       "before": "Chen: $504,000 bookings / $450,000 quota / 112.0%\nKim: $250,000 bookings / $350,000 quota / 71.4%\nNo combined result.",
       "after": "Fresh production response: the same two rep rows.\nNo combined quota, bookings or attainment was returned.",
-      "fix": "Honor the requested aggregate grain. Sum the selected quotas and bookings, then calculate attainment from those sums. If that grain is unsupported, state the limitation rather than giving only separate rows.",
-      "verification": "Open at the tested app revision. Direct fixture calculation gives $800,000 quota, $754,000 bookings and 94.25% attainment. This assessment did not change the app.",
+      "fix": "The existing fix returns a combined quota row and calculates attainment from summed bookings and quota, while preserving per-rep results. Fix 65e1db5 was already deployed before the follow-up; no app code was changed or deployed for this recheck.",
+      "verification": "Verified October 26 at serving revision a1ce674. Combined bookings $754,000 / quota $800,000 gives 94.25% attainment (94.3% displayed). Combined-only, per-rep-only and both-together requests matched expected quota rows. The per-rep-only response also contains a duplicate bookings-only block, retained in the raw packet.",
       "acceptance": [
         "Return one combined result with $800,000 quota and $754,000 bookings.",
         "Calculate attainment as 754,000 ÷ 800,000 = 94.25% (94.3% at one decimal).",
@@ -90,8 +91,16 @@
       "evidence": [
         "E5",
         "E7",
-        "E9"
-      ]
+        "E9",
+        "E10",
+        "E11"
+      ],
+      "followUp": {
+        "date": "October 26, 2026",
+        "appRevision": "a1ce674407d1b9b2f5dd6abef1ce11db9e838b44",
+        "href": "#quota-follow-up",
+        "summary": "Combined-only, per-rep-only and both-together requests passed the dated quota recheck."
+      }
     },
     {
       "id": "F03",
@@ -147,23 +156,23 @@
   "plan": [
     {
       "order": "01",
-      "title": "Add combined quota output",
-      "status": "Recommended · open",
-      "text": "Return the requested total and weighted attainment, with separate regression checks for total and per-rep questions.",
+      "title": "Retain combined and per-rep regression checks",
+      "status": "Verified · October 26",
+      "text": "Preserve the total, individual rows and both-together behavior. Keep attainment weighted by summed bookings and quota; retain the scenario tests covering all 63 nonempty rep subsets.",
       "finding": "F02"
     },
     {
       "order": "02",
-      "title": "Handle written decimal quantities",
-      "status": "Recommended · open",
-      "text": "Preserve the complete amount or supply a clear numeric rephrasing. Keep the fail-closed threshold check.",
+      "title": "Recheck the written-amount finding separately",
+      "status": "Not rechecked · October 25 evidence",
+      "text": "Re-run the original written and numeric forms before determining whether any limitation remains. Retain the stop when the complete amount or a required input is missing.",
       "finding": "F04"
     },
     {
       "order": "03",
       "title": "Retain the provenance and period checks",
-      "status": "Already implemented · rechecked",
-      "text": "Keep the three data disclosures and the quarterly coverage regression. Their verified scope should travel with future changes.",
+      "status": "Verified · original October 25 review",
+      "text": "Keep the three data disclosures and quarterly coverage checks. These findings were verified in the original review, not in the October 26 quota follow-up.",
       "finding": "F01 / F03"
     }
   ],
@@ -261,27 +270,39 @@
       "label": "Verification packet",
       "href": "/assessments/gtm-healthcare/verification.json",
       "note": "Selected recorded-before responses, five fresh requests, expected values and observed results. Synthetic data only."
+    },
+    {
+      "id": "E10",
+      "label": "Existing combined-quota fix",
+      "href": "https://github.com/kristenmartino/gtm-healthcare-intel/commit/65e1db584a479abbd10d6901525c6d817f519fbf",
+      "note": "Fix 65e1db5 was already deployed before the October 26 recheck; no source change or deployment was performed for the follow-up."
+    },
+    {
+      "id": "E11",
+      "label": "Quota recheck packet — October 26",
+      "href": "/assessments/gtm-healthcare/quota-recheck-2026-10-26.json",
+      "note": "Three complete captured responses, expected weighted calculations, serving revision a1ce674 and the 45-test summary. Other findings were not rechecked."
     }
   ],
   "hiringNarrative": {
     "eyebrow": "Review work sample",
     "label": "Self-initiated review of my own demo",
-    "title": "Correct figures, missing combined total",
+    "title": "Combined quota fix verified",
     "context": "GTM Healthcare Intelligence",
-    "opening": "Asked for combined quota and attainment, the demo returned correct figures for two sales reps but omitted their combined result. Completing that answer is the first recommended fix.",
+    "opening": "The October 25 check returned correct rep figures but omitted their combined total. An October 26 recheck confirms combined bookings, quota and weighted attainment, with individual results retained.",
     "role": "",
     "decisions": [
       {
         "id": "requested-result",
         "number": "01",
-        "title": "Combined result omitted",
+        "title": "Combined and individual results verified",
         "paragraphs": [
-          "Combined attainment needs total bookings divided by total quota, not averaged rep percentages. Keep the individual figures and add the total, or explain the unsupported calculation."
+          "Combined-only, per-rep-only and both-together requests were checked. Combined attainment uses total bookings divided by total quota, rather than averaging rep percentages."
         ],
-        "status": "Open at reviewed revision",
-        "state": "open",
-        "supportLabel": "F02",
-        "supportHref": "#F02"
+        "status": "Verified October 26",
+        "state": "closed",
+        "supportLabel": "F02 / follow-up",
+        "supportHref": "#quota-follow-up"
       },
       {
         "id": "claims",
@@ -290,7 +311,7 @@
         "paragraphs": [
           "Public labels named CMS sources. The snapshot used synthetic provider records and embedded demographic references. Corrected wording distinguishes both from optional public-file ingestion; the wording repair changed no data or calculations."
         ],
-        "status": "Disclosure corrected and checked",
+        "status": "Verified October 25",
         "state": "closed",
         "supportLabel": "F01",
         "supportHref": "#F01"
@@ -298,21 +319,87 @@
       {
         "id": "safe-stops",
         "number": "03",
-        "title": "Amounts in words need clarification",
+        "title": "Written amount not rechecked",
         "paragraphs": [
-          "“One point five million” asks for clarification; “$1.5M” returns Singh with $1,592,362 revenue. No incorrect number was returned for the written form. Offer the numeric form when words cannot be interpreted. No-show percentages also stopped when the required appointment count was missing. Preserve that safeguard."
+          "On October 25, “one point five million” required clarification; “$1.5M” returned Singh at $1,592,362. The no-show calculation stopped without the required appointment count. These observations were not rechecked on October 26."
         ],
-        "status": "Amounts in words: open",
+        "status": "October 25 observation · not rechecked",
         "state": "open",
-        "supportLabel": "F03–F04 / controls",
+        "supportLabel": "F03–F04 / original controls",
         "supportHref": "#verification"
       }
     ],
     "verification": [
-      "Five selected questions were checked on October 25, 2026. Expected answers were recalculated separately from the app using synthetic sample records, including monthly denial totals and annual revenue sums. A previously repaired quarterly ranking matched Brooks (81), Singh (74), Brooks (65) and Yamamoto (60), in Q1 through Q4 respectively. These checks do not establish overall accuracy."
+      "The original five questions used synthetic sample records; expected answers were calculated separately from the app. Source disclosures and all four quarterly winners were verified then.",
+      "Three quota follow-ups on October 26 checked an existing deployed fix. No app code changed for the recheck. Forty-five JavaScript tests passed, covering all 63 nonempty rep subsets. This is not overall model accuracy."
     ],
-    "next": "Fix combined totals first, then amounts in words. Retain checks for dates and missing inputs.",
+    "next": "Retain quota and per-rep regression checks. Recheck the written-amount finding separately before deciding whether another fix is needed.",
     "supportTitle": "Full findings and verification evidence",
-    "supportDescription": "Comparisons, acceptance checks, method, limitations and sources."
+    "supportDescription": "Original comparisons, dated quota follow-up, acceptance checks, method and sources.",
+    "byline": "Original review October 25, 2026 · Quota rechecked October 26, 2026"
+  },
+  "originalReviewCounts": {
+    "findings": 4,
+    "verifiedCorrections": 2,
+    "openFindings": 2,
+    "freshRequests": 5
+  },
+  "quotaFollowUp": {
+    "date": "October 26, 2026",
+    "checkedAt": "1:55 p.m. Eastern · October 26, 2026",
+    "completedAt": "2026-10-26T17:55:31.424612+00:00",
+    "appRevision": "a1ce674407d1b9b2f5dd6abef1ce11db9e838b44",
+    "appRevisionShort": "a1ce674",
+    "fixCommit": "65e1db584a479abbd10d6901525c6d817f519fbf",
+    "fixSource": "https://github.com/kristenmartino/gtm-healthcare-intel/commit/65e1db584a479abbd10d6901525c6d817f519fbf",
+    "servingSource": "https://github.com/kristenmartino/gtm-healthcare-intel/tree/a1ce674407d1b9b2f5dd6abef1ce11db9e838b44",
+    "downloadHref": "/assessments/gtm-healthcare/quota-recheck-2026-10-26.json",
+    "summary": "Three selected requests checked combined-only, per-rep-only and combined-plus-per-rep answers. The total is $754,000 bookings / $800,000 quota = 94.25% attainment, displayed as 94.3%. Correct individual quota rows were preserved.",
+    "cases": [
+      {
+        "id": "combined",
+        "question": "What is the combined quota and attainment for Sarah Chen and David Kim in Q1 2025?",
+        "observed": "Period: Q1 2025. Reps: Sarah Chen, David Kim.\nTotal: Bookings (won ACV) $754,000; Full-quarter quota $800,000; Attainment 94.3%."
+      },
+      {
+        "id": "per-rep",
+        "question": "Show bookings, quota and attainment by rep for Sarah Chen and David Kim in Q1 2025.",
+        "observed": "Period: Q1 2025. Reps: Sarah Chen, David Kim.\nChen: Bookings (won ACV) $504,000.\nKim: Bookings (won ACV) $250,000.\n\nPeriod: Q1 2025. Reps: Sarah Chen, David Kim.\nChen: Bookings (won ACV) $504,000; Full-quarter quota $450,000; Attainment 112.0%.\nKim: Bookings (won ACV) $250,000; Full-quarter quota $350,000; Attainment 71.4%."
+      },
+      {
+        "id": "both",
+        "question": "Show combined bookings, quota and weighted attainment for Sarah Chen and David Kim in Q1 2025, along with the per-rep results.",
+        "observed": "Period: Q1 2025. Reps: Sarah Chen, David Kim.\nTotal: Bookings (won ACV) $754,000; Full-quarter quota $800,000; Attainment 94.3%.\n\nPeriod: Q1 2025. Reps: Sarah Chen, David Kim.\nChen: Bookings (won ACV) $504,000; Full-quarter quota $450,000; Attainment 112.0%.\nKim: Bookings (won ACV) $250,000; Full-quarter quota $350,000; Attainment 71.4%."
+      }
+    ],
+    "perRepNote": "The per-rep-only response contains a duplicate bookings-only block before the full quota rows. The captured response is retained verbatim; correct quota and attainment rows are present.",
+    "testNote": "45 JavaScript tests passed, including all 63 nonempty rep subsets, aggregate calculations and per-rep preservation. These tests cover the supplied synthetic scenario, not general model accuracy.",
+    "scopeNote": "Follow-up to F02 only. The original October 25 evidence is preserved separately. This is not an independent audit or overall-accuracy benchmark. No app code was changed or deployed for this recheck. All scenario records are synthetic.",
+    "evidence": [
+      "E10",
+      "E11"
+    ]
+  },
+  "findingDisplay": {
+    "F01": {
+      "status": "Verified · October 25",
+      "context": "Original October 25 finding. The source-disclosure correction was not rechecked by the October 26 quota requests.",
+      "panelLabel": "October 25 recheck · verified then"
+    },
+    "F02": {
+      "status": "Verified · October 26",
+      "context": "Original failure recorded October 25; the separate October 26 follow-up below verifies the already-deployed fix.",
+      "panelLabel": "October 25 recheck · open then"
+    },
+    "F03": {
+      "status": "Verified · October 25",
+      "context": "Original October 25 finding. The quarterly-ranking repair was not rechecked by the October 26 quota requests.",
+      "panelLabel": "October 25 recheck · verified then"
+    },
+    "F04": {
+      "status": "October 25 finding · not rechecked",
+      "context": "Original October 25 finding, not rechecked on October 26. All observations and open-status language below refer to the original revision d80dd7d, not the latest app.",
+      "panelLabel": "October 25 recheck · open then"
+    }
   }
 }
