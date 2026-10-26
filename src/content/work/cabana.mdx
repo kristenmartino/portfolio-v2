@@ -193,7 +193,7 @@ Tests with real emails confirmed that expired links are rejected and requesting 
 
 ## Member status
 
-The dashboard shows the regular service day from the member’s plan and labels past visits as Completed, Cancelled or Missed. The request page separates payment receipt, staff approval and the assigned visit window.
+The dashboard shows the regular service day from the member’s plan and labels Service history entries as Completed, Cancelled or Missed. The request page separates payment receipt, staff approval and the assigned visit window.
 
 A request that reaches scheduling without an assigned visit window shows “Awaiting visit time,” or “Approved · time pending” after approval. Payment, staff approval and a confirmed visit time are separate states.
 
@@ -226,6 +226,12 @@ n8n updates the existing Airtable row with both visit bounds and sends a Telegra
 Office staff check `mark_completed` on the Airtable booking. The [writeback handler](https://github.com/kristenmartino/cabana/blob/e03157be4cf2ce42cdedeecff463f41a2e311ae3/supabase/functions/airtable-writeback/index.ts) validates the allowed field and records the `confirmed` → `completed` transition with the actor `office:airtable`. The outbox then updates the existing Airtable row and sends the Telegram status notification.
 
 On refresh, the request page shows “Completed” and “This request is marked completed.” The visit appears in the dashboard’s Service history. Unchecking the Airtable box does not reopen a completed visit.
+
+## Cancelled and missed visits
+
+Owners cancel bookings through Telegram’s `/cancel` command. Marking a visit missed is currently **backend-only**, through the audited transition function; there is no staff button or command for it.
+
+Separate tests on **October 26, 2026** used two synthetic confirmed visits: cancellation through Telegram and missed status through that backend function. Both left Open requests and appeared in Service history as **Cancelled** or **Missed**. The existing Airtable records and Telegram notifications showed `cancelled` or `no_show` (the stored status for Missed). Both status events were fully delivered.
 
 ## Visit notes
 
