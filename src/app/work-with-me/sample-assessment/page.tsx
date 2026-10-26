@@ -6,9 +6,9 @@ import assessment from "@/content/assessments/gtm-healthcare.json";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
-  title: "Quota totals and written amounts verified · Kristen Martino",
+  title: "Checking quota totals, source labels, and written amounts · Kristen Martino",
   description:
-    "GTM Healthcare Intelligence: dated quota-total and written-amount checks, with original observations, malformed-input control and supporting evidence.",
+    "A self-initiated review of GTM Healthcare Intelligence: missing totals, source claims, written amounts, and dated verification with original evidence.",
 };
 
 const narrative = assessment.hiringNarrative;
@@ -182,7 +182,7 @@ export default function SampleAssessment() {
                 </section>
 
                 <section id="findings" className={styles.section}>
-                  <SectionHeading number="02" title="Findings and evidence" note="All four selected findings have dated verification: source disclosure and quarterly ranking on October 25; combined quota and written amounts in separate October 26 follow-ups. This is not whole-app validation." />
+                  <SectionHeading number="02" title="Findings and evidence" />
                   <div className={styles.register}>
                     <div className={styles.registerHeader} aria-hidden="true"><span>ID / priority</span><span>Finding</span><span>Status / checked date</span><span>Next action</span></div>
                     {assessment.findings.map((finding) => {
@@ -225,8 +225,7 @@ export default function SampleAssessment() {
                               </article>)}
                             </div>
                             <p>{quotaFollowUp.perRepNote}</p>
-                            <p>{quotaFollowUp.testNote}</p>
-                            <p>{quotaFollowUp.scopeNote}</p>
+                            <p>45 JavaScript tests passed, including all 63 nonempty rep subsets, aggregate calculations and preservation of individual results.</p>
                             <p><a href={quotaFollowUp.downloadHref} download>Download October 26 quota recheck packet ↓</a></p>
                             <EvidenceLinks ids={quotaFollowUp.evidence} />
                           </div>
@@ -246,9 +245,8 @@ export default function SampleAssessment() {
                               </article>)}
                             </div>
                             <p>{writtenAmountFollowUp.malformedNote}</p>
-                            <p>{writtenAmountFollowUp.testNote}</p>
-                            <p>{writtenAmountFollowUp.method}</p>
-                            <p>{writtenAmountFollowUp.scopeNote}</p>
+                            <p>The existing quota and threshold suite passed 7 tests, with 0 failures, using <code>node --test tests/quota-decimal.test.mjs</code>. The earlier quota packet retains its separate 45-test result.</p>
+                            <p>Written and numeric requests were compared for threshold, operator, period, grouping, provider selection, calculated rows and displayed answer. Annual revenue was independently summed from monthly fixture values without the query engine. A third request checked that malformed input caused no calculation.</p>
                             <p>{writtenAmountFollowUp.unrechecked}</p>
                             <p><a href={writtenAmountFollowUp.downloadHref} download>Download October 26 written-amount recheck packet ↓</a></p>
                             <EvidenceLinks ids={writtenAmountFollowUp.evidence} />
@@ -264,7 +262,7 @@ export default function SampleAssessment() {
                 </section>
 
                 <section id="action-plan" className={styles.section}>
-                  <SectionHeading number="03" title="Prioritized action plan" note="Retain the verified quota, written-amount and invalid-input checks. No app code was changed or deployed for this assessment or either follow-up." />
+                  <SectionHeading number="03" title="Remaining work and checks to retain" note="Remove the repeated bookings block, then retain the numerical and input checks below." />
                   <ol className={styles.plan}>
                     {assessment.plan.map((item) => <li key={item.order}><span className={styles.planNumber}>{item.order}</span><div><p className={styles.planStatus}>{item.status} · {item.finding}</p><h3>{item.title}</h3><p>{item.text}</p></div></li>)}
                   </ol>

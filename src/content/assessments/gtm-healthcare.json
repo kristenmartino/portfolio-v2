@@ -10,8 +10,8 @@
   "appRevision": "d80dd7d22a5eb1922518b37c561c7ca071fe7812",
   "appRevisionShort": "d80dd7d",
   "downloadHref": "/assessments/gtm-healthcare/verification.json",
-  "summary": "All four selected findings now have dated verification: source disclosure and quarterly ranking in the original October 25 review, combined quota in the earlier October 26 follow-up, and written amounts in the later October 26 follow-up. These checks do not establish overall app accuracy.",
-  "provenance": "This is a self-initiated review of a demo I own. It is not client work, independent assurance, or evidence of business impact. All sales and practice records used here are synthetic.",
+  "summary": "All four selected findings have dated verification: source disclosure and quarterly ranking on October 25, combined quota and written amounts in separate October 26 follow-ups. The duplicate bookings block remains a presentation follow-up; it does not change the quota calculation result.",
+  "provenance": "This is a self-initiated review of a demo I own. All sales and practice records used here are synthetic.",
   "counts": {
     "findings": 4,
     "verifiedCorrections": 4,
@@ -135,7 +135,7 @@
       "title": "Written and numeric revenue thresholds now match.",
       "status": "Verified correction · October 26",
       "state": "closed",
-      "risk": "The original written amount required clarification where the equivalent numeric form succeeded. A repair must preserve the complete amount and scale rather than accept only a leading number.",
+      "risk": "The original written amount required clarification where the equivalent numeric form succeeded. The recheck tested the complete amount and scale, including an ambiguous quantity that must stop before calculation.",
       "observation": "The October 25 written-threshold request stopped for clarification. A separate October 26 recheck returned the same normalized revenue threshold, provider result and displayed answer for written and numeric forms; a malformed quantity still stopped calculation.",
       "question": "Which providers had at least one point five million in revenue in 2025?",
       "before": "The numeric threshold was not preserved. Please clarify the comparison; no calculation was run.",
@@ -165,16 +165,16 @@
   "plan": [
     {
       "order": "01",
-      "title": "Retain combined and per-rep regression checks",
-      "status": "Verified · October 26",
-      "text": "Preserve the total, individual rows and both-together behavior. Keep attainment weighted by summed bookings and quota; retain the scenario tests covering all 63 nonempty rep subsets.",
+      "title": "Remove the duplicate bookings block",
+      "status": "Proposed · observed October 26",
+      "text": "The individual-results response repeats bookings before the full quota rows. Remove that repeated block, then recheck requests for the total, individual results, and both together. Preserve weighted attainment and the scenario tests covering all 63 nonempty rep subsets.",
       "finding": "F02"
     },
     {
       "order": "02",
       "title": "Retain written, numeric and malformed-input checks",
       "status": "Verified · October 26, 3:01 p.m. Eastern",
-      "text": "Preserve equivalent complete thresholds and provider results for written and numeric amounts. Keep malformed quantities from degrading to a leading number or triggering a calculation.",
+      "text": "Keep equivalent complete thresholds and provider results for written and numeric amounts. Keep ambiguous quantities from becoming partial numbers or triggering a calculation.",
       "finding": "F04"
     },
     {
@@ -308,17 +308,17 @@
   "hiringNarrative": {
     "eyebrow": "Review work sample",
     "label": "Self-initiated review of my own demo",
-    "title": "Quota totals and written amounts verified",
+    "title": "Checking quota totals, source labels, and written amounts",
     "context": "GTM Healthcare Intelligence",
-    "opening": "The October 25 review found missing quota totals and a written-amount limitation. Separate October 26 checks verified both existing fixes: combined results retain individual figures, and written amounts match numeric input.",
+    "opening": "The original review recorded missing combined totals, source labels broader than the demo’s actual inputs, and different handling of equivalent written and numeric amounts. Dated checks document the corrected results and the remaining presentation issue.",
     "role": "",
     "decisions": [
       {
         "id": "requested-result",
         "number": "01",
-        "title": "Combined and individual results verified",
+        "title": "Answer the whole question",
         "paragraphs": [
-          "Combined-only, per-rep-only and both-together requests were checked. Combined attainment uses total bookings divided by total quota, rather than averaging rep percentages."
+          "Correct individual figures left the combined question unanswered. October 26 requests for the total, individual results, and both together passed. Combined attainment divides total bookings by total quota; averaging rep percentages would give the wrong result."
         ],
         "status": "Verified October 26",
         "state": "closed",
@@ -328,9 +328,9 @@
       {
         "id": "claims",
         "number": "02",
-        "title": "Source labels corrected",
+        "title": "Match source labels to actual inputs",
         "paragraphs": [
-          "Public labels named CMS sources. The snapshot used synthetic provider records and embedded demographic references. Corrected wording distinguishes both from optional public-file ingestion; the wording repair changed no data or calculations."
+          "CMS labels overstated what the snapshot contained: synthetic provider records and embedded demographic references. Corrected wording separates those inputs from optional public-file ingestion. The change corrected the claim; it changed no data or calculations."
         ],
         "status": "Verified October 25",
         "state": "closed",
@@ -340,9 +340,9 @@
       {
         "id": "safe-stops",
         "number": "03",
-        "title": "Written and numeric amounts match",
+        "title": "Clarify ambiguous amounts before calculating",
         "paragraphs": [
-          "“One point five million” and “$1.5M” both preserve revenue ≥ $1,500,000 and return only Singh: $1,592,362 for 2025. Malformed “one point five point six million” requests clarification, makes no tool call and runs no calculation."
+          "“One point five million” and “$1.5M” both apply the same $1.5 million minimum and return only Singh: $1,592,362 for 2025. Malformed “one point five point six million” asks for clarification before calculating."
         ],
         "status": "Verified October 26",
         "state": "closed",
@@ -351,10 +351,9 @@
       }
     ],
     "verification": [
-      "The original five questions used synthetic sample records; expected answers were calculated separately from the app. Source disclosures and all four quarterly winners were verified then. The no-show control remains an October 25 observation.",
-      "October 26 follow-ups covered three quota requests and three written-amount requests, including malformed input. Seven existing quota and threshold tests passed. These checks do not establish overall accuracy."
+      "Expected answers were calculated separately from synthetic input records. The original five requests and six October 26 follow-ups remain in the full evidence, with captured responses, test results, and dated scope."
     ],
-    "next": "Retain quota, numeric-threshold and malformed-input regression checks. Extend question coverage without weakening the checks for missing inputs or incomplete amounts.",
+    "next": "The calculation passed. The October 26 individual-results response still repeats bookings; removing that duplicate is the next presentation fix.",
     "supportTitle": "Full findings and verification evidence",
     "supportDescription": "Original comparisons, separate quota and written-amount follow-ups, acceptance checks, method and sources.",
     "byline": "Original review October 25, 2026 · Quota and amounts rechecked October 26, 2026"
