@@ -326,3 +326,53 @@
   .support > summary { font-size: 16pt; }
   .support > summary small, .supportContext { font-size: 10pt; }
 }
+
+/* Client sample front matter. Evidence appendix styles above remain unchanged. */
+.clientColumn { width: min(100% - 96px, 1060px); margin-inline: auto; }
+.clientHero h1 { max-width: 950px; }
+.clientIntroduction { padding: 30px 0 12px; }
+.clientIntroduction .introLead { max-width: 78ch; }
+.clientScope { display: grid; grid-template-columns: 130px 1fr; gap: 24px; margin-top: 24px; padding: 17px 20px; border-left: 3px solid var(--report-teal); background: #e8ece5; }
+.clientScope h2 { font: 600 11px/1.6 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; }
+.clientScope p { max-width: 82ch; font-size: 14px; line-height: 1.65; }
+.clientFindings, .clientVerification { scroll-margin-top: 88px; }
+.clientFinding { display: grid; grid-template-columns: minmax(200px, .8fr) minmax(0, 1.7fr); gap: 42px; padding: 28px 0; border-top: 1px solid var(--report-line); scroll-margin-top: 88px; }
+.clientFindingHeading { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.clientPriority { color: var(--report-teal); font: 600 11px/1.5 var(--font-mono); letter-spacing: .07em; }
+.clientFindingHeading h2 { max-width: 24ch; font-size: 24px; line-height: 1.25; font-weight: 600; letter-spacing: -.025em; }
+.clientFindingHeading > a { display: inline-flex; align-items: center; min-height: 36px; font-size: 12px; }
+.clientFindingBody dl { margin: 0; }
+.clientFindingBody dl > div { display: grid; grid-template-columns: 116px 1fr; gap: 16px; }
+.clientFindingBody dl > div + div { margin-top: 16px; }
+.clientFindingBody dt { padding-top: 3px; color: var(--report-muted); font: 500 10px/1.6 var(--font-mono); text-transform: uppercase; letter-spacing: .06em; }
+.clientFindingBody dd { margin: 0; font-size: 15px; line-height: 1.65; }
+.clientCalculation { margin: 22px 0 0 132px; padding: 14px 18px; border-left: 2px solid var(--report-teal); background: #e8eee7; }
+.clientCalculation figcaption { color: var(--report-teal); font: 500 10px/1.6 var(--font-mono); text-transform: uppercase; letter-spacing: .04em; }
+.clientCalculation p { margin-top: 8px; font: 400 15px/1.7 var(--font-mono); overflow-wrap: anywhere; }
+.clientCalculation span { display: block; margin-top: 5px; color: var(--report-muted); font-size: 11px; line-height: 1.6; }
+.clientVerification { padding: 25px 0 18px; border-top: 1px solid var(--report-line); }
+.clientVerification h2 { font-size: 24px; font-weight: 600; line-height: 1.3; letter-spacing: -.025em; }
+.clientVerification p { max-width: 88ch; margin-top: 13px; font-size: 15px; line-height: 1.65; }
+.clientNext { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 5px 24px; padding: 0 0 28px; }
+.clientNext a { display: inline-flex; align-items: center; min-height: 44px; font-size: 13px; font-weight: 500; }
+@media (max-width: 700px) {
+  .clientColumn { width: calc(100% - 40px); }
+  .clientIntroduction { padding-top: 24px; }
+  .clientScope { grid-template-columns: 1fr; gap: 6px; padding: 14px 16px; }
+  .clientFinding { grid-template-columns: 1fr; gap: 17px; padding-block: 24px; }
+  .clientFindingHeading { gap: 8px; }
+  .clientFindingHeading h2 { max-width: 30ch; font-size: 23px; }
+  .clientFindingHeading > a { min-height: 30px; }
+  .clientFindingBody dl > div { grid-template-columns: 1fr; gap: 4px; }
+  .clientFindingBody dl > div + div { margin-top: 14px; }
+  .clientCalculation { margin-left: 0; }
+  .clientNext { flex-direction: column; align-items: flex-start; }
+}
+@media print {
+  .clientColumn { width: 100%; }
+  .clientIntroduction { padding-top: 18px; }
+  .clientFinding { break-inside: avoid; gap: 24px; padding-block: 18px; }
+  .clientFindingHeading h2, .clientVerification h2 { font-size: 17pt; }
+  .clientFindingBody dd, .clientScope p, .clientVerification p { font-size: 10pt; }
+  .clientNext { display: none; }
+}

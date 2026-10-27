@@ -11,7 +11,7 @@
   "appRevisionShort": "d80dd7d",
   "downloadHref": "/assessments/gtm-healthcare/verification.json",
   "summary": "All four selected findings have dated verification: source disclosure and quarterly ranking on October 25, combined quota and written amounts in separate October 26 follow-ups. A later October 26 check confirmed the duplicate bookings block was removed while the combined and individual values stayed intact.",
-  "provenance": "This is a self-initiated review of a demo I own. All sales and practice records used here are synthetic.",
+  "provenance": "All sales and practice records used here are synthetic.",
   "counts": {
     "findings": 4,
     "verifiedCorrections": 4,
@@ -331,21 +331,21 @@
     }
   ],
   "hiringNarrative": {
-    "eyebrow": "Review work sample",
-    "label": "Self-initiated review of my own demo",
-    "title": "Checking quota totals, source labels, and written amounts",
+    "eyebrow": "",
+    "label": "",
+    "title": "Analytics review work sample",
     "context": "GTM Healthcare Intelligence",
-    "opening": "The original review recorded missing combined totals, source labels broader than the demo’s actual inputs, and different handling of equivalent written and numeric amounts. Dated follow-ups verified the corrected results; a later check confirmed the repeated bookings block was removed.",
+    "opening": "An AI analytics answer needs to meet the request, use the right business calculation and describe its inputs accurately. These selected checks show how those requirements were evaluated in a synthetic demo, with original failures and later verification kept together.",
     "role": "",
     "decisions": [
       {
         "id": "requested-result",
         "number": "01",
-        "title": "Answer the whole question",
+        "title": "Require the complete answer",
         "paragraphs": [
-          "Correct individual figures left the combined question unanswered. October 26 requests for the total, individual results, and both together passed. Combined attainment divides total bookings by total quota; averaging rep percentages would give the wrong result."
+          "Correct individual figures left a combined-quota question unanswered. The required result sums bookings and quotas before calculating attainment. Requests for the total, individual results and both together were checked; averaging rep percentages would misstate the result."
         ],
-        "status": "Verified October 26",
+        "status": "Verified",
         "state": "closed",
         "supportLabel": "F02 / follow-up",
         "supportHref": "#bookings-display-follow-up"
@@ -353,11 +353,11 @@
       {
         "id": "claims",
         "number": "02",
-        "title": "Match source labels to actual inputs",
+        "title": "Keep claims within the evidence",
         "paragraphs": [
-          "CMS labels overstated what the snapshot contained: synthetic provider records and embedded demographic references. Corrected wording separates those inputs from optional public-file ingestion. The change corrected the claim; it changed no data or calculations."
+          "CMS labels overstated the snapshot’s inputs: synthetic providers and embedded demographic references. Corrected wording distinguishes those inputs from optional public-file ingestion. The data and calculations stayed unchanged."
         ],
-        "status": "Verified October 25",
+        "status": "Verified",
         "state": "closed",
         "supportLabel": "F01",
         "supportHref": "#F01"
@@ -365,23 +365,23 @@
       {
         "id": "safe-stops",
         "number": "03",
-        "title": "Clarify ambiguous amounts before calculating",
+        "title": "Preserve clarification for ambiguous input",
         "paragraphs": [
-          "“One point five million” and “$1.5M” both apply the same $1.5 million minimum and return only Singh: $1,592,362 for 2025. Malformed “one point five point six million” asks for clarification before calculating."
+          "“One point five million” and “$1.5M” now apply the same minimum and return Singh: $1,592,362 for 2025. Malformed “one point five point six million” still asks for clarification, avoiding a calculation from an incomplete amount."
         ],
-        "status": "Verified October 26",
+        "status": "Verified",
         "state": "closed",
         "supportLabel": "F04 / follow-up",
         "supportHref": "#written-amount-follow-up"
       }
     ],
     "verification": [
-      "Expected answers were calculated separately from synthetic input records. The original five requests and nine October 26 follow-ups remain in the full evidence, with captured responses, test results, and dated scope."
+      "The recorded checks confirmed complete combined and individual quota results, matching written and numeric thresholds, and removal of the repeated bookings block."
     ],
-    "next": "October 26 live checks confirmed each rep appears once while combined and individual values remain unchanged. Retain these checks alongside the amount-input controls.",
+    "next": "",
     "supportTitle": "Full findings and verification evidence",
     "supportDescription": "Original comparisons, quota, written-amount and display follow-ups, acceptance checks, method and sources.",
-    "byline": "Original review October 25, 2026 · Quota and amounts rechecked October 26, 2026"
+    "byline": "Reviewed October 2026"
   },
   "originalReviewCounts": {
     "findings": 4,
@@ -527,5 +527,64 @@
       "E16",
       "E17"
     ]
-  }
+  },
+  "clientNarrative": {
+    "eyebrow": "Example review deliverable",
+    "label": "",
+    "title": "Sample AI feature assessment",
+    "context": "GTM Healthcare Intelligence",
+    "opening": "This example shows the format of a focused feature assessment: what failed, why it mattered, the recommended change, and how its correction was checked.",
+    "role": "",
+    "decisions": [
+      {
+        "id": "claims",
+        "number": "P1",
+        "title": "Source claims exceeded the inputs",
+        "paragraphs": [
+          "CMS labels could suggest a completed public-data import. The displayed snapshot used synthetic provider records and embedded demographic references."
+        ],
+        "recommendation": "Name those inputs separately from optional public-file ingestion.",
+        "status": "Wording corrected",
+        "state": "closed",
+        "supportLabel": "F01 / evidence",
+        "supportHref": "#F01"
+      },
+      {
+        "id": "requested-result",
+        "number": "P2",
+        "title": "A combined question returned individual rows",
+        "paragraphs": [
+          "Correct rep figures left the reader to reconstruct the requested total."
+        ],
+        "recommendation": "Return summed bookings and quota, then calculate weighted attainment; keep individual rows when requested.",
+        "status": "Totals and display verified",
+        "state": "closed",
+        "supportLabel": "F02 / evidence",
+        "supportHref": "#bookings-display-follow-up"
+      },
+      {
+        "id": "safe-stops",
+        "number": "P2",
+        "title": "Equivalent amounts behaved differently",
+        "paragraphs": [
+          "“One point five million” required clarification where “$1.5M” succeeded. Both now return Singh’s $1,592,362 revenue for 2025; malformed “one point five point six million” still asks for clarification."
+        ],
+        "recommendation": "Apply the same $1.5 million minimum to complete written and numeric inputs; ask for clarification when the quantity is malformed.",
+        "status": "Input checks passed",
+        "state": "closed",
+        "supportLabel": "F04 / evidence",
+        "supportHref": "#written-amount-follow-up"
+      }
+    ],
+    "verification": [
+      "The recorded checks confirmed complete combined and individual quota results, matching written and numeric thresholds, and removal of the repeated bookings block."
+    ],
+    "next": "",
+    "supportTitle": "Full findings and verification evidence",
+    "supportDescription": "Original comparisons, dated follow-ups, acceptance checks, method and sources.",
+    "byline": "Reviewed October 2026",
+    "scopeTitle": "Scope",
+    "scopeSummary": "This example reviews GTM Healthcare Intelligence, my independent portfolio project. One analytics assistant, selected synthetic questions, data-source wording and failure handling. The full record contains four findings; three are highlighted here."
+  },
+  "hiringMethodNote": "This example reviews GTM Healthcare Intelligence, my independent portfolio project. AI tools supported implementation, testing and analysis. Numerical expectations were recomputed from the synthetic input records; this is not an independent third-party audit."
 }
