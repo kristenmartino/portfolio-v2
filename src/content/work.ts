@@ -69,9 +69,9 @@ export const projects: Project[] = [
     title: "SpecialtyPulse Pipeline",
     category: "Healthcare Data Platform",
     shareDescription:
-      "Synthetic review prototype with reconciled data and a five-pair AI simulation. Human usefulness and business outcomes remain unmeasured.",
+      "A working prototype for healthcare-software sales research, with traceable reimbursement comparisons, fictional account-discovery examples and downloadable briefs.",
     summary:
-      "A specialty review prototype for healthcare-software sales teams, connecting payment comparisons to evidence and account-discovery questions.",
+      "A working prototype for healthcare-software sales research, with traceable reimbursement comparisons, fictional account-discovery examples and downloadable briefs.",
     href: "/work/specialtypulse-pipeline",
     slug: "specialtypulse-pipeline",
     liveHref: "https://specialtypulse.kristenmartino.ai/?view=procedure&specialty=Dermatology&hcpcs=99213&year=2023",
@@ -87,7 +87,7 @@ export const projects: Project[] = [
     metrics: [
       "Analyst → sales or operations lead",
       "Downloadable review packets",
-      "AI comparison · human study pending",
+      "Reproducible payment calculations",
       "870 reconciled rows · synthetic data",
     ],
   },
