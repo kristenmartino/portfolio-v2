@@ -1,33 +1,33 @@
 ## The business question
 
-Which payment changes need investigation, and what should a sales or operations lead check next? SpecialtyPulse is an independent prototype for an analyst supporting a healthcare-software vendor selling EHR, practice management and revenue cycle subscriptions.
+Can reimbursement context help healthcare-software sales analysts prepare more relevant account-discovery questions? SpecialtyPulse is an independent prototype exploring that hypothesis for teams selling EHR, practice management and revenue cycle software.
 
-The assumed workflow combines payment reports, CRM exports and a written handoff. The hypothesis is that preparing an internal sales-review packet requires carrying evidence and reviewer questions across those tools. SpecialtyPulse tests that handoff alongside existing reporting. Intended users have not confirmed the workflow or its pain points; if their current reports and CRM already handle it well, a separate tool may add little.
+The proposed workflow brings payment comparisons, account context and open questions into a review brief. Reimbursement patterns provide starting points for investigation. Account needs require confirmation through discovery before recommending software. Intended users have not confirmed this workflow or evaluated whether reimbursement context improves their discovery questions.
 
 **All data is synthetic.** The 2023 base uses a CMS-style schema; 2021–2022 are generated comparison scenarios. Payment signals describe the practice side, while pipeline dollars represent hypothetical software contracts. Account discovery is still needed before a software recommendation or outreach decision.
 
-## My contribution and delivered work
+## Delivered work
 
 <Specs>
-  <Spec label="My role" value="Workflow design, metric definitions, AI-assisted implementation and verification" />
+  <Spec label="My contribution" value="Workflow design, metric definitions and verification, with AI-assisted implementation." />
   <Spec label="Year" value="2026" />
   <Spec label="Stack" value="Databricks Spark · Airflow · React" />
   <Spec label="Verified output" value="29,982 synthetic records → 870 reporting rows" />
 </Specs>
 
-The workflow connects a specialty review, a procedure comparison, an overdue sales list and an editable brief. **Start review** opens the workspace; **Add comparison to brief** carries the selected evidence into it. The pipeline view keeps the same specialty selected and shows owner totals before a sortable, paginated opportunity list.
+The delivered prototype connects a Databricks pipeline, an Airflow-checked export and a React review workflow. It processes 29,982 synthetic records into 870 reporting rows and carries source references into downloadable briefs.
 
-The Markdown brief includes the analyst's notes, procedure evidence, owner summary and complete overdue roster. A separate CSV provides opportunity IDs, owners, stages, assumed ACV, close dates and overdue ages. Both exports carry source context and use the full specialty cohort, regardless of pagination. Missing sales coverage stays unavailable rather than becoming zero.
+Three decisions shape the workflow: service-weighted payments and specialty/year provider counts support reproducible comparisons; pipeline cleanup stays separate from discovery; and the project-defined pressure index remains an optional experiment.
 
-Drafts survive tab changes until reload. Downloading saves a copy; it does not send or assign work. The completeness indicator checks field presence, leaving accuracy and approval for review. **Method and sources** opens calculation details and pinned evidence; **About this demo** holds general assumptions.
+The brief carries procedure evidence, notes, source references and an optional sales appendix. A separate CSV contains the complete specialty overdue roster regardless of pagination. Missing sales coverage stays unavailable. Drafts last until reload, completeness checks field presence, and downloads save without sending or assigning work.
 
 ## One review, from signal to next check
 
 For [Dermatology / HCPCS 99213](https://specialtypulse.kristenmartino.ai/?view=procedure&specialty=Dermatology&hcpcs=99213&year=2023), the generated 2022 scenario has **$108.05 per service across 3,626 services**. The synthetic 2023 base has **$104.91 across 3,777 services**: payment falls **$3.14 (2.9%)**, while service count rises **151 (4.2%)**.
 
-An illustrative brief records that change, asks which source rows and service mix explain it, and requests a calculation check from the analyst. Its separate sales context shows **53 open opportunities totaling $4,579,800 in assumed USD annual contract value (ACV)**. At the constructed **March 31, 2026** snapshot, **25 are overdue, totaling $2,121,500**, while 28 are not yet overdue. Sales operations must reconcile stages and close dates before planning. These amounts are unweighted exposure, not recognized revenue or a forecast.
+An illustrative brief records that change, asks which source rows and service mix explain it, and requests a calculation check from the analyst. Its optional pipeline context shows **53 open opportunities totaling $4,579,800 in assumed USD annual contract value (ACV)**. At the constructed **March 31, 2026** snapshot, **25 are overdue, totaling $2,121,500**, while 28 are not yet overdue. Sales operations must reconcile stages and close dates before pipeline planning. These amounts are unweighted exposure, not recognized revenue or a forecast.
 
-This is an illustrative assignment, with source and account validation pending. The specialty score of 66.6 organizes scenarios; its weights have not been validated against account need, purchase decisions or sales outcomes.
+This is an illustrative assignment, with source and account validation pending. The main view presents payment changes, service counts and distinct providers. An optional experimental section documents the pressure-index formula and its validation limits.
 
 Two [fictional Dermatology account examples](https://specialtypulse.kristenmartino.ai/?view=market&specialty=Dermatology&section=accounts) show why the same payment signal can lead to different next checks. The link opens the brief with **Compare two fictional practices** expanded. Each practice puts its decision, next reviewer and requested check before the supporting detail. Practice A's invented notes and work log describe duplicate billing-status entry and support a workflow review, with software fit pending. Practice B's invented notes and queue excerpt identify no billing-workflow need, so no software recommendation follows. Each includes a stakeholder, current systems, baseline, source excerpts and open questions. Either example can accompany the downloaded brief without replacing the analyst's notes.
 
@@ -56,7 +56,7 @@ This was an artifact simulation: agents did not navigate the browser, and timing
 
 ## Next validation
 
-Ask intended analysts and recipients to walk through a recent review: its frequency, tools, data access, preparation effort and decision. Then compare five human analyst–reviewer pairs using their existing workflow and SpecialtyPulse, alternating method order and comparable scenarios. Time the full process from the business question through data gathering, calculations and brief delivery. If existing reports already meet the need, reconsider the product scope.
+First, observe how intended sales analysts prepare for account discovery. Then use five human analyst–reviewer pairs to compare questions prepared for comparable account scenarios with and without reimbursement context. Reviewers assess relevance to the account, support from the available evidence and usefulness of the requested next step, without being told the preparation method. Measure preparation time separately.
 
 <details className="mt-10 border-t border-[var(--color-graphite-90)] pt-6">
 <summary className="cursor-pointer font-semibold text-[var(--color-bone)]">Metric definitions and sales scope</summary>
@@ -91,13 +91,16 @@ The [selected run receipt](https://github.com/kristenmartino/specialtypulse_pipe
 <details className="mt-8 border-t border-[var(--color-graphite-90)] pt-6">
 <summary className="cursor-pointer font-semibold text-[var(--color-bone)]">Proposed human comparison criteria</summary>
 
-Confirm actual workflows and comparable task difficulty before testing. Recipients review briefs without the method identified; record their next-action explanations, missing evidence, interpretation errors and clarification requests. Proposed thresholds for a larger pilot are:
+Confirm the workflow before testing. Alternate condition order across five human analyst–reviewer pairs and use comparable account scenarios with the same account facts; one condition adds reimbursement context. Each analyst prepares discovery questions, their rationale and a requested next check. Reviewers are not told the condition; record any remaining method cues.
 
-1. At least four of five app briefs include procedure evidence, an observation with limits, an open question and a next reviewer with a concrete check; completeness is at least as high as the comparator.
-2. No critical interpretation errors, including synthetic data treated as history, a score treated as account need or a blended average treated as a procedure-specific expected rate.
-3. At least 20% median paired preparation-time reduction over the full workflow, without reducing completeness.
-4. At least four of five recipients explain the next action without clarification, with no more requests overall than for comparator briefs.
+Review both question sets against the same criteria:
 
-These are proposed criteria, not achieved human results. Accuracy or completeness failures require revision before retesting speed. Page views and sessions are activity measures, not usefulness evidence. The [workflow and evaluation plan](https://github.com/kristenmartino/specialtypulse_pipeline/blob/dcee05b9b85c50c0536ddb61cc5dffcefd2a0853/docs/BUSINESS_REVIEW.md) records the proposed process.
+1. **Account relevance:** addresses a stated account goal, reported problem or important unanswered question.
+2. **Evidence support:** distinguishes provided facts from assumptions and avoids inferring account need solely from specialty signals.
+3. **Useful next step:** identifies a specific, justified question or check and the stakeholder or evidence needed.
+
+For each pair and criterion, record whether reimbursement context helped, made no difference or hurt, with the reviewer's explanation and clarification requests. Record critical interpretation errors, including synthetic data treated as history or a blended average treated as a procedure-specific expected rate. Compare preparation time and data-gathering effort separately; agree acceptable effort with intended users before running the study.
+
+These are planned criteria, not achieved human results. Use the paired findings to decide whether a larger trial is warranted. The [earlier workflow and evaluation plan](https://github.com/kristenmartino/specialtypulse_pipeline/blob/dcee05b9b85c50c0536ddb61cc5dffcefd2a0853/docs/BUSINESS_REVIEW.md) documents the app-versus-CSV proposal. The historical AI comparison remains unchanged.
 
 </details>
